@@ -12,14 +12,6 @@ classdef Var_Defs
         g %gravitational constant symbolic variable
         
         %Angle Variables
-        beta_hat
-        gamma_hat 
-        theta_hat_3 
-        theta_hat_4 
-        theta_hat_5 
-        theta_hat_6 
-        theta_hat_7
-        theta_hat_8
         
         %Angular Velocities for Omega Vectors/Matrices
         
@@ -77,12 +69,11 @@ classdef Var_Defs
         e_x     %error in x (symvar)   
         e_x_dot %error in x_dot (symvar)   
         e_x_ddot%error in x_ddot (symvar) 
-        e_ix    %error in the integral of x (symvar) 
-        ix_s    %integral of the x setpoint - time integral of desired
-                %x trajectory (symvar)
-        x_s     %x setpoint - desired x trajectory (symvar)
-        x_dot_s %x_dot setpoint - velocity of desired x trajectory (symvar)
-        x_ddot_s%x_ddot setpoint - acceleration of desired x trajectory (symvar) 
+        e_ix    %error in the integral 
+        ix_s 
+        x_s 
+        x_dot_s 
+        x_ddot_s 
         
     %Vectors
     
