@@ -84,7 +84,7 @@ classdef Var_Defs
         x_ddot  %time rate of change of x_dot (symvar)
         y_ddot  %time rate of change of y_dot (symvar)
         
-        %Arbitrary displacment vector in S2
+        %Components of Arbitrary displacment vector in S2 Frame
         r_hat_1 %arbitrary displacement vector component 1 (symfun) 
         r_hat_2 %arbitrary displacement vector component 2 (symfun)
         r_hat_3 %arbitrary displacement vector component 3 (symfun)
@@ -122,17 +122,76 @@ classdef Var_Defs
                     %with components expressed in S2 Basis      
                 
         %Arbitrary Displacment Vector in Plate Frame S2        
-        r2s        
+        r2s          
+        
         %Displacement Vectors Centers of Mass
+        rb2s        %Displacement vector of the ball's center of mass expressed 
+                    %in S2 basis.   
+        rp2s        %Displacement vector of the plate's center of mass expressed 
+                    %in S2 basis
         
         %Moment Arms
-        
+        armb2s      %Moment arm from the contact point of the ball to its 
+                    %center of mass expressed in S2 basis.
+        armp2s      %Moment arm from the center of the u-joint to the plate's 
+                    %Center of Mass. 
+                    
         %Force and Moment Vectors
+        Wb0s
+        Wp0s
+        Tb1
+        Tg1
+        Mz1
         
         %Displacement Vectors of the Constraining Kinematic Loops
-                
+        d_oc_1
+        d_oc_2
+        L_oa
+        L_ab
+        L_bc
+        L_oc
+        d_of_1
+        d_of_2
+        L_od
+        L_de
+        L_ef
+        L_of
+        
     %Matrices
-    
+        %Omega Matrices
+        Omega2ms
+        
+        %Inertia Tensors
+        Ib2ms
+        Ip2ms
+        
+        %Rotation Matrices
+        R01
+        R10
+        R01d
+        R10d
+        R12
+        R21
+        R12d
+        R21d
+        R02
+        R20
+        R03
+        R30
+        R34
+        R43
+        R45
+        R54
+        R06
+        R60
+        R67
+        R76
+        R78
+        R87
+        R05
+        R50
+        
+        
     %State Space Model Related
     
     %
