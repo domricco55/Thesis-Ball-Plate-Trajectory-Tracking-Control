@@ -12,25 +12,63 @@ classdef Var_Defs
         g %gravitational constant symbolic variable
         
         %Angle Variables
+        beta_hat 
+        gamma_hat 
+        theta_hat_3 
+        theta_hat_4 
+        theta_hat_5 
+        theta_hat_6 
+        theta_hat_7
+        theta_hat_8
+        beta 
+        gamma 
+        theta_3 
+        theta_4 
+        theta_5 
+        theta_6 
+        theta_7 
+        theta_8 
+        beta_dot 
+        gamma_dot 
+        beta_ddot 
+        gamma_ddot
         
         %Angular Velocities for Omega Vectors/Matrices
+        omega_hat_x  
+        omega_hat_y  
+        omega_hat_z 
+        psi_hat_x 
+        psi_hat_y 
+        psi_hat_z 
+        omega_x 
+        omega_y 
+        omega_z 
+        psi_x 
+        psi_y 
+        psi_z
+        omega_dot_x 
+        omega_dot_y 
+        omega_dot_z 
+        psi_dot_x 
+        psi_dot_y 
+        psi_dot_z
         
         %Length Related System Parameters
-        w %width of plate
-        z_Pc %Vertical distance from u-joint to push rod pivot (Pc is "point c")
-        z_p %height of the plate's center of mass with respect to the frame's 
-            %origin at the center of the u-joint    
-        L_carm %length of motor mechanism crank arm
-        L_crod %length of motor mechanism connecting rod
+        w       %width of plate
+        z_Pc    %Vertical distance from u-joint to push rod pivot (Pc is "point c")
+        z_p     %height of the plate's center of mass with respect to the frame's 
+                %origin at the center of the u-joint    
+        L_carm  %length of motor mechanism crank arm
+        L_crod  %length of motor mechanism connecting rod
         
         %Variables Related to Mass and Geometry of the Ball
-        I_b %mass moment of inertia of the ball (spherically symmetric)
-        I_p_xx %x direction mass moment of inertia of plate (principle axis)
-        I_pyy %y direction mass moment of inertia of plate (principle axis)
-        I_pzz %z direction mass moment of inertia of plate (principle axis)
-        m_b %mass of the ball
-        m_p %mass of the plate
-        r_b %radius of the ball
+        I_b     %mass moment of inertia of the ball (spherically symmetric)
+        I_p_xx  %x direction mass moment of inertia of plate (principle axis)
+        I_pyy   %y direction mass moment of inertia of plate (principle axis)
+        I_pzz   %z direction mass moment of inertia of plate (principle axis)
+        m_b     %mass of the ball
+        m_p     %mass of the plate
+        r_b     %radius of the ball
         
         %Coordinate of the Ball's Center of Mass in the S2 (plate) Frame  
         x_hat   %x location of ball in plate frame (symfun)        
@@ -69,17 +107,33 @@ classdef Var_Defs
         e_x     %error in x (symvar)   
         e_x_dot %error in x_dot (symvar)   
         e_x_ddot%error in x_ddot (symvar) 
-        e_ix    %error in the integral 
-        ix_s 
-        x_s 
-        x_dot_s 
-        x_ddot_s 
+        e_ix    %error in the integral of x (symvar) 
+        ix_s    %integral of the x setpoint - time integral of desired
+                %x trajectory (symvar)
+        x_s     %x setpoint - desired x trajectory (symvar)
+        x_dot_s %x_dot setpoint - velocity of desired x trajectory (symvar)
+        x_ddot_s%x_ddot setpoint - acceleration of desired x trajectory (symvar) 
         
     %Vectors
-    
+        %Symbolic Angular Velocity Vectors
+        Omega2vs    %Angular velocity of the plate relative to the inertial frame 
+                    %with components expressed in the S2 basis
+        Psi2vs      %Angular velocity of the ball relative to the plate frame 
+                    %with components expressed in S2 Basis      
+                
+        %Arbitrary Displacment Vector in Plate Frame S2        
+        r2s        
+        %Displacement Vectors Centers of Mass
+        
+        %Moment Arms
+        
+        %Force and Moment Vectors
+        
+        %Displacement Vectors of the Constraining Kinematic Loops
+                
     %Matrices
     
-    %State Space Model - Related
+    %State Space Model Related
     
     %
     end
