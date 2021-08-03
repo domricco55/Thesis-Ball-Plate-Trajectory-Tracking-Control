@@ -208,10 +208,6 @@ classdef Var_Defs
         stateVec2_dot
         
     %Vectors for Subs Function 
-        %Exchange Variable for its Twin Symvar or Symfun
-        symVarVec
-        symFunVec
-        
     end
     
     properties (SetAccess = private)
