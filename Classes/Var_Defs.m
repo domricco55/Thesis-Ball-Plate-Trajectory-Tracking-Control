@@ -499,7 +499,7 @@ classdef Var_Defs
                                            0          1          0   ;    
                             sin(obj.theta_hat_7(t))   0   cos(obj.theta_hat_7(t)) ;]; 
 
-            obj.R76 = simplify(inv(R67));
+            obj.R76 = simplify(inv(obj.R67));
 
             obj.R78 = sym('WHOCARES', [3 3]);
             obj.R78(:,:) = [    1                    0                                    0       ;
@@ -529,9 +529,9 @@ classdef Var_Defs
 
             %Two decoupled 4th order systems
 
-            stateVec1 = [x, x_dot, beta, beta_dot].' 
+            obj.stateVec1 = [obj.x, obj.x_dot, obj.beta, obj.beta_dot].'; 
             
-            stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
+            obj.stateVec1_dot = [obj.x_dot, obj.x_ddot, obj.beta_dot, obj.beta_ddot].';
 
             
             % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
@@ -540,50 +540,31 @@ classdef Var_Defs
             % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
             % setpointVec1 = [x_s x_dot_s x_ddot_s].'
             
-            stateVec2 = [y, y_dot, gamma, gamma_dot].'
-            stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
+            obj.stateVec2 = [obj.y, obj.y_dot, obj.gamma, obj.gamma_dot].';
+            obj.stateVec2_dot = [obj.y_dot, obj.y_ddot, obj.gamma_dot, obj.gamma_ddot].';
 
 
         %Vectors for Subs Function 
             %Exchange Variable for its Twin Symvar or Symfun
-            symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
-                         x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
-                         x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
-            symFunVec = [x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) theta_hat_3(t) theta_hat_4(t) theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)...
-                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
-                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
+            obj.symVarVec = [obj.x      obj.y      obj.r_1      obj.r_2      obj.r_3       obj.beta      obj.gamma      obj.omega_x     obj.omega_y     obj.omega_z     obj.psi_x     obj.psi_y     obj.psi_z  obj.theta_3 obj.theta_4 obj.theta_5  obj.theta_6  obj.theta_7   obj.theta_8...
+                             obj.x_dot  obj.y_dot  obj.r_dot_1  obj.r_dot_2  obj.r_dot_3   obj.beta_dot  obj.gamma_dot  obj.omega_dot_x obj.omega_dot_y obj.omega_dot_z obj.psi_dot_x obj.psi_dot_y obj.psi_dot_z ...
+                             obj.x_ddot obj.y_ddot obj.r_ddot_1 obj.r_ddot_2 obj.r_ddot_3  obj.beta_ddot obj.gamma_ddot];
+                         
+            obj.symFunVec = [obj.x_hat(t) obj.y_hat(t) obj.r_hat_1(t) obj.r_hat_2(t)  obj.r_hat_3(t) obj.beta_hat(t) obj.gamma_hat(t) obj.omega_hat_x(t) obj.omega_hat_y(t) obj.omega_hat_z(t) obj.psi_hat_x(t) obj.psi_hat_y(t) obj.psi_hat_z(t) obj.theta_hat_3(t) obj.theta_hat_4(t) obj.theta_hat_5(t) obj.theta_hat_6(t) obj.theta_hat_7(t) obj.theta_hat_8(t)...
+                       diff([obj.x_hat(t) obj.y_hat(t) obj.r_hat_1(t) obj.r_hat_2(t)  obj.r_hat_3(t) obj.beta_hat(t) obj.gamma_hat(t) obj.omega_hat_x(t) obj.omega_hat_y(t) obj.omega_hat_z(t) obj.psi_hat_x(t) obj.psi_hat_y(t) obj.psi_hat_z(t)] ,obj.t,1)...
+                       diff([obj.x_hat(t) obj.y_hat(t) obj.r_hat_1(t) obj.r_hat_2(t)  obj.r_hat_3(t) obj.beta_hat(t) obj.gamma_hat(t) ], obj.t,2)];
 
 
 
 
             %Arbitrary Displacement Vector to Ball and Plate Displacements - 
             %Symfun to Symvar
-            obj.symFunVec_r2 = symFunVec_r2;
-            obj.symFunVec_rb2 = symFunVec_rb2;
-            obj.symFunVec_rp2 = symFunVec_rp2;
-
-            
-
- 
-
+            obj.symFunVec_r2 = [obj.r2s.' diff(obj.r2s,obj.t,1).' diff(obj.r2s,obj.t,2).'];
+            obj.symFunVec_rb2 = [obj.rb2s.', diff(obj.rb2s,obj.t,1).', diff(obj.rb2s,obj.t,2).'];
+            obj.symFunVec_rp2 = [obj.rp2s.', diff(obj.rp2s.',obj.t,1), diff(obj.rp2s.',obj.t,2)];
 
 
             
-           
-
-             
-           
-            
-            
-            
-
-%             symFunVec_r2 = [r2s.' diff(r2s,t,1).' diff(r2s,t,2).'];
-% 
-%             symFunVec_rb2 = [rb2s.', diff(rb2s,t,1).', diff(rb2s,t,2).'];
-% 
-%             symFunVec_rp2 = [rp2s.', diff(rp2s.',t,1), diff(rp2s.',t,2)];
-% 
-
 
 
         end
