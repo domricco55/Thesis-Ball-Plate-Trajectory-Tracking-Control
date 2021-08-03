@@ -65,9 +65,9 @@ classdef Var_Defs
         
         %Variables Related to Mass and Geometry of the Ball
         I_b     %mass moment of inertia of the ball (spherically symmetric)
-        I_p_xx  %x direction mass moment of inertia of plate (principle axis)
-        I_pyy   %y direction mass moment of inertia of plate (principle axis)
-        I_pzz   %z direction mass moment of inertia of plate (principle axis)
+        I_p__xx  %x direction mass moment of inertia of plate (principle axis)
+        I_p__yy   %y direction mass moment of inertia of plate (principle axis)
+        I_p__zz   %z direction mass moment of inertia of plate (principle axis)
         m_b     %mass of the ball
         m_p     %mass of the plate
         r_b     %radius of the ball
@@ -324,134 +324,198 @@ classdef Var_Defs
             obj.psi_dot_z = psi_dot_z;
 
             %Length Related System Parameters
-            obj.w = w      
-            obj.z_Pc = z_Pc    
-            obj.z_p = z_p            
-            obj.L_carm = L_carm 
-            obj.L_crod = L_crod 
+            obj.w = w;      
+            obj.z_Pc = z_Pc;    
+            obj.z_p = z_p;            
+            obj.L_carm = L_carm; 
+            obj.L_crod = L_crod; 
 
             %Variables Related to Mass and Geometry of the Ball
-            obj.I_b = I_b    
-            obj.I_p_xx = I_p_xx 
-            obj.I_pyy = I_pyy   
-            obj.I_pzz = I_pzz   
-            obj.m_b = m_b    
-            obj.m_p = m_p   
-            obj.r_b = r_b    
+            obj.I_b = I_b;    
+            obj.I_p__xx = I_p__xx; 
+            obj.I_p__yy = I_p__yy;   
+            obj.I_p__zz = I_p__zz;   
+            obj.m_b = m_b;    
+            obj.m_p = m_p;   
+            obj.r_b = r_b;    
 
             %Coordinate of the Ball's Center of Mass in the S2 (plate) Frame  
-            obj.x_hat = x_hat          
-            obj.y_hat = y_hat      
-            obj.z_b  = z_b     
+            obj.x_hat = x_hat;          
+            obj.y_hat = y_hat;      
+            obj.z_b  = z_b;     
                                
-            obj.ix = ix                
-            obj.x  = x        
-            obj.y = y      
-            obj.x_dot = x_dot   
-            obj.y_dot = y_dot   
-            obj.x_ddot = x_ddot 
-            obj.y_ddot = y_ddot  
+            obj.ix = ix;                
+            obj.x  = x;        
+            obj.y = y;      
+            obj.x_dot = x_dot;   
+            obj.y_dot = y_dot;   
+            obj.x_ddot = x_ddot; 
+            obj.y_ddot = y_ddot;  
 
             %Components of Arbitrary displacment vector in S2 Frame
-            obj.r_hat_1 = r_hat_1 
-            obj.r_hat_2 = r_hat_2
-            obj.r_hat_3 = r_hat_3 
-            obj.r_1 = r_1      
-            obj.r_2 = r_2    
-            obj.r_3 = r_3     
-            obj.r_dot_1 = r_dot_1
-            obj.r_dot_2 = r_dot_2
-            obj.r_dot_3 = r_dot_3  
-            obj.r_ddot_1 = r_ddot_1     
-            obj.r_ddot_2 = r_ddot_2
-            obj.r_ddot_3 = r_ddot_3
+            obj.r_hat_1 = r_hat_1; 
+            obj.r_hat_2 = r_hat_2;
+            obj.r_hat_3 = r_hat_3; 
+            obj.r_1 = r_1;      
+            obj.r_2 = r_2;    
+            obj.r_3 = r_3;     
+            obj.r_dot_1 = r_dot_1;
+            obj.r_dot_2 = r_dot_2;
+            obj.r_dot_3 = r_dot_3;  
+            obj.r_ddot_1 = r_ddot_1;     
+            obj.r_ddot_2 = r_ddot_2;
+            obj.r_ddot_3 = r_ddot_3;
 
             %U-Joint Axle Torques and Reactions
-            obj.T_beta = T_beta  
-            obj.T_gamma = T_gamma 
-            obj.M_z = M_z       
+            obj.T_beta = T_beta;  
+            obj.T_gamma = T_gamma; 
+            obj.M_z = M_z;       
 
             %Error States and Setpoints (x and y Variables)
-            obj.e_x = e_x       
-            obj.e_x_dot = e_x_dot 
-            obj.e_x_ddot = e_x_ddot
-            obj.e_ix = e_ix   
-            obj.x_s = x_s      
-            obj.x_dot_s = x_dot_s
-            obj.x_ddot_s = x_ddot_s
+            obj.e_x = e_x;       
+            obj.e_x_dot = e_x_dot; 
+            obj.e_x_ddot = e_x_ddot;
+            obj.e_ix = e_ix;   
+            obj.x_s = x_s;      
+            obj.x_dot_s = x_dot_s;
+            obj.x_ddot_s = x_ddot_s;
 
         %Vectors
             %Symbolic Angular Velocity Vectors
-            obj.Omega2vs = Omega2vs
-            obj.Psi2vs = Psi2vs  
 
+            obj.Omega2vs = [obj.omega_hat_x(t); obj.omega_hat_y(t); obj.omega_hat_z(t)];
+            obj.Psi2vs = [obj.psi_hat_x(t); obj.psi_hat_y(t); obj.psi_hat_z(t)];
+            
             %Arbitrary Displacment Vector in Plate Frame S2        
-            obj.r2s = r2s          
+            obj.r2s = [obj.r_hat_1(t); obj.r_hat_2(t); obj.r_hat_3(t)];       
 
             %Displacement Vectors Centers of Mass
-            obj.rb2s = rb2s    
-            obj.rp2s = p2s   
+            obj.rb2s = [obj.x_hat(t);obj.y_hat(t);obj.z_b]; 
+            obj.rp2s = [0; 0; obj.z_p];
 
             %Moment Arms
-            obj.armb2s = armb2s 
-            obj.armp2s = armp2s 
+            obj.armb2s = [0; 0; obj.r_b];  
+            obj.armp2s = [0;0;obj.z_p];
 
             %Force and Moment Vectors
-            obj.Wb0s = Wb0s
-            obj.Wp0s = Wp0s
-            obj.Tb1 = Tb1
-            obj.Tg1 = Tg1
-            obj.Mz1 = Mz1
+            obj.Wb0s = [0; 0; -obj.m_b*obj.g];           
+            obj.Wp0s = [0;0;-obj.m_p*obj.g];           
+            obj.Tb1 = [0;obj.T_beta;0];            
+            obj.Tg1 = [obj.T_gamma;0;0];            
+            obj.Mz1 = [0;0;obj.M_z];
 
             %Displacement Vectors of the Constraining Kinematic Loops
-            obj.d_oc_1 = d_oc_1
-            obj.d_oc_2 = d_oc_2
-            obj.L_oa = L_oa
-            obj.L_ab = L_ab
-            obj.L_bc = L_bc
-            obj.L_oc = L_oc
-            obj.d_of_1 = d_of_1
-            obj.d_of_2 = d_of_2
-            obj.L_od = L_od
-            obj.L_de = L_de
-            obj.L_ef = L_ef
-            obj.L_of = L_of
+            obj.d_oc_1 = sym('d__oc_', [3 1],'real');             
+            obj.d_oc_2 = obj.d_oc_1;            
+            obj.L_oa = sym('L__oa_', [3 1],'real');             
+            obj.L_oa(2) = -obj.L_oa(2);           
+            obj.L_oa(3) = -obj.L_oa(3);           
+            obj.L_ab = [0; obj.L_carm; 0];           
+            obj.L_bc = [0; 0; obj.L_crod];
+            obj.L_oc = [obj.w;0;obj.z_Pc];            
+            obj.d_of_1 = sym('d__of_', [3 1],'real');           
+            obj.d_of_2 = obj.d_of_1;            
+            obj.L_od = sym('L__od_', [3 1],'real');            
+            obj.L_de = [-obj.L_carm; 0; 0];            
+            obj.L_ef = [0; 0; obj.L_crod];
+            obj.L_of = [0;obj.w;obj.z_Pc]; 
 
         %Matrices
             %Omega Matrices
-            obj.Omega2ms = Omega2ms
+            obj.Omega2ms = sym('NA', [3 3]);
+            obj.Omega2ms(:,:) = [       0          -omega_hat_z       omega_hat_y;
+
+                                    omega_hat_z           0            -omega_hat_x; 
+
+                                    -omega_hat_y     omega_hat_x            0       ];
+
 
             %Inertia Tensors
-            obj.Ib2ms = Ib2ms
-            obj.Ip2ms = Ip2ms
+            obj.Ib2ms = [obj.I_b 0 0; 0 obj.I_b 0; 0 0 obj.I_b];
+            obj.Ib2ms = subs(obj.Ib2ms, obj.I_b, 2/5*obj.m_b*obj.r_b^2); 
+            obj.Ip2ms = [obj.I_p__xx 0 0; 0 obj.I_p__xx 0; 0 0 obj.I_p__zz];
 
             %Rotation Matrices
-            obj.R01 = R01
-            obj.R10 = R10
-            obj.R01d = R01d;
-            obj.R10d = R10d;
-            obj.R12 = R12;
-            obj.R21 = R21;
-            obj.R12d = R12d;
-            obj.R21d = R21d;
-            obj.R02 = R02;
-            obj.R20 = R20;
-            obj.R03 = R03;
-            obj.R30 = R30;
-            obj.R34 = R34;
-            obj.R43 = R43;
-            obj.R45 = R45;
-            obj.R54 = R54;
-            obj.R06 = R06;
-            obj.R60 = R60;
-            obj.R67 = R67;
-            obj.R76 = R76;
-            obj.R78 = R78;
-            obj.R87 = R87;
-            obj.R05 = R05;
-            obj.R50 = R50;
-            obj.R08 = R08;
-            obj.R80 = R80;
+            obj.R01 = sym('WHOCARES', [3 3]);
+            obj.R01(:,:) = [cos(obj.beta_hat)   0   -sin(obj.beta_hat);
+                                     0          1          0   ;    
+                            sin(obj.beta_hat)   0   cos(obj.beta_hat) ;];
+
+                    
+            obj.R10 = obj.R01.'; 
+            
+            obj.R01d = diff(obj.R01,obj.t);
+            
+            obj.R10d = diff(obj.R10,obj.t);
+            
+            obj.R12 = sym('WHOCARES', [3 3]);
+            obj.R12(:,:) = [    1             0                      0       ;
+                                0   cos(obj.gamma_hat(t))  sin(obj.gamma_hat(t));    
+                                0   -sin(obj.gamma_hat(t)) cos(obj.gamma_hat(t));];
+            
+                        
+            obj.R21 = obj.R12.';
+            
+            obj.R12d = diff(obj.R12,obj.t);
+            
+            obj.R21d = diff(obj.R21,obj.t);
+            
+            obj.R02 = obj.R12*obj.R01;
+            
+            obj.R20 = obj.R02.';
+            
+            obj.R03 = sym('WHOCARES', [3 3]);
+            obj.R03(:,:) = [    1                 0                        0       ;
+                            0          cos(obj.theta_hat_3(t))          sin(obj.theta_hat_3(t));    
+                            0          -sin(obj.theta_hat_3(t))         cos(obj.theta_hat_3(t));];
+
+            obj.R30 = simplify(inv(obj.R03));
+
+            obj.R34 = sym('WHOCARES', [3 3]);
+            obj.R34(:,:) = [    1                 0                        0       ;
+                            0          cos(obj.theta_hat_4(t))          sin(obj.theta_hat_4(t));    
+                            0          -sin(obj.theta_hat_4(t))         cos(obj.theta_hat_4(t));];
+
+
+            obj.R43 = obj.R34.';
+
+            obj.R45 = sym('WHOCARES', [3 3]);
+            obj.R45(:,:) = [cos(obj.theta_hat_5(t))   0   -sin(obj.theta_hat_5(t));
+                                     0                1               0;    
+                            sin(obj.theta_hat_5(t))   0   cos(obj.theta_hat_5(t)) ;];
+
+            obj.R54 = obj.R45.';
+
+            obj.R06 = sym('WHOCARES', [3 3]);
+            obj.R06(:,:) = [cos(obj.theta_hat_6(t))   0   -sin(obj.theta_hat_6(t));
+                               0          1          0   ;    
+                        sin(obj.theta_hat_6(t))   0   cos(obj.theta_hat_6(t)) ;];
+
+
+            obj.R60 = simplify(inv(obj.R06));
+
+            obj.R67 = sym('WHOCARES', [3 3]);
+            obj.R67(:,:) = [cos(obj.theta_hat_7(t))   0   -obj.sin(obj.theta_hat_7(t));
+                                           0          1          0   ;    
+                            obj.sin(theta_hat_7(t))   0   obj.cos(obj.theta_hat_7(t)) ;]; 
+
+            R76 = simplify(inv(R67));
+
+            R78 = sym('WHOCARES', [3 3]);
+            R78(:,:) = [    1                 0                        0       ;
+                            0          cos(theta_hat_8(t))          sin(theta_hat_8(t));    
+                            0          -sin(theta_hat_8(t))         cos(theta_hat_8(t));];
+
+            R87 = R78.';
+
+            R05 = simplify(R45*R34*R03);
+            
+            R50 = R05.';
+            
+            R08 = simplify(R78*R67*R06);
+            
+            R80 = R08.';
+
 
         %State Space Model Related
             %Full 8th order system
@@ -475,165 +539,22 @@ classdef Var_Defs
             obj.symFunVec_r2 = symFunVec_r2;
             obj.symFunVec_rb2 = symFunVec_rb2;
             obj.symFunVec_rp2 = symFunVec_rp2;
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             
-%             obj.Omega2vs = [obj.omega_hat_x(t); obj.omega_hat_y(t); omega_hat_z(t)]
-%  
-%             Psi2vs = [psi_hat_x(t); psi_hat_y(t); psi_hat_z(t)]
-%  
-%             r2s = [r_hat_1(t); r_hat_2(t); r_hat_3(t)]
-% 
-%             rb2s = [x_hat(t);y_hat(t);z_b]
-%             
-%             rp2s = [0; 0; z_p]
-%             
-%            
-%             armb2s = [0; 0; r_b] 
-%             
-%             armp2s = [0;0;z_p]
-%              
-%             Wb0s = [0; 0; -m_b*g] 
-%             
-%             Wp0s = [0;0;-m_p*g]
-%            
-%             Tb1 = [0;T_beta;0]
-%             
-%             Tg1 = [T_gamma;0;0]
-%             
-%             Mz1 = [0;0;M_z]
-%             
-%             d_oc_1 = sym('d__oc_', [3 1],'real'); 
-%             
-%             d_oc_2 = d_oc_1;
-%             
-%             L_oa = sym('L__oa_', [3 1],'real'); 
-%             
-%             L_oa(2) = -L_oa(2);
-%             
-%             L_oa(3) = -L_oa(3);
-%             
-%             L_ab = [0; L_carm; 0];
-%             
-%             L_bc = [0; 0; L_crod];
-% 
-%             L_oc = [w;0;z_Pc]; 
-%             
-%             d_of_1 = sym('d__of_', [3 1],'real');
-%             
-%             d_of_2 = d_of_1;
-%             
-%             L_od = sym('L__od_', [3 1],'real');
-%             
-%             L_de = [-L_carm; 0; 0];
-%             
-%             L_ef = [0; 0; L_crod];
-% 
-%             L_of = [0;w;z_Pc]; 
-%             
-%             Omega2ms = sym('NA', [3 3]);
-%             Omega2ms(:,:) = [       0          -omega_hat_z       omega_hat_y;
-% 
-%                                 omega_hat_z           0            -omega_hat_x; 
-% 
-%                                -omega_hat_y     omega_hat_x            0       ];
-%             
-%             Ib2ms = [I_b 0 0; 0 I_b 0; 0 0 I_b];
-%             
-%             Ib2ms = subs(Ib2ms, I_b, 2/5*m_b*r_b^2); 
-%             
-%             Ip2ms = [I_p__xx 0 0; 0 I_p__xx 0; 0 0 I_p__zz];
-% 
-%             R01 = sym('WHOCARES', [3 3]);
-%             R01(:,:) = [cos(beta_hat)   0   -sin(beta_hat);
-%                         0          1          0   ;    
-%                         sin(beta_hat)   0   cos(beta_hat) ;]
-% 
-%                     
-%             R10 = R01.'; 
-%             
-%             R01d = diff(R01,t);
-%             
-%             R10d = diff(R10,t);
-%             
-%             R12 = sym('WHOCARES', [3 3]);
-%             R12(:,:) = [    1                 0                        0       ;
-%                             0          cos(gamma_hat(t))          sin(gamma_hat(t));    
-%                             0          -sin(gamma_hat(t))         cos(gamma_hat(t));];
-%             
-%                         
-%             R21 = R12.';
-%             
-%             R12d = diff(R12,t);
-%             
-%             R21d = diff(R21,t);
-%             
-%             R02 = R12*R01;
-%             
-%             R20 = R02.';
-%             
-%             R03 = sym('WHOCARES', [3 3]);
-%             R03(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_3(t))          sin(theta_hat_3(t));    
-%                             0          -sin(theta_hat_3(t))         cos(theta_hat_3(t));];
-% 
-%             R30 = simplify(inv(R03));
-% 
-%             R34 = sym('WHOCARES', [3 3]);
-%             R34(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_4(t))          sin(theta_hat_4(t));    
-%                             0          -sin(theta_hat_4(t))         cos(theta_hat_4(t));];
-% 
-% 
-%             R43 = R34.';
-% 
-%             R45 = sym('WHOCARES', [3 3]);
-%             R45(:,:) = [cos(theta_hat_5(t))   0   -sin(theta_hat_5(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_5(t))   0   cos(theta_hat_5(t)) ;];
-% 
-%             R54 = R45.';
-% 
-%             R06 = sym('WHOCARES', [3 3]);
-%             R06(:,:) = [cos(theta_hat_6(t))   0   -sin(theta_hat_6(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_6(t))   0   cos(theta_hat_6(t)) ;];
-% 
-% 
-%             R60 = simplify(inv(R06));
-% 
-%             R67 = sym('WHOCARES', [3 3]);
-%             R67(:,:) = [cos(theta_hat_7(t))   0   -sin(theta_hat_7(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_7(t))   0   cos(theta_hat_7(t)) ;]; 
-% 
-%             R76 = simplify(inv(R67));
-% 
-%             R78 = sym('WHOCARES', [3 3]);
-%             R78(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_8(t))          sin(theta_hat_8(t));    
-%                             0          -sin(theta_hat_8(t))         cos(theta_hat_8(t));];
-% 
-%             R87 = R78.';
-% 
-%             R05 = simplify(R45*R34*R03);
-%             
-%             R50 = R05.';
-%             
-%             R08 = simplify(R78*R67*R06);
-%             
-%             R80 = R08.';
+
+            
+
+ 
+
+
+
+            
+           
+
+             
+           
+            
+            
+            
+
 % 
 %             stateVec = [x, y, beta, gamma, x_dot, y_dot, beta_dot, gamma_dot].'
 %             

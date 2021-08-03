@@ -14,7 +14,7 @@ classdef Var_Defs
         g %gravitational constant symbolic variable
         
         %Angle Variables
-        beta_hat 
+        beta_hat
         gamma_hat 
         theta_hat_3 
         theta_hat_4 
@@ -65,9 +65,9 @@ classdef Var_Defs
         
         %Variables Related to Mass and Geometry of the Ball
         I_b     %mass moment of inertia of the ball (spherically symmetric)
-        I_p_xx  %x direction mass moment of inertia of plate (principle axis)
-        I_pyy   %y direction mass moment of inertia of plate (principle axis)
-        I_pzz   %z direction mass moment of inertia of plate (principle axis)
+        I_p__xx  %x direction mass moment of inertia of plate (principle axis)
+        I_p__yy   %y direction mass moment of inertia of plate (principle axis)
+        I_p__zz   %z direction mass moment of inertia of plate (principle axis)
         m_b     %mass of the ball
         m_p     %mass of the plate
         r_b     %radius of the ball
@@ -332,9 +332,9 @@ classdef Var_Defs
 
             %Variables Related to Mass and Geometry of the Ball
             obj.I_b = I_b;    
-            obj.I_p_xx = I_p_xx; 
-            obj.I_pyy = I_pyy;   
-            obj.I_pzz = I_pzz;   
+            obj.I_p__xx = I_p__xx; 
+            obj.I_p__yy = I_p__yy;   
+            obj.I_p__zz = I_p__zz;   
             obj.m_b = m_b;    
             obj.m_p = m_p;   
             obj.r_b = r_b;    
@@ -422,56 +422,139 @@ classdef Var_Defs
 
         %Matrices
             %Omega Matrices
-            obj.Omega2ms = Omega2ms;
+            obj.Omega2ms = sym('NA', [3 3]);
+            obj.Omega2ms(:,:) = [       0          -omega_hat_z       omega_hat_y;
+
+                                    omega_hat_z           0            -omega_hat_x; 
+
+                                    -omega_hat_y     omega_hat_x            0       ];
+
 
             %Inertia Tensors
-            obj.Ib2ms = Ib2ms;
-            obj.Ip2ms = Ip2ms;
+            obj.Ib2ms = [obj.I_b 0 0; 0 obj.I_b 0; 0 0 obj.I_b];
+            obj.Ib2ms = subs(obj.Ib2ms, obj.I_b, 2/5*obj.m_b*obj.r_b^2); 
+            obj.Ip2ms = [obj.I_p__xx 0 0; 0 obj.I_p__xx 0; 0 0 obj.I_p__zz];
 
             %Rotation Matrices
-            obj.R01 = R01;
-            obj.R10 = R10;
-            obj.R01d = R01d;
-            obj.R10d = R10d;
-            obj.R12 = R12;
-            obj.R21 = R21;
-            obj.R12d = R12d;
-            obj.R21d = R21d;
-            obj.R02 = R02;
-            obj.R20 = R20;
-            obj.R03 = R03;
-            obj.R30 = R30;
-            obj.R34 = R34;
-            obj.R43 = R43;
-            obj.R45 = R45;
-            obj.R54 = R54;
-            obj.R06 = R06;
-            obj.R60 = R60;
-            obj.R67 = R67;
-            obj.R76 = R76;
-            obj.R78 = R78;
-            obj.R87 = R87;
-            obj.R05 = R05;
-            obj.R50 = R50;
-            obj.R08 = R08;
-            obj.R80 = R80;
+            obj.R01 = sym('WHOCARES', [3 3]);
+            obj.R01(:,:) = [cos(obj.beta_hat)   0   -sin(obj.beta_hat);
+                                     0          1          0   ;    
+                            sin(obj.beta_hat)   0   cos(obj.beta_hat) ;];
+
+                    
+            obj.R10 = obj.R01.'; 
+            
+            obj.R01d = diff(obj.R01,obj.t);
+            
+            obj.R10d = diff(obj.R10,obj.t);
+            
+            obj.R12 = sym('WHOCARES', [3 3]);
+            obj.R12(:,:) = [    1             0                      0       ;
+                                0   cos(obj.gamma_hat(t))  sin(obj.gamma_hat(t));    
+                                0   -sin(obj.gamma_hat(t)) cos(obj.gamma_hat(t));];
+            
+                        
+            obj.R21 = obj.R12.';
+            
+            obj.R12d = diff(obj.R12,obj.t);
+            
+            obj.R21d = diff(obj.R21,obj.t);
+            
+            obj.R02 = obj.R12*obj.R01;
+            
+            obj.R20 = obj.R02.';
+            
+            obj.R03 = sym('WHOCARES', [3 3]);
+            obj.R03(:,:) = [    1                 0                        0       ;
+                            0          cos(obj.theta_hat_3(t))          sin(obj.theta_hat_3(t));    
+                            0          -sin(obj.theta_hat_3(t))         cos(obj.theta_hat_3(t));];
+
+            obj.R30 = simplify(inv(obj.R03));
+
+            obj.R34 = sym('WHOCARES', [3 3]);
+            obj.R34(:,:) = [    1                 0                        0       ;
+                            0          cos(obj.theta_hat_4(t))          sin(obj.theta_hat_4(t));    
+                            0          -sin(obj.theta_hat_4(t))         cos(obj.theta_hat_4(t));];
+
+
+            obj.R43 = obj.R34.';
+
+            obj.R45 = sym('WHOCARES', [3 3]);
+            obj.R45(:,:) = [cos(obj.theta_hat_5(t))   0   -sin(obj.theta_hat_5(t));
+                                     0                1               0;    
+                            sin(obj.theta_hat_5(t))   0   cos(obj.theta_hat_5(t)) ;];
+
+            obj.R54 = obj.R45.';
+
+            obj.R06 = sym('WHOCARES', [3 3]);
+            obj.R06(:,:) = [cos(obj.theta_hat_6(t))   0   -sin(obj.theta_hat_6(t));
+                               0          1          0   ;    
+                        sin(obj.theta_hat_6(t))   0   cos(obj.theta_hat_6(t)) ;];
+
+
+            obj.R60 = simplify(inv(obj.R06));
+
+            obj.R67 = sym('WHOCARES', [3 3]);
+            obj.R67(:,:) = [cos(obj.theta_hat_7(t))   0   -sin(obj.theta_hat_7(t));
+                                           0          1          0   ;    
+                            sin(obj.theta_hat_7(t))   0   cos(obj.theta_hat_7(t)) ;]; 
+
+            obj.R76 = simplify(inv(R67));
+
+            obj.R78 = sym('WHOCARES', [3 3]);
+            obj.R78(:,:) = [    1                    0                                    0       ;
+                                0          cos(obj.theta_hat_8(t))          sin(obj.theta_hat_8(t));    
+                                0          -sin(obj.theta_hat_8(t))         cos(obj.theta_hat_8(t));];
+
+            obj.R87 = obj.R78.';
+
+            obj.R05 = simplify(obj.R45*obj.R34*obj.R03);
+            
+            obj.R50 = obj.R05.';
+            
+            obj.R08 = simplify(obj.R78*obj.R67*obj.R06);
+            
+            obj.R80 = obj.R08.';
+
 
         %State Space Model Related
             %Full 8th order system
-            obj.stateVec = stateVec;
-            obj.stateVec_dot = stateVec_dot;
-            obj.inputVec = inputVec;
+
+            obj.stateVec = [obj.x, obj.y, obj.beta, obj.gamma,...
+                            obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot].';
+            obj.stateVec_dot = [obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot, obj.x_ddot,...
+                            obj.y_ddot, obj.beta_ddot, obj.gamma_ddot].';            
+            obj.inputVec = [obj.T_beta obj.T_gamma ].';
+
 
             %Two decoupled 4th order systems
-            obj.stateVec1 = stateVec1;
-            obj.stateVec1_dot = stateVec1_dot;   
-            obj.stateVec2 = stateVec2;
-            obj.stateVec2_dot = stateVec2_dot;
+
+            stateVec1 = [x, x_dot, beta, beta_dot].' 
+            
+            stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
+
+            
+            % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
+            % stateVec1a_dot = [e_x, x_dot, x_ddot, beta_dot, beta_ddot].'
+            % stateVec1ae = [e_ix, e_x, e_x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x AND x and x_dot replaced with error states
+            % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
+            % setpointVec1 = [x_s x_dot_s x_ddot_s].'
+            
+            stateVec2 = [y, y_dot, gamma, gamma_dot].'
+            stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
+
 
         %Vectors for Subs Function 
             %Exchange Variable for its Twin Symvar or Symfun
-            obj.symVarVec = symVarVec;
-            obj.symFunVec = symFunVec;
+            symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
+                         x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
+                         x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
+            symFunVec = [x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) theta_hat_3(t) theta_hat_4(t) theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)...
+                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
+                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
+
+
+
 
             %Arbitrary Displacement Vector to Ball and Plate Displacements - 
             %Symfun to Symvar
@@ -492,131 +575,8 @@ classdef Var_Defs
            
             
             
-%             
-%             Omega2ms = sym('NA', [3 3]);
-%             Omega2ms(:,:) = [       0          -omega_hat_z       omega_hat_y;
-% 
-%                                 omega_hat_z           0            -omega_hat_x; 
-% 
-%                                -omega_hat_y     omega_hat_x            0       ];
-%             
-%             Ib2ms = [I_b 0 0; 0 I_b 0; 0 0 I_b];
-%             
-%             Ib2ms = subs(Ib2ms, I_b, 2/5*m_b*r_b^2); 
-%             
-%             Ip2ms = [I_p__xx 0 0; 0 I_p__xx 0; 0 0 I_p__zz];
-% 
-%             R01 = sym('WHOCARES', [3 3]);
-%             R01(:,:) = [cos(beta_hat)   0   -sin(beta_hat);
-%                         0          1          0   ;    
-%                         sin(beta_hat)   0   cos(beta_hat) ;]
-% 
-%                     
-%             R10 = R01.'; 
-%             
-%             R01d = diff(R01,t);
-%             
-%             R10d = diff(R10,t);
-%             
-%             R12 = sym('WHOCARES', [3 3]);
-%             R12(:,:) = [    1                 0                        0       ;
-%                             0          cos(gamma_hat(t))          sin(gamma_hat(t));    
-%                             0          -sin(gamma_hat(t))         cos(gamma_hat(t));];
-%             
-%                         
-%             R21 = R12.';
-%             
-%             R12d = diff(R12,t);
-%             
-%             R21d = diff(R21,t);
-%             
-%             R02 = R12*R01;
-%             
-%             R20 = R02.';
-%             
-%             R03 = sym('WHOCARES', [3 3]);
-%             R03(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_3(t))          sin(theta_hat_3(t));    
-%                             0          -sin(theta_hat_3(t))         cos(theta_hat_3(t));];
-% 
-%             R30 = simplify(inv(R03));
-% 
-%             R34 = sym('WHOCARES', [3 3]);
-%             R34(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_4(t))          sin(theta_hat_4(t));    
-%                             0          -sin(theta_hat_4(t))         cos(theta_hat_4(t));];
-% 
-% 
-%             R43 = R34.';
-% 
-%             R45 = sym('WHOCARES', [3 3]);
-%             R45(:,:) = [cos(theta_hat_5(t))   0   -sin(theta_hat_5(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_5(t))   0   cos(theta_hat_5(t)) ;];
-% 
-%             R54 = R45.';
-% 
-%             R06 = sym('WHOCARES', [3 3]);
-%             R06(:,:) = [cos(theta_hat_6(t))   0   -sin(theta_hat_6(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_6(t))   0   cos(theta_hat_6(t)) ;];
-% 
-% 
-%             R60 = simplify(inv(R06));
-% 
-%             R67 = sym('WHOCARES', [3 3]);
-%             R67(:,:) = [cos(theta_hat_7(t))   0   -sin(theta_hat_7(t));
-%                                0          1          0   ;    
-%                         sin(theta_hat_7(t))   0   cos(theta_hat_7(t)) ;]; 
-% 
-%             R76 = simplify(inv(R67));
-% 
-%             R78 = sym('WHOCARES', [3 3]);
-%             R78(:,:) = [    1                 0                        0       ;
-%                             0          cos(theta_hat_8(t))          sin(theta_hat_8(t));    
-%                             0          -sin(theta_hat_8(t))         cos(theta_hat_8(t));];
-% 
-%             R87 = R78.';
-% 
-%             R05 = simplify(R45*R34*R03);
-%             
-%             R50 = R05.';
-%             
-%             R08 = simplify(R78*R67*R06);
-%             
-%             R80 = R08.';
-% 
-%             stateVec = [x, y, beta, gamma, x_dot, y_dot, beta_dot, gamma_dot].'
-%             
-%             stateVec_dot = [x_dot, y_dot, beta_dot, gamma_dot, x_ddot,...
-%                             y_ddot, beta_ddot, gamma_ddot].'
-%             
-%             inputVec = [T_beta T_gamma ].'
-% 
-%             stateVec1 = [x, x_dot, beta, beta_dot].' 
-%             
-%             stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
-% 
-%             
-%             % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
-%             % stateVec1a_dot = [e_x, x_dot, x_ddot, beta_dot, beta_ddot].'
-%             % stateVec1ae = [e_ix, e_x, e_x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x AND x and x_dot replaced with error states
-%             % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
-%             % setpointVec1 = [x_s x_dot_s x_ddot_s].'
-%             
-%             stateVec2 = [y, y_dot, gamma, gamma_dot].'
-%             stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
-% 
-% 
-%             symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
-%                          x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
-%                          x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
-% 
-%             symFunVec = [x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) theta_hat_3(t) theta_hat_4(t) theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)...
-%                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
-%                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
-% 
-% 
+            
+
 %             symFunVec_r2 = [r2s.' diff(r2s,t,1).' diff(r2s,t,2).'];
 % 
 %             symFunVec_rb2 = [rb2s.', diff(rb2s,t,1).', diff(rb2s,t,2).'];
