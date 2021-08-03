@@ -229,6 +229,7 @@ classdef Var_Defs
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
             
+            %Generate the necessary symbolic variables and functions
             syms t g real
 
             syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
@@ -265,8 +266,222 @@ classdef Var_Defs
             
             
             
+            %Assign the generated symvars to the properties of the class
+          
+        %Scalars
+            %Miscellaneous
+            obj.t = t; %time symbolic variable
+            obj.g %gravitational constant symbolic variable
+
+            %Angle Variables
+            obj.beta_hat 
+            obj.gamma_hat 
+            obj.theta_hat_3 
+            obj.theta_hat_4 
+            obj.theta_hat_5 
+            obj.theta_hat_6 
+            obj.theta_hat_7
+            obj.theta_hat_8
+            obj.beta 
+            obj.gamma 
+            obj.theta_3 
+            obj.theta_4 
+            obj.theta_5 
+            obj.theta_6 
+            obj.theta_7 
+            obj.theta_8 
+            obj.beta_dot 
+            obj.gamma_dot 
+            obj.beta_ddot 
+            obj.gamma_ddot
+
+            %Angular Velocities for Omega Vectors/Matrices
+            obj.omega_hat_x  
+            obj.omega_hat_y  
+            obj.omega_hat_z 
+            obj.psi_hat_x 
+            obj.psi_hat_y 
+            obj.psi_hat_z 
+            obj.omega_x 
+            obj.omega_y 
+            obj.omega_z 
+            obj.psi_x 
+            obj.psi_y 
+            obj.psi_z
+            obj.omega_dot_x 
+            obj.omega_dot_y 
+            obj.omega_dot_z 
+            obj.psi_dot_x 
+            obj.psi_dot_y 
+            obj.psi_dot_z
+
+            %Length Related System Parameters
+            obj.w       
+            obj.z_Pc    
+            obj.z_p             
+            obj.L_carm  
+            obj.L_crod  
+
+            %Variables Related to Mass and Geometry of the Ball
+            obj.I_b     
+            obj.I_p_xx  
+            obj.I_pyy   
+            obj.I_pzz   
+            obj.m_b     
+            obj.m_p    
+            obj.r_b     
+
+            %Coordinate of the Ball's Center of Mass in the S2 (plate) Frame  
+            obj.x_hat          
+            obj.y_hat       
+            obj.z_b     
+                               
+            obj.ix                 
+            obj.x         
+            obj.y       
+            obj.x_dot   
+            obj.y_dot   
+            obj.x_ddot  
+            obj.y_ddot  
+
+            %Components of Arbitrary displacment vector in S2 Frame
+            obj.r_hat_1 
+            obj.r_hat_2 
+            obj.r_hat_3 
+            obj.r_1     
+            obj.r_2     
+            obj.r_3     
+            obj.r_dot_1 
+            obj.r_dot_2 
+            obj.r_dot_3  
+            obj.r_ddot_1     
+            obj.r_ddot_2
+            obj.r_ddot_3
+
+            %U-Joint Axle Torques and Reactions
+            obj.T_beta  
+            obj.T_gamma 
+            obj.M_z     
+
+            %Error States and Setpoints (x and y Variables)
+            obj.e_x       
+            obj.e_x_dot  
+            obj.e_x_ddot
+            obj.e_ix   
+            obj.x_s     
+            obj.x_dot_s 
+            obj.x_ddot_s
+
+        %Vectors
+            %Symbolic Angular Velocity Vectors
+            obj.Omega2vs
+            obj.Psi2vs  
+
+            %Arbitrary Displacment Vector in Plate Frame S2        
+            obj.r2s          
+
+            %Displacement Vectors Centers of Mass
+            obj.rb2s    
+            obj.rp2s    
+
+            %Moment Arms
+            obj.armb2s  
+            obj.armp2s  
+
+            %Force and Moment Vectors
+            obj.Wb0s
+            obj.Wp0s
+            obj.Tb1
+            obj.Tg1
+            obj.Mz1
+
+            %Displacement Vectors of the Constraining Kinematic Loops
+            obj.d_oc_1
+            obj.d_oc_2
+            obj.L_oa
+            obj.L_ab
+            obj.L_bc
+            obj.L_oc
+            obj.d_of_1
+            obj.d_of_2
+            obj.L_od
+            obj.L_de
+            obj.L_ef
+            obj.L_of
+
+        %Matrices
+            %Omega Matrices
+            obj.Omega2ms
+
+            %Inertia Tensors
+            obj.Ib2ms
+            obj.Ip2ms
+
+            %Rotation Matrices
+            obj.R01
+            obj.R10
+            obj.R01d
+            obj.R10d
+            obj.R12
+            obj.R21
+            obj.R12d
+            obj.R21d
+            obj.R02
+            obj.R20
+            obj.R03
+            obj.R30
+            obj.R34
+            obj.R43
+            obj.R45
+            obj.R54
+            obj.R06
+            obj.R60
+            obj.R67
+            obj.R76
+            obj.R78
+            obj.R87
+            obj.R05
+            obj.R50
+            obj.R08
+            obj.R80
+
+        %State Space Model Related
+            %Full 8th order system
+            obj.stateVec 
+            obj.stateVec_dot
+            obj.inputVec
+
+            %Two decoupled 4th order systems
+            obj.stateVec1
+            obj.stateVec1_dot 
+            obj.stateVec2
+            obj.stateVec2_dot
+
+        %Vectors for Subs Function 
+            %Exchange Variable for its Twin Symvar or Symfun
+            obj.symVarVec
+            obj.symFunVec
+
+            %Arbitrary Displacement Vector to Ball and Plate Displacements - 
+            %Symfun to Symvar
+            obj.symFunVec_r2
+            obj.symFunVec_rb2
+            obj.symFunVec_rp2
             
-            Omega2vs = [omega_hat_x(t); omega_hat_y(t); omega_hat_z(t)]
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            obj.Omega2vs = [obj.omega_hat_x(t); obj.omega_hat_y(t); omega_hat_z(t)]
  
             Psi2vs = [psi_hat_x(t); psi_hat_y(t); psi_hat_z(t)]
  

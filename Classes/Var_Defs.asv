@@ -229,6 +229,7 @@ classdef Var_Defs
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
             
+            %Generate the necessary symbolic variables and functions
             syms t g real
 
             syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
@@ -265,14 +266,228 @@ classdef Var_Defs
             
             
             
-            
-            Omega2vs = [omega_hat_x(t); omega_hat_y(t); omega_hat_z(t)]
- 
-            Psi2vs = [psi_hat_x(t); psi_hat_y(t); psi_hat_z(t)]
- 
-            r2s = [r_hat_1(t); r_hat_2(t); r_hat_3(t)]
+            %Assign the generated symvars to the properties of the class
+          
+        %Scalars
+            %Miscellaneous
+            obj.t = t; %time symbolic variable
+            obj.g %gravitational constant symbolic variable
 
-            rb2s = [x_hat(t);y_hat(t);z_b]
+            %Angle Variables
+            obj.beta_hat 
+            obj.gamma_hat 
+            obj.theta_hat_3 
+            obj.theta_hat_4 
+            obj.theta_hat_5 
+            obj.theta_hat_6 
+            obj.theta_hat_7
+            obj.theta_hat_8
+            obj.beta 
+            obj.gamma 
+            obj.theta_3 
+            obj.theta_4 
+            obj.theta_5 
+            obj.theta_6 
+            obj.theta_7 
+            obj.theta_8 
+            obj.beta_dot 
+            obj.gamma_dot 
+            obj.beta_ddot 
+            obj.gamma_ddot
+
+            %Angular Velocities for Omega Vectors/Matrices
+            obj.omega_hat_x  
+            obj.omega_hat_y  
+            obj.omega_hat_z 
+            obj.psi_hat_x 
+            obj.psi_hat_y 
+            obj.psi_hat_z 
+            obj.omega_x 
+            obj.omega_y 
+            obj.omega_z 
+            obj.psi_x 
+            obj.psi_y 
+            obj.psi_z
+            obj.omega_dot_x 
+            obj.omega_dot_y 
+            obj.omega_dot_z 
+            obj.psi_dot_x 
+            obj.psi_dot_y 
+            obj.psi_dot_z
+
+            %Length Related System Parameters
+            obj.w       
+            obj.z_Pc    
+            obj.z_p             
+            obj.L_carm  
+            obj.L_crod  
+
+            %Variables Related to Mass and Geometry of the Ball
+            obj.I_b     
+            obj.I_p_xx  
+            obj.I_pyy   
+            obj.I_pzz   
+            obj.m_b     
+            obj.m_p    
+            obj.r_b     
+
+            %Coordinate of the Ball's Center of Mass in the S2 (plate) Frame  
+            obj.x_hat          
+            obj.y_hat       
+            obj.z_b     
+                               
+            obj.ix                 
+            obj.x         
+            obj.y       
+            obj.x_dot   
+            obj.y_dot   
+            obj.x_ddot  
+            obj.y_ddot  
+
+            %Components of Arbitrary displacment vector in S2 Frame
+            obj.r_hat_1 
+            obj.r_hat_2 
+            obj.r_hat_3 
+            obj.r_1     
+            obj.r_2     
+            obj.r_3     
+            obj.r_dot_1 
+            obj.r_dot_2 
+            obj.r_dot_3  
+            obj.r_ddot_1     
+            obj.r_ddot_2
+            obj.r_ddot_3
+
+            %U-Joint Axle Torques and Reactions
+            obj.T_beta  
+            obj.T_gamma 
+            obj.M_z     
+
+            %Error States and Setpoints (x and y Variables)
+            obj.e_x       
+            obj.e_x_dot  
+            obj.e_x_ddot
+            obj.e_ix   
+            obj.x_s     
+            obj.x_dot_s 
+            obj.x_ddot_s
+
+        %Vectors
+            %Symbolic Angular Velocity Vectors
+            obj.Omega2vs
+            obj.Psi2vs  
+
+            %Arbitrary Displacment Vector in Plate Frame S2        
+            obj.r2s          
+
+            %Displacement Vectors Centers of Mass
+            obj.rb2s    
+            obj.rp2s    
+
+            %Moment Arms
+            obj.armb2s  
+            obj.armp2s  
+
+            %Force and Moment Vectors
+            obj.Wb0s
+            obj.Wp0s
+            obj.Tb1
+            obj.Tg1
+            obj.Mz1
+
+            %Displacement Vectors of the Constraining Kinematic Loops
+            obj.d_oc_1
+            obj.d_oc_2
+            obj.L_oa
+            obj.L_ab
+            obj.L_bc
+            obj.L_oc
+            obj.d_of_1
+            obj.d_of_2
+            obj.L_od
+            obj.L_de
+            obj.L_ef
+            obj.L_of
+
+        %Matrices
+            %Omega Matrices
+            obj.Omega2ms
+
+            %Inertia Tensors
+            obj.Ib2ms
+            obj.Ip2ms
+
+            %Rotation Matrices
+            obj.R01
+            obj.R10
+            obj.R01d
+            obj.R10d
+            obj.R12
+            obj.R21
+            obj.R12d
+            obj.R21d
+            obj.R02
+            obj.R20
+            obj.R03
+            obj.R30
+            obj.R34
+            obj.R43
+            obj.R45
+            obj.R54
+            obj.R06
+            obj.R60
+            obj.R67
+            obj.R76
+            obj.R78
+            obj.R87
+            obj.R05
+            obj.R50
+            obj.R08
+            obj.R80
+
+        %State Space Model Related
+            %Full 8th order system
+            obj.stateVec 
+            obj.stateVec_dot
+            obj.inputVec
+
+            %Two decoupled 4th order systems
+            obj.stateVec1
+            obj.stateVec1_dot 
+            obj.stateVec2
+            obj.stateVec2_dot
+
+        %Vectors for Subs Function 
+            %Exchange Variable for its Twin Symvar or Symfun
+            obj.symVarVec
+            obj.symFunVec
+
+            %Arbitrary Displacement Vector to Ball and Plate Displacements - 
+            %Symfun to Symvar
+            obj.symFunVec_r2
+            obj.symFunVec_rb2
+            obj.symFunVec_rp2
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            obj.Omega2vs = [obj.omega_hat_x; obj.omega_hat_y; obj.omega_hat_z]
+ 
+            obj.Psi2vs = [obj.psi_hat_x; obj.psi_hat_y; obj.psi_hat_z]
+ 
+            r2s = [r_hat_1; r_hat_2; r_hat_3]
+
+            rb2s = [x_hat;y_hat;z_b]
             
             rp2s = [0; 0; z_p]
             
@@ -346,46 +561,46 @@ classdef Var_Defs
             
             R12 = sym('WHOCARES', [3 3]);
             R12(:,:) = [    1                 0                        0       ;
-                            0          cos(gamma_hat(t))          sin(gamma_hat(t));    
-                            0          -sin(gamma_hat(t))         cos(gamma_hat(t));]
+                            0          cos(gamma_hat)          sin(gamma_hat);    
+                            0          -sin(gamma_hat)         cos(gamma_hat);];
             
                         
             R21 = R12.';
             
-            R12d = diff(R12,t)
-            Differentiate R^T to get R^T_dot and then substitute the symbol generated by differentiating theta(t) with my symbolic variable for theta_hat_dot(t) 
-            R21d = diff(R21,t)
-            Get combined rotation matrices for S2 in S0 and S0 in S2
-            R02 = R12*R01
-            R20 = R02.'
-            Motor Mechanism Loop 1 Rotation Matrices
+            R12d = diff(R12,t);
+            
+            R21d = diff(R21,t);
+            
+            R02 = R12*R01;
+            
+            R20 = R02.';
+            
             R03 = sym('WHOCARES', [3 3]);
             R03(:,:) = [    1                 0                        0       ;
-                            0          cos(theta_hat_3(t))          sin(theta_hat_3(t));    
-                            0          -sin(theta_hat_3(t))         cos(theta_hat_3(t));];
+                            0          cos(theta_hat_3)          sin(theta_hat_3);    
+                            0          -sin(theta_hat_3)         cos(theta_hat_3);];
 
             R30 = simplify(inv(R03));
 
             R34 = sym('WHOCARES', [3 3]);
             R34(:,:) = [    1                 0                        0       ;
-                            0          cos(theta_hat_4(t))          sin(theta_hat_4(t));    
-                            0          -sin(theta_hat_4(t))         cos(theta_hat_4(t));];
+                            0          cos(theta_hat_4)          sin(theta_hat_4);    
+                            0          -sin(theta_hat_4)         cos(theta_hat_4);];
 
 
             R43 = R34.';
 
             R45 = sym('WHOCARES', [3 3]);
-            R45(:,:) = [cos(theta_hat_5(t))   0   -sin(theta_hat_5(t));
+            R45(:,:) = [cos(theta_hat_5)   0   -sin(theta_hat_5);
                                0          1          0   ;    
-                        sin(theta_hat_5(t))   0   cos(theta_hat_5(t)) ;];
+                        sin(theta_hat_5)   0   cos(theta_hat_5) ;];
 
             R54 = R45.';
-            Motor Mechanism Loop 2 Rotation Matrices
 
             R06 = sym('WHOCARES', [3 3]);
-            R06(:,:) = [cos(theta_hat_6(t))   0   -sin(theta_hat_6(t));
+            R06(:,:) = [cos(theta_hat_6)   0   -sin(theta_hat_6);
                                0          1          0   ;    
-                        sin(theta_hat_6(t))   0   cos(theta_hat_6(t)) ;];
+                        sin(theta_hat_6)   0   cos(theta_hat_6) ;];
 
 
             R60 = simplify(inv(R06));
@@ -403,34 +618,37 @@ classdef Var_Defs
                             0          -sin(theta_hat_8(t))         cos(theta_hat_8(t));];
 
             R87 = R78.';
-            Get Combined Rotation Matrices for S5 in S0 and S8 in S0
+
             R05 = simplify(R45*R34*R03);
+            
             R50 = R05.';
+            
             R08 = simplify(R78*R67*R06);
+            
             R80 = R08.';
 
-            State Space Model 
-            Full 8th order system:
             stateVec = [x, y, beta, gamma, x_dot, y_dot, beta_dot, gamma_dot].'
-            stateVec_dot = [x_dot, y_dot, beta_dot, gamma_dot, x_ddot, y_ddot, beta_ddot, gamma_ddot].'
+            
+            stateVec_dot = [x_dot, y_dot, beta_dot, gamma_dot, x_ddot,...
+                            y_ddot, beta_ddot, gamma_ddot].'
+            
             inputVec = [T_beta T_gamma ].'
-            Two decoupled 4th order systems
-            System 1 - x and beta
-            stateVec1 = [x, x_dot, beta, beta_dot].' %State vector absolute states, non-augmented
+
+            stateVec1 = [x, x_dot, beta, beta_dot].' 
+            
             stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
-            % 
+
+            
             % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
             % stateVec1a_dot = [e_x, x_dot, x_ddot, beta_dot, beta_ddot].'
             % stateVec1ae = [e_ix, e_x, e_x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x AND x and x_dot replaced with error states
             % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
             % setpointVec1 = [x_s x_dot_s x_ddot_s].'
-            System 2 - y and gamma
+            
             stateVec2 = [y, y_dot, gamma, gamma_dot].'
             stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
 
-            Vectors for Subs Function 
-            Easily switch between symbolic functions and symbolic variables using these vectors.
-            Exchange Variable for its Twin Symvar or Symfun
+
             symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
                          x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
                          x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
@@ -439,26 +657,18 @@ classdef Var_Defs
                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
 
-            (symFunVec == symVarVec).'; %Make sure everything lines up
-            Arbitrary Displacement Vector to Ball and Plate Displacements - Symfun to Symvar
-            This is an exchange between variables that mean different things - going from any arbitrary displacement vector to a displacement vector defining the ball's Center of Mass motion or the plate's Center of Mass motion. 
 
             symFunVec_r2 = [r2s.' diff(r2s,t,1).' diff(r2s,t,2).'];
 
             symFunVec_rb2 = [rb2s.', diff(rb2s,t,1).', diff(rb2s,t,2).'];
-            (symFunVec_r2 == symFunVec_rb2).';
+
             symFunVec_rp2 = [rp2s.', diff(rp2s.',t,1), diff(rp2s.',t,2)];
-            (symFunVec_r2 == symFunVec_rp2).';
+
 
 
 
         end
         
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
     end
 end
 
