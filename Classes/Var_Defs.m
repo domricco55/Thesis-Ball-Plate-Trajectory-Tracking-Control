@@ -118,25 +118,25 @@ classdef Var_Defs
         
     %Vectors
         %Symbolic Angular Velocity Vectors
-        Omega2vs    %Angular velocity of the plate relative to the inertial frame 
-                    %with components expressed in the S2 basis
-        Psi2vs      %Angular velocity of the ball relative to the plate frame 
-                    %with components expressed in S2 Basis      
+        Omega2vs%Angular velocity of the plate relative to the inertial frame 
+                %with components expressed in the S2 basis
+        Psi2vs  %Angular velocity of the ball relative to the plate frame 
+                %with components expressed in S2 Basis      
                 
         %Arbitrary Displacment Vector in Plate Frame S2        
         r2s          
         
         %Displacement Vectors Centers of Mass
-        rb2s        %Displacement vector of the ball's center of mass expressed 
-                    %in S2 basis.   
-        rp2s        %Displacement vector of the plate's center of mass expressed 
-                    %in S2 basis
+        rb2s    %Displacement vector of the ball's center of mass expressed 
+                %in S2 basis.   
+        rp2s    %Displacement vector of the plate's center of mass expressed 
+                %in S2 basis
         
         %Moment Arms
-        armb2s      %Moment arm from the contact point of the ball to its 
-                    %center of mass expressed in S2 basis.
-        armp2s      %Moment arm from the center of the u-joint to the plate's 
-                    %Center of Mass. 
+        armb2s  %Moment arm from the contact point of the ball to its 
+                %center of mass expressed in S2 basis.
+        armp2s  %Moment arm from the center of the u-joint to the plate's 
+                %Center of Mass. 
                     
         %Force and Moment Vectors
         Wb0s
@@ -212,17 +212,250 @@ classdef Var_Defs
         symVarVec
         symFunVec
         
+        %Arbitrary Displacement Vector to Ball and Plate Displacements - 
+        %Symfun to Symvar
+        symFunVec_r2
+        symFunVec_rb2
+        symFunVec_rp2
+        
     end
     
-    properties (SetAccess = private)
-        
-    end 
+%     properties (SetAccess = private)
+%         
+%     end 
     
     methods
         function obj = Var_Defs()
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
-%             obj.Property1 = inputArg1 + inputArg2;
+            
+            syms t g real
+
+            syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
+            theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)
+            
+
+            syms beta gamma theta_3 theta_4 theta_5 theta_6 theta_7... 
+            theta_8 beta_dot gamma_dot beta_ddot gamma_ddot
+
+            syms omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) ...
+                psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)
+
+            syms omega_x omega_y omega_z psi_x psi_y psi_z
+            
+            syms omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z
+
+            syms w z_Pc z_p L_carm L_crod real
+
+            syms I_b I_p__xx  I_p__yy I_p__zz m_b m_p r_b real 
+            assume(I_b>0 & I_p__xx>0 &   I_p__yy>0 &  I_p__zz>0 &  m_b>0 &  m_p>0 &  r_b>0)
+
+            syms x_hat(t) y_hat(t) 
+ 
+            syms z_b ix x y z x_dot y_dot x_ddot y_ddot;
+
+            syms r_hat_1(t) r_hat_2(t) r_hat_3(t)
+
+            syms r_1 r_2 r_3 r_dot_1 r_dot_2 r_dot_3 r_ddot_1 r_ddot_2 r_ddot_3
+
+            syms T_beta T_gamma M_z
+
+            syms e_x e_x_dot e_x_ddot e_ix ix_s x_s x_dot_s x_ddot_s 
+
+            
+            
+            
+            
+            Omega2vs = [omega_hat_x(t); omega_hat_y(t); omega_hat_z(t)]
+ 
+            Psi2vs = [psi_hat_x(t); psi_hat_y(t); psi_hat_z(t)]
+ 
+            r2s = [r_hat_1(t); r_hat_2(t); r_hat_3(t)]
+
+            rb2s = [x_hat(t);y_hat(t);z_b]
+            
+            rp2s = [0; 0; z_p]
+            
+           
+            armb2s = [0; 0; r_b] 
+            
+            armp2s = [0;0;z_p]
+             
+            Wb0s = [0; 0; -m_b*g] 
+            
+            Wp0s = [0;0;-m_p*g]
+           
+            Tb1 = [0;T_beta;0]
+            
+            Tg1 = [T_gamma;0;0]
+            
+            Mz1 = [0;0;M_z]
+            
+            d_oc_1 = sym('d__oc_', [3 1],'real'); 
+            
+            d_oc_2 = d_oc_1;
+            
+            L_oa = sym('L__oa_', [3 1],'real'); 
+            
+            L_oa(2) = -L_oa(2);
+            
+            L_oa(3) = -L_oa(3);
+            
+            L_ab = [0; L_carm; 0];
+            
+            L_bc = [0; 0; L_crod];
+
+            L_oc = [w;0;z_Pc]; 
+            
+            d_of_1 = sym('d__of_', [3 1],'real');
+            
+            d_of_2 = d_of_1;
+            
+            L_od = sym('L__od_', [3 1],'real');
+            
+            L_de = [-L_carm; 0; 0];
+            
+            L_ef = [0; 0; L_crod];
+
+            L_of = [0;w;z_Pc]; 
+            
+            Omega2ms = sym('NA', [3 3]);
+            Omega2ms(:,:) = [       0          -omega_hat_z       omega_hat_y;
+
+                                omega_hat_z           0            -omega_hat_x; 
+
+                               -omega_hat_y     omega_hat_x            0       ];
+            
+            Ib2ms = [I_b 0 0; 0 I_b 0; 0 0 I_b];
+            
+            Ib2ms = subs(Ib2ms, I_b, 2/5*m_b*r_b^2); 
+            
+            Ip2ms = [I_p__xx 0 0; 0 I_p__xx 0; 0 0 I_p__zz];
+
+            R01 = sym('WHOCARES', [3 3]);
+            R01(:,:) = [cos(beta_hat)   0   -sin(beta_hat);
+                        0          1          0   ;    
+                        sin(beta_hat)   0   cos(beta_hat) ;]
+
+                    
+            R10 = R01.'; 
+            
+            R01d = diff(R01,t);
+            
+            R10d = diff(R10,t);
+            
+            R12 = sym('WHOCARES', [3 3]);
+            R12(:,:) = [    1                 0                        0       ;
+                            0          cos(gamma_hat(t))          sin(gamma_hat(t));    
+                            0          -sin(gamma_hat(t))         cos(gamma_hat(t));];
+            
+                        
+            R21 = R12.';
+            
+            R12d = diff(R12,t);
+            
+            R21d = diff(R21,t);
+            
+            R02 = R12*R01;
+            
+            R20 = R02.';
+            
+            R03 = sym('WHOCARES', [3 3]);
+            R03(:,:) = [    1                 0                        0       ;
+                            0          cos(theta_hat_3(t))          sin(theta_hat_3(t));    
+                            0          -sin(theta_hat_3(t))         cos(theta_hat_3(t));];
+
+            R30 = simplify(inv(R03));
+
+            R34 = sym('WHOCARES', [3 3]);
+            R34(:,:) = [    1                 0                        0       ;
+                            0          cos(theta_hat_4(t))          sin(theta_hat_4(t));    
+                            0          -sin(theta_hat_4(t))         cos(theta_hat_4(t));];
+
+
+            R43 = R34.';
+
+            R45 = sym('WHOCARES', [3 3]);
+            R45(:,:) = [cos(theta_hat_5(t))   0   -sin(theta_hat_5(t));
+                               0          1          0   ;    
+                        sin(theta_hat_5(t))   0   cos(theta_hat_5(t)) ;];
+
+            R54 = R45.';
+
+            R06 = sym('WHOCARES', [3 3]);
+            R06(:,:) = [cos(theta_hat_6(t))   0   -sin(theta_hat_6(t));
+                               0          1          0   ;    
+                        sin(theta_hat_6(t))   0   cos(theta_hat_6(t)) ;];
+
+
+            R60 = simplify(inv(R06));
+
+            R67 = sym('WHOCARES', [3 3]);
+            R67(:,:) = [cos(theta_hat_7(t))   0   -sin(theta_hat_7(t));
+                               0          1          0   ;    
+                        sin(theta_hat_7(t))   0   cos(theta_hat_7(t)) ;]; 
+
+            R76 = simplify(inv(R67));
+
+            R78 = sym('WHOCARES', [3 3]);
+            R78(:,:) = [    1                 0                        0       ;
+                            0          cos(theta_hat_8(t))          sin(theta_hat_8(t));    
+                            0          -sin(theta_hat_8(t))         cos(theta_hat_8(t));];
+
+            R87 = R78.';
+
+            R05 = simplify(R45*R34*R03);
+            
+            R50 = R05.';
+            
+            R08 = simplify(R78*R67*R06);
+            
+            R80 = R08.';
+
+            stateVec = [x, y, beta, gamma, x_dot, y_dot, beta_dot, gamma_dot].'
+            
+            stateVec_dot = [x_dot, y_dot, beta_dot, gamma_dot, x_ddot,...
+                            y_ddot, beta_ddot, gamma_ddot].'
+            
+            inputVec = [T_beta T_gamma ].'
+
+            stateVec1 = [x, x_dot, beta, beta_dot].' 
+            
+            stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
+            % 
+            % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
+            % stateVec1a_dot = [e_x, x_dot, x_ddot, beta_dot, beta_ddot].'
+            % stateVec1ae = [e_ix, e_x, e_x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x AND x and x_dot replaced with error states
+            % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
+            % setpointVec1 = [x_s x_dot_s x_ddot_s].'
+            System 2 - y and gamma
+            stateVec2 = [y, y_dot, gamma, gamma_dot].'
+            stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
+
+            Vectors for Subs Function 
+            Easily switch between symbolic functions and symbolic variables using these vectors.
+            Exchange Variable for its Twin Symvar or Symfun
+            symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
+                         x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
+                         x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
+
+            symFunVec = [x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) theta_hat_3(t) theta_hat_4(t) theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)...
+                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
+                   diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
+
+            (symFunVec == symVarVec).'; %Make sure everything lines up
+            Arbitrary Displacement Vector to Ball and Plate Displacements - Symfun to Symvar
+            This is an exchange between variables that mean different things - going from any arbitrary displacement vector to a displacement vector defining the ball's Center of Mass motion or the plate's Center of Mass motion. 
+
+            symFunVec_r2 = [r2s.' diff(r2s,t,1).' diff(r2s,t,2).'];
+
+            symFunVec_rb2 = [rb2s.', diff(rb2s,t,1).', diff(rb2s,t,2).'];
+            (symFunVec_r2 == symFunVec_rb2).';
+            symFunVec_rp2 = [rp2s.', diff(rp2s.',t,1), diff(rp2s.',t,2)];
+            (symFunVec_r2 == symFunVec_rp2).';
+
+
+
         end
         
         function outputArg = method1(obj,inputArg)
