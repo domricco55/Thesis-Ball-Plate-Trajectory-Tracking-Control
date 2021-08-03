@@ -422,19 +422,18 @@ classdef Var_Defs
             stateVec1 = [x, x_dot, beta, beta_dot].' 
             
             stateVec1_dot = [x_dot, x_ddot, beta_dot, beta_ddot].'
-            % 
+
+            
             % stateVec1a = [e_ix, x, x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x
             % stateVec1a_dot = [e_x, x_dot, x_ddot, beta_dot, beta_ddot].'
             % stateVec1ae = [e_ix, e_x, e_x_dot, beta, beta_dot].' %State vector augmented with integral of the error in x AND x and x_dot replaced with error states
             % stateVec1ae_dot = [e_x, e_x_dot, e_x_ddot, beta_dot, beta_ddot].'
             % setpointVec1 = [x_s x_dot_s x_ddot_s].'
-            System 2 - y and gamma
+            
             stateVec2 = [y, y_dot, gamma, gamma_dot].'
             stateVec2_dot = [y_dot, y_ddot, gamma_dot, gamma_ddot].'
 
-            Vectors for Subs Function 
-            Easily switch between symbolic functions and symbolic variables using these vectors.
-            Exchange Variable for its Twin Symvar or Symfun
+
             symVarVec = [x      y      r_1      r_2      r_3       beta      gamma      omega_x     omega_y     omega_z     psi_x     psi_y     psi_z theta_3 theta_4 theta_5 theta_6 theta_7 theta_8...
                          x_dot  y_dot  r_dot_1  r_dot_2  r_dot_3   beta_dot  gamma_dot  omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z...
                          x_ddot y_ddot r_ddot_1 r_ddot_2 r_ddot_3  beta_ddot gamma_ddot];
@@ -443,26 +442,18 @@ classdef Var_Defs
                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)] ,t,1)...
                    diff([x_hat(t) y_hat(t) r_hat_1(t) r_hat_2(t)  r_hat_3(t) beta_hat(t) gamma_hat(t) ], t,2)];
 
-            (symFunVec == symVarVec).'; %Make sure everything lines up
-            Arbitrary Displacement Vector to Ball and Plate Displacements - Symfun to Symvar
-            This is an exchange between variables that mean different things - going from any arbitrary displacement vector to a displacement vector defining the ball's Center of Mass motion or the plate's Center of Mass motion. 
 
             symFunVec_r2 = [r2s.' diff(r2s,t,1).' diff(r2s,t,2).'];
 
             symFunVec_rb2 = [rb2s.', diff(rb2s,t,1).', diff(rb2s,t,2).'];
-            (symFunVec_r2 == symFunVec_rb2).';
+
             symFunVec_rp2 = [rp2s.', diff(rp2s.',t,1), diff(rp2s.',t,2)];
-            (symFunVec_r2 == symFunVec_rp2).';
+
 
 
 
         end
         
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
-        end
     end
 end
 
