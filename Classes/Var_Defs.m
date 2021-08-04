@@ -520,10 +520,8 @@ classdef Var_Defs
         %State Space Model Related
             %Full 8th order system
 
-            obj.stateVec = [obj.x, obj.y, obj.beta, obj.gamma,...
-                            obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot].';
-            obj.stateVec_dot = [obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot, obj.x_ddot,...
-                            obj.y_ddot, obj.beta_ddot, obj.gamma_ddot].';            
+            obj.stateVec = [obj.x, obj.y, obj.beta, obj.gamma,obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot].';
+            obj.stateVec_dot = [obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot, obj.x_ddot,obj.y_ddot,obj.beta_ddot,obj.gamma_ddot].';            
             obj.inputVec = [obj.T_beta obj.T_gamma ].';
 
 
