@@ -141,6 +141,7 @@ classdef Var_Defs
         L_ab
         L_bc
         L_oc
+        
         d_of_1
         d_of_2
         L_od
@@ -250,7 +251,7 @@ classdef Var_Defs
 
             syms x_hat(t) y_hat(t) 
  
-            syms z_b ix x y z x_dot y_dot x_ddot y_ddot;
+            syms z_b ix x y x_dot y_dot x_ddot y_ddot;
 
             syms r_hat_1(t) r_hat_2(t) r_hat_3(t)
 
@@ -401,7 +402,8 @@ classdef Var_Defs
             obj.L_oa(3) = -obj.L_oa(3);           
             obj.L_ab = [0; obj.L_carm; 0];           
             obj.L_bc = [0; 0; obj.L_crod];
-            obj.L_oc = [obj.w;0;obj.z_Pc];            
+            obj.L_oc = [obj.w;0;obj.z_Pc]; 
+            
             obj.d_of_1 = sym('d__of_', [3 1],'real');           
             obj.d_of_2 = obj.d_of_1;            
             obj.L_od = sym('L__od_', [3 1],'real');            
