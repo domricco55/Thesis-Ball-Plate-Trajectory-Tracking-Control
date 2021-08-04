@@ -4,19 +4,22 @@ classdef UJ_Kin
     
     properties
         VDefs
+        r0s
     end
     
     methods
-        function obj = untitled(VDefs)
+        function obj = UJ_Kin(Var_Defs)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
-            obj.VDefs = VDefs;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            
+            %Assign the Var_Defs object that was in the constructor argument to the
+            %classes VDefs property
+            obj.VDefs = Var_Defs;
+            
+            %Derive r0s, the arbitrary displacement vector originally defined in frame S2,
+            %rotated into the S0 basis
+            obj.r0s = obj.VDefs.R20*obj.VDefs.r2s;
+            
         end
     end
 end
