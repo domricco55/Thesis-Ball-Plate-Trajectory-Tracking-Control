@@ -11,6 +11,7 @@ classdef UJ_Kin
         Omega2vs
         Omega_p
         v2s
+        a0s
     end
     
     methods
@@ -51,7 +52,9 @@ classdef UJ_Kin
             %S2 written in the S2 basis. 
             obj.v2s =  diff(obj.VDefs.r2s,obj.VDefs.t) + obj.Omega2ms*obj.VDefs.r2s; 
             
-            
+            %Derive the global acceleration vector of an arbitrary displacement within frame
+            %S2 written in the S2 basis. 
+            obj.a0s = diff(VDefs.R20*VDefs.v2s,VDefs.t);
         end
     end
 end
