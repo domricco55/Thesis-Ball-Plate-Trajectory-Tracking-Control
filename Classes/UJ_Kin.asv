@@ -1,0 +1,33 @@
+classdef UJ_Kin
+    %UJ_Kin This class generates the 
+    %   Detailed explanation goes here
+    
+    properties
+        VDefs
+        r0s
+        Theta_d_gam
+    end
+    
+    methods
+        function obj = UJ_Kin(Var_Defs)
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here
+            
+            %Assign the Var_Defs object that was in the constructor argument to the
+            %classes VDefs property
+            obj.VDefs = Var_Defs;
+            
+            %Derive r0s, the arbitrary displacement vector originally defined in frame S2,
+            %rotated into the S0 basis
+            obj.r0s = obj.VDefs.R20*obj.VDefs.r2s;
+            
+            %Get the Theta_d_gam matrix by multiplying R12d by R21. R12d = Theta_D_gam*R12
+            %and therefore R21 anihilates with R12.  
+            obj.Theta_d_gam = simplify(obj.VDefs.R12d*obj.VDefs.R21); %shows that if this is Theta_d_12 then Theta_d_12*R12 = R12d
+            
+            %Get the Theta_d_beta matrix by multiplying R01d by R10. R12d = Theta_D_gam*R12
+            %and therefore R21 anihilates with R12.  
+        end
+    end
+end
+
