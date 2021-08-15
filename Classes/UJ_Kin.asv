@@ -98,12 +98,6 @@ classdef UJ_Kin < handle
         
         function whocares = derive_all(obj)
             
-            whocares = 0;
-            
-            obj.derive_pos;
-            obj.derive_vel;
-            obj.derive_acc;
-            
         end
         
     end
