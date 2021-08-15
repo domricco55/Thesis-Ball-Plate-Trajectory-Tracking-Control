@@ -12,12 +12,14 @@ classdef UJ_Kin
         Omega_p
         v2s
         a0s
+        a2s
     end
     
     methods
         function obj = UJ_Kin(Var_Defs)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
+            
             
             %Assign the Var_Defs object that was in the constructor argument to the
             %classes VDefs property
@@ -54,7 +56,8 @@ classdef UJ_Kin
             
             %Derive the global acceleration vector of an arbitrary displacement within frame
             %S2 written in the S2 basis. 
-            obj.a0s = diff(VDefs.R20*VDefs.v2s,VDefs.t);
+            obj.a0s = diff(obj.VDefs.R20*obj.v2s,obj.VDefs.t);
+            obj.a2s = simplify(obj.VDefs.R02*obj.a0s);
         end
     end
 end
