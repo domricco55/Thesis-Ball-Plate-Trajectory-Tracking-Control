@@ -14,6 +14,8 @@ classdef UJ_Kin < handle
         a2s
     end
     
+    properties
+    
     methods
         function obj = UJ_Kin(Var_Defs)
             %UNTITLED Construct an instance of this class
@@ -97,6 +99,12 @@ classdef UJ_Kin < handle
         end
         
         function whocares = derive_all(obj)
+            
+            whocares = 0;
+            
+            obj.derive_pos;
+            obj.derive_vel;
+            obj.derive_acc;
             
         end
         
