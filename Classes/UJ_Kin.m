@@ -1,4 +1,4 @@
-classdef UJ_Kin
+classdef UJ_Kin < handle
     %UJ_Kin This class generates the 
     %   Detailed explanation goes here
     
@@ -23,11 +23,30 @@ classdef UJ_Kin
             
             %Assign the Var_Defs object that was in the constructor argument to the
             %classes VDefs property
-            obj.VDefs = Var_Defs;
+            obj.VDefs = Var_Defs;          
+           
+
+        end
+        
+        
+        function r0s = derive_pos(obj)
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here 
             
             %Derive r0s, the arbitrary displacement vector originally defined in frame S2,
             %rotated into the S0 basis
             obj.r0s = obj.VDefs.R20*obj.VDefs.r2s;
+            
+            %Return output
+            r0s = obj.r0s; %Methods must return something in MATLAB. 
+            
+        end 
+        
+        function [Theta_d_gam,Theta_d_beta,Omega2ms, Omega2vs, v2s] = derive_vel(obj)  
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here 
+            
+            
             
             %Get the Theta_d_gam matrix by multiplying R12d by R21. R12d = Theta_D_gam*R12
             %and therefore R21 anihilates with R12.  
@@ -54,11 +73,31 @@ classdef UJ_Kin
             %S2 written in the S2 basis. 
             obj.v2s =  diff(obj.VDefs.r2s,obj.VDefs.t) + obj.Omega2ms*obj.VDefs.r2s; 
             
+            %Return the outputs
+            Theta_d_gam = obj.Theta_d_gam;
+            Theta_d_beta = obj.Theta_d_beta;
+            Omega2ms = obj.Omega2ms;
+            Omega2vs = obj.Omega2vs;
+            v2s = obj.v2s;
+            
+        end
+        
+        function [a0s, a2s] = derive_acc(obj)
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here 
+            
+            
             %Derive the global acceleration vector of an arbitrary displacement within frame
             %S2 written in the S2 basis. 
             obj.a0s = diff(obj.VDefs.R20*obj.v2s,obj.VDefs.t);
             obj.a2s = simplify(obj.VDefs.R02*obj.a0s);
+            
+            %Return the outputs
+            a0s = obj.a0s;
+            a2s = obj.a2s;
+            
         end
+        
     end
 end
 
