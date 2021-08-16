@@ -29,7 +29,8 @@ classdef BP_Kinetics < handle
         end
         
         
-        function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, Hp1ds] = Derive_NL_EOMs(obj)
+        function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, Hp1ds, armp1s, rb1s, ap1s,...
+                ab1s, Hb1ds, SumMPlate, EOMS, CoeffMat, ExtTerms, IsolatedEOMs] = Derive_NL_EOMs(obj)
             %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
@@ -55,11 +56,35 @@ classdef BP_Kinetics < handle
             Hp1s = obj.VDefs.R21*Hp2s; %Apply rotation matrix to S2 angular momentum vector
            
             %Find the time derivative of Hp2s
-            Hp1ds = simplify(Ip2ms*(obj.UJ_Knmtcs.Omega2vs); %In S2, the plates Inertia tensor is easily defined and its angular velocity is known from prior analysis
-            Hp1s = R01*diff(R10*Hp1s));
-            Hp1ds = subs(Hp1ds, symFunVec, symVarVec);
+            Hp1ds = simplify(obj.VDefs.R01*diff(obj.VDefs.R10*Hp1s));
+            Hp1ds = subs(Hp1ds, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
            
+            
+            %Rotate plate's moment arm into the S1 basis
+            armp1s = subs(obj.VDefs.R21*obj.VDefs.armp2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
            
+            %Rotate the ball's displacement vector into the S1 basis
+            rb1s = subs(obj.VDefs.R21*obj.VDefs.rb2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
+            
+            %Rotate pertinent vectors into S1 basis
+            ap1s = expand(subs(obj.VDefs.R21*obj.BP_Knmtcs.ap2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
+            ab1s = subs(obj.VDefs.R21*obj.BP_Knmtcs.ab2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
+            Hb1ds = expand(obj.VDefs.R21*Hb2ds);
+            
+            %Sum moments about the center of the u-joint for the ball and plate combined
+            %system. This is done in the S1 basis
+            SumMPlate = cross(armp1s, obj.VDefs.R01*obj.VDefs.Wp0s) + ...
+                cross(rb1s,obj.VDefs.R01*obj.VDefs.Wb0s) + obj.VDefs.Tb1 +...
+                obj.VDefs.Tg1 + obj.VDefs.Mz1 == cross(armp1s, obj.VDefs.m_p*ap1s)...
+                + Hp1ds + cross(rb1s, obj.VDefs.m_b*ab1s) + Hb1ds;
+            SumMPlate = expand(subs(SumMPlate, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
+            
+            %Generate equations of motion
+            EOMS = [SumMBall(1:2);SumMPlate(1:2)];
+            HOTs = [obj.VDefs.x_ddot, obj.VDefs.y_ddot, obj.VDefs.beta_ddot, obj.VDefs.gamma_ddot]
+            [CoeffMat,ExtTerms] = equationsToMatrix(EOMS, ...
+                ); 
+            IsolatedEOMs = [x_ddot; y_ddot; beta_ddot; gamma_ddot] == CoeffMat\ExtTerms;
         end 
         
 

@@ -30,7 +30,7 @@ classdef BP_Kinetics < handle
         
         
         function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, Hp1ds, armp1s, rb1s, ap1s,...
-                ab1s, Hb1ds, SumMPlate] = Derive_NL_EOMs(obj)
+                ab1s, Hb1ds, SumMPlate, CoeffMat, ExtTerms, EOMs] = Derive_NL_EOMs(obj)
             %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
@@ -77,11 +77,15 @@ classdef BP_Kinetics < handle
                 cross(rb1s,obj.VDefs.R01*obj.VDefs.Wb0s) + obj.VDefs.Tb1 +...
                 obj.VDefs.Tg1 + obj.VDefs.Mz1 == cross(armp1s, obj.VDefs.m_p*ap1s)...
                 + Hp1ds + cross(rb1s, obj.VDefs.m_b*ab1s) + Hb1ds;
-            
             SumMPlate = expand(subs(SumMPlate, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
+            
+            %Generate equations of motion by isolating the highest order terms in the x
+            %and y moment equations
+            Moment_Eqns = [SumMBall(1:2);SumMPlate(1:2)];
+            HOTs = [obj.VDefs.x_ddot, obj.VDefs.y_ddot, obj.VDefs.beta_ddot, obj.VDefs.gamma_ddot];
+            [CoeffMat,ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs); 
+            EOMs = HOTs == CoeffMat\ExtTerms;
         end 
-        
-
         
     end
     
