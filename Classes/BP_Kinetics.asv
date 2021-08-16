@@ -29,7 +29,7 @@ classdef BP_Kinetics < handle
         end
         
         
-        function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, ] = Derive_NL_EOMs(obj)
+        function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, Hp1ds] = Derive_NL_EOMs(obj)
             %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
@@ -44,16 +44,20 @@ classdef BP_Kinetics < handle
                                                                            
             %Take the sum of moments about the ball's contact point, for the ball alone.
             %This is done in the S2 basis. 
-            SumMBall = expand(cross(obj.VDefs.armb2s, obj.VDefs.R02*obj.VDefs.Wb0s) == cross(obj.VDefs.armb2s, obj.VDefs.m_b*ab2s) + Hb2ds);
-            SumMBall = subs(SumMBall, symFunVec, symVarVec);
+            SumMBall = expand(cross(obj.VDefs.armb2s, obj.VDefs.R02*obj.VDefs.Wb0s) == ...
+                cross(obj.VDefs.armb2s, obj.VDefs.m_b*obj.BP_Knmtcs.ab2s) + Hb2ds);
+            SumMBall = subs(SumMBall, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
             
             %Derive the Plate's angular momentum vector. First, find it in the S2 basis,
             %then rotate it into the S1 basis - moments will be taken in the u-joint axle
             %frame
-            Hp2s = Ip2ms*(Omega2vs); %In S2, the plates Inertia tensor is easily defined and its angular velocity is known from prior analysis
-            Hp1s = R21*Hp2s; %Apply rotation matrix to S2 angular momentum vector
+            Hp2s = obj.VDefs.Ip2ms*(obj.UJ_Knmtcs.Omega2vs); %In S2, the plates Inertia tensor is easily defined and its angular velocity is known from prior analysis
+            Hp1s = obj.VDefs.R21*Hp2s; %Apply rotation matrix to S2 angular momentum vector
            
-           
+            %Find the time derivative of Hp2s
+            Hp1ds = simplify(Ip2ms*(obj.UJ_Knmtcs.Omega2vs); %In S2, the plates Inertia tensor is easily defined and its angular velocity is known from prior analysis
+            Hp1s = R01*diff(R10*Hp1s));
+            Hp1ds = subs(Hp1ds, symFunVec, symVarVec);
            
            
         end 
