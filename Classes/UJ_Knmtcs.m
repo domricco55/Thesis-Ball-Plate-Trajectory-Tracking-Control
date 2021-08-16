@@ -1,5 +1,5 @@
-classdef UJ_Kin < handle
-    %UJ_Kin This class generates the ... 
+classdef UJ_Knmtcs < handle
+    %UJ_Knmtcs This class generates the ... 
     %   Detailed explanation goes here
     
     properties
@@ -16,7 +16,7 @@ classdef UJ_Kin < handle
     end 
     
     methods
-        function obj = UJ_Kin(Var_Defs)
+        function obj = UJ_Knmtcs(Var_Defs)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
             
