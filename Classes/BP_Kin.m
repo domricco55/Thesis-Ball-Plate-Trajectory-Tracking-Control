@@ -81,12 +81,13 @@ classdef BP_Kin < handle
             ap2s = obj.ap2s;
         end
         
-        function [] = derive_both(obj)
+        function [vb2s, ab2s, constr_eqn_rws, Psi2vs, vp2s, ap2s] = Derive_Both(obj)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here 
             
+            [vb2s, ab2s, constr_eqn_rws, Psi2vs] = obj.Derive_B_Kin;
+            [vp2s, ap2s] = obj.Derive_P_Kin;
            
-            
         end
         
     end

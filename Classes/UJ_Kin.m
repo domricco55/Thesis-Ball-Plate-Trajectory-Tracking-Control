@@ -95,13 +95,11 @@ classdef UJ_Kin < handle
             
         end
         
-        function whocares = derive_all(obj)
+        function [r0s, Theta_d_gam,Theta_d_beta,Omega2ms, Omega2vs, v2s,a0s, a2s] = derive_all(obj)
             
-            whocares = 0;
-            
-            obj.derive_pos;
-            obj.derive_vel;
-            obj.derive_acc;
+            r0s = obj.derive_pos;
+            [Theta_d_gam,Theta_d_beta,Omega2ms, Omega2vs, v2s] = obj.derive_vel;
+            [a0s, a2s] = obj.derive_acc;
             
         end
         
