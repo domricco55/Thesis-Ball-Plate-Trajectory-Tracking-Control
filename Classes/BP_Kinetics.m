@@ -11,11 +11,8 @@ classdef BP_Kinetics < handle
         VDefs
         UJ_Knmtcs
         BP_Knmtcs
-        vb2s
-        ab2s
-        Psi2vs
-        vp2s
-        ap2s
+        
+        
     end 
     
     methods
@@ -32,26 +29,15 @@ classdef BP_Kinetics < handle
         end
         
         
-        function [] = Derive...(obj)
-            %UNTITLED Construct an instance of this class
+        function [] = Derive_NL_EOMs(obj)
+            %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
            
             
         end 
         
-        function [] = Derive...(obj)  
-            %UNTITLED Construct an instance of this class
-            %   Detailed explanation goes here
-        
-        end
-        
-        function [] = Derive...(obj)
-            %UNTITLED Construct an instance of this class
-            %   Detailed explanation goes here 
-         
-           
-        end
+
         
     end
 end
