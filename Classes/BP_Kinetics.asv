@@ -1,6 +1,6 @@
 classdef BP_Kinetics < handle
-    %BP_Kinetics This class generates the kinematic equations for the motion of the centers of
-    %mass of the ball and the plate.
+    %BP_Kinetics This class generates the kinetic equations of motion for the system in
+    %terms of the state variables. 
     %   Detailed explanation goes here
     
     properties
@@ -11,11 +11,8 @@ classdef BP_Kinetics < handle
         VDefs
         UJ_Knmtcs
         BP_Knmtcs
-        vb2s
-        ab2s
-        Psi2vs
-        vp2s
-        ap2s
+        SolvedEOMs
+        
     end 
     
     methods
@@ -27,70 +24,34 @@ classdef BP_Kinetics < handle
             %Assign the inputs to the constructor to the class properties
             obj.VDefs = Var_Defs;          
             obj.UJ_Knmtcs = UJ_Knmtcs;
-            obj.BP_Knmtcs = BP
+            obj.BP_Knmtcs = BP_Knmtcs;
 
         end
         
         
-        function [vb2s, ab2s, constr_eqn_rws, Psi2vs] = Derive_B_Knmtcs(obj)
-            %UNTITLED Construct an instance of this class
+        function [Omega2b, Hb2s, Hb2ds, ] = Derive_NL_EOMs(obj)
+            %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
-            %Substitute the ball's displacement vector in the S2 (plate) frame for the
-            %arbitrary dispaclement vector r2 of the u-joint kinematics velocity equation
-            obj.vb2s = subs(obj.UJ_Knmtcs.v2s, obj.VDefs.symFunVec_r2, obj.VDefs.symFunVec_rb2);
-            
-            %Substitute the ball's displacement vector in the S2 (plate) frame for the
-            %arbitrary dispaclement vector r2 of the u-joint kinematics acceleration equation
-            obj.ab2s = subs(obj.UJ_Knmtcs.a2s, obj.VDefs.symFunVec_r2, obj.VDefs.symFunVec_rb2);
-            
-            %Rollling without slip constraint equation
-            constr_eqn_rws = diff(obj.VDefs.rb2s,obj.VDefs.t,1) == cross(obj.VDefs.Psi2vs, obj.VDefs.armb2s); %Contraint Equation Rolling Without Slip (RWS)
-            
-            
-            %Retrieve a Psi2vs symbolic variable from VDefs object
-            obj.Psi2vs = obj.VDefs.Psi2vs;
-            
-            %Isolate Psi2vs components in the constraint equations to get an expression
-            %for the balls angular velocity in terms of its linear velocities (all
-            %expressed in the S2 basis)
-            obj.Psi2vs(1) = rhs(isolate(constr_eqn_rws(2), obj.VDefs.Psi2vs(1)));
-            obj.Psi2vs(2) = rhs(isolate(constr_eqn_rws(1), obj.VDefs.Psi2vs(2)));
-            
-            %Return outputs
-            vb2s = obj.vb2s;
-            ab2s = obj.ab2s;
-            Psi2vs = obj.Psi2vs;
+            %Derive the ball's angular momentum vector
+            Omega2b = obj.UJ_Knmtcs.Omega2vs + obj.BP_Knmtcs.Psi2vs;
+            Hb2s = expand(obj.Vdefs.Ib2ms*(Omega2b));
+           
+            %Find the time derivative of Hb2s
+            Hb2ds = expand(simplify(obj.Vdefs.R02*diff(obj.Vdefs.R20*Hb2s)));
+            Hb2ds = subs(Hb2ds, obj.Vdefs.symFunVec, obj.Vdefs.symVarVec); %NO LONGER NEED TO DIFFERENTIATE 
+                                                                           %so I can subsitute the symfuns for symvars
+                                                                           
+           %Take the sum of moments about the ball's contact point, for the ball alone.
+           %This is done in the S2 basis. 
+           SumMBall = expand(cross(armb2s, R02*Wb0s) == cross(armb2s, m_b*ab2s) + Hb2ds);
+           SumMBall = subs(SumMBall, symFunVec, symVarVec);
             
         end 
         
-        function [vp2s, ap2s] = Derive_P_Knmtcs(obj)  
-            %UNTITLED Construct an instance of this class
-            %   Detailed explanation goes here
-            
-            %Substitute the plate's displacement vector in the S2 (plate) frame for the
-            %arbitrary dispaclement vector r2 of the u-joint kinematics velocity equation
-            obj.vp2s = subs(obj.UJ_Knmtcs.v2s, obj.VDefs.symFunVec_r2, obj.VDefs.symFunVec_rp2);
-            
-            %Substitute the plate's displacement vector in the S2 (plate) frame for the
-            %arbitrary dispaclement vector r2 of the u-joint kinematics acceleration equation
-            obj.ap2s = subs(obj.UJ_Knmtcs.a2s, obj.VDefs.symFunVec_r2, obj.VDefs.symFunVec_rp2);
-            
-            
-            %Return outputs
-            vp2s = obj.vp2s;
-            ap2s = obj.ap2s;
-        end
-        
-        function [vb2s, ab2s, constr_eqn_rws, Psi2vs, vp2s, ap2s] = Derive_Both(obj)
-            %UNTITLED Construct an instance of this class
-            %   Detailed explanation goes here 
-            
-            [vb2s, ab2s, constr_eqn_rws, Psi2vs] = obj.Derive_B_Knmtcs;
-            [vp2s, ap2s] = obj.Derive_P_Knmtcs;
-           
-        end
+
         
     end
+    
 end
 
