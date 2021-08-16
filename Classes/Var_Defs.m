@@ -6,7 +6,7 @@ classdef Var_Defs
     %   of derived results. Detailed derivations and variable descriptions can be found in
     %   the "Var_Defs_Developement.mlx" file. 
 
-    properties 
+    properties (SetAccess = private)
     %Scalars
         %Miscellaneous
         t 

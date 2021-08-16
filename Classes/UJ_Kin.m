@@ -1,17 +1,18 @@
 classdef UJ_Kin < handle
-    %UJ_Kin This class generates the 
+    %UJ_Kin This class generates the ... 
     %   Detailed explanation goes here
     
     properties
+
+    end
+   
+    properties (SetAccess = private)
+        VDefs 
         r0s
         Omega2ms
         Omega2vs
         v2s
         a2s
-    end
-   
-    properties (SetAccess = private)
-        VDefs 
     end 
     
     methods
