@@ -1,4 +1,4 @@
-classdef Lnrze_EOMs < handle
+classdef Lnrzed_EOMs < handle
     %Lnrze_EOMs Summary of this class goes here
     %   Detailed explanation goes here
     
