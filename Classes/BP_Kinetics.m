@@ -12,11 +12,30 @@ classdef BP_Kinetics < handle
         UJ_Knmtcs
         BP_Knmtcs
         
+        %Derived Symbolic Expressions
+        Omega2b
+        Hb2s
+        Hb2ds
+        SumMBall
+        Hp1s
+        Hp1ds
+        armp1s
+        rb1s
+        ap1s
+        ab1s
+        Hb1ds
+        SumMPlate
+        CoeffMat
+        ExtTerms
+        NL_EOMs
+        
+        %Substituted numerical parameters and assumptions (keep track of what 
+        %is being substituted and assumed away)
         Num_Params
         Sym_Params
         Assumption_Params 
         Assumptions
-        
+        NL_NumEOMs
     end 
     
     methods
@@ -89,6 +108,23 @@ classdef BP_Kinetics < handle
             HOTs = [obj.VDefs.x_ddot, obj.VDefs.y_ddot, obj.VDefs.beta_ddot, obj.VDefs.gamma_ddot];
             [CoeffMat,ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs); 
             NL_EOMs = HOTs == CoeffMat\ExtTerms;
+            
+            %Return outputs
+            Omega2b = obj.Omega2b
+            Hb2s = obj.Hb2s
+            Hb2ds = obj.Hb2ds 
+            SumMBall = obj.SumMBall
+            Hp1s = obj.Hp1s
+            Hp1ds = obj.Hp1ds
+            armp1s = obj.armp1s
+            rb1s = obj.rb1s
+            ap1s = obj.ap1s
+            ab1s = obj.ab1s
+            Hb1ds = obj.Hb1ds
+            SumMPlate = obj.
+            CoeffMat = obj.
+            ExtTerms = obj.
+            NL_EOMs = obj.
         end 
         
         function [NL_NumEOMs] = Num_Params_n_Assumptions(obj)
@@ -100,8 +136,8 @@ classdef BP_Kinetics < handle
             %Numerical Parameters in terms of symbolic variables utilized in 
             %the model 
             obj.Num_Params = [obj.VDefs.rB  obj.VDefs.rC+obj.VDefs.rB ...
-                obj.VDefs.mB obj.VDefs.mP obj.VDefs.IP obj.VDefs.IB ...
-                obj.VDefs.g_num obj.VDefs.rG];
+            obj.VDefs.mB obj.VDefs.mP obj.VDefs.IP obj.VDefs.IB ...
+            obj.VDefs.g_num obj.VDefs.rG];
             obj.Sym_Params = [r_b z_b m_b m_p I_p__xx I_b g z_p];
             
             %Simplifying assumptions
@@ -109,7 +145,10 @@ classdef BP_Kinetics < handle
             obj.Assumptions = [0 0];
             
             %Substitute in all numerical parameters and assumptions
-            NL_NumEOMs = subs(NL_EOMs, [obj.Sym_Params obj.Assumption_Params], [obj.Num_Params  obj.Assumptions]);
+            obj.NL_NumEOMs = subs(obj.NL_EOMs, [obj.Sym_Params obj.Assumption_Params], [obj.Num_Params  obj.Assumptions]);
+            
+            %Return outputs
+            NL_NumEOMs = obj.NL_NumEOMs
 
         end
     end
