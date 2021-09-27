@@ -188,6 +188,8 @@ classdef Var_Defs
         
     %State Space Model Related
         %Full 8th order system
+        stateVec 
+        stateVec_dot
         inputVec
         
         %Two decoupled 4th order systems
@@ -220,11 +222,6 @@ classdef Var_Defs
     end
     
     properties 
-        
-    %State Space Model Related
-        %Full 8th order system
-        stateVec 
-        stateVec_dot
         
     end 
     
