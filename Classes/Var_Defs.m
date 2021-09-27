@@ -567,7 +567,7 @@ classdef Var_Defs
             obj.mB = .030; %[kg]
             obj.mP = .400; %[kg]
             obj.IP = 1.88e6*(1/1000)*(1/1000)^2; %[kg*m^2]
-            obj.IB = (2/5)*mB*rB^2;%[kg-m^2] 
+            obj.IB = (2/5)*obj.mB*obj.rB^2;%[kg-m^2] 
             obj.g_num = 9.81; %[m/s^2]
 
         end
