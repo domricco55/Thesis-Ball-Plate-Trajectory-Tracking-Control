@@ -208,6 +208,16 @@ classdef Var_Defs
         symFunVec_rb2
         symFunVec_rp2
         
+    %Numerical System Parameters
+        rB 
+        rG 
+        rC 
+        mB
+        mP
+        IP
+        IB 
+        g_num
+        
     end
     
 %     properties (SetAccess = private)
@@ -550,8 +560,15 @@ classdef Var_Defs
             obj.symFunVec_rp2 = [obj.rp2s.', diff(obj.rp2s.',obj.t,1), diff(obj.rp2s.',obj.t,2)];
 
 
-            
-
+        %Numerical System Parameters
+            obj.rB = .0105; %[m]
+            obj.rG = .042; %[m]
+            obj.rC = .050; %[m]
+            obj.mB = .030; %[kg]
+            obj.mP = .400; %[kg]
+            obj.IP = 1.88e6*(1/1000)*(1/1000)^2; %[kg*m^2]
+            obj.IB = (2/5)*mB*rB^2;%[kg-m^2] 
+            obj.g_num = 9.81; %[m/s^2]
 
         end
         
