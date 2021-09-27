@@ -234,7 +234,7 @@ classdef Var_Defs
             %   Detailed explanation goes here
             
             %Generate the necessary symbolic variables and functions
-            syms t g real
+            syms t g s real
 
             syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
             theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)
@@ -278,13 +278,13 @@ classdef Var_Defs
             
             
             
-            %Assign the generated symvars to the properties of the class
-          
+        %Assign the generated symvars to the properties of the class  
         %Scalars
             %Miscellaneous
             obj.t = t; 
             obj.g = g; 
-
+            obj.s = s;
+            
             %Angle Variables
             obj.beta_hat = beta_hat;
             obj.gamma_hat = gamma_hat; 
@@ -524,8 +524,8 @@ classdef Var_Defs
 
         %State Space Model Related
             %Full 8th order system
-            obj.stateVec = [obj.x, obj.y, obj.beta, obj.gamma,obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot].';
-            obj.stateVec_dot = [obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot, obj.x_ddot,obj.y_ddot,obj.beta_ddot,obj.gamma_ddot].';            
+            obj.stateVec = [obj.x, obj.x_dot, obj.beta, obj.beta_dot, obj.y, obj.y_dot, obj.gamma, obj.gamma_dot].';
+            obj.stateVec_dot = [obj.x_dot, obj.x_ddot, obj.beta_dot, obj.beta_ddot, obj.y_dot, obj.y_ddot, obj.gamma_dot, obj.gamma_ddot].';            
             obj.inputVec = [obj.T_beta obj.T_gamma ].';
 
 

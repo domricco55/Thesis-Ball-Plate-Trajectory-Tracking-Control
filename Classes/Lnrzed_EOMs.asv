@@ -7,15 +7,15 @@ classdef Lnrzed_EOMs < handle
         BP_Kinetics
         
         %8th order system
-        A
-        B
+        A_init
+        B_init
         y_vec
         C
         D
         C_obs
         D_obs
-        A_uc
-        B_uc
+        A
+        B
 
         %Two Uncoulpled 4th order systems
         A1
@@ -34,29 +34,36 @@ classdef Lnrzed_EOMs < handle
             
             %Assign the inputs to the constructor to the class properties
             obj.VDefs = Var_Defs;          
-
             obj.BP_Kinetics = BP_Kinetics;
             
         end 
         
-        function [A, B, A_uc, B_uc, y_vec, C, D, C_obs, D_obs, TF] = Derive_8th_Ordr_Lin_Sys(obj)
+        function [A_init, B_init, A, B, y_vec, C, D, C_obs, D_obs, TF] = Derive_8th_Ordr_Lin_Sys(obj)
             %Derive_8th_Ordr_Lin_Sys Linearize the NL EOMS and produce an 8th order linear
             %system of equations representing the dynamics near the unstable equilibrium
             %point
             %   Detailed explanation goes here
             
-            %Derive the linearized 8th order equations of motion
-            J_states(stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs), obj.VDefs.stateVec); %Take Jacobian WRT States
-            J_inputs(stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),obj.VDefs.inputVec); %Take Jacobian WRT Inputs
+            %Define an initial state vector differently than will be utilized in later
+            %analysis. This is used in the derivation of the linear equations but the
+            %system will be put in a form where the decoupling of system is more apparant
+            stateVec_init = [obj.x, obj.y, obj.beta, obj.gamma,obj.x_dot, obj.y_dot, obj.beta_dot, obj.gamma_dot].'
             
-            %State Coupling and Input Matrices
+            %Derive the linearized 8th order equations of motion
+            J_states(stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+                obj.VDefs.stateVec); %Take Jacobian WRT States
+            J_inputs(stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+                obj.VDefs.inputVec); %Take Jacobian WRT Inputs
+            
+            %State Coupling and Input Matrices from evaluation of the Jacobians at the
+            %unstable equilibrium point
             obj.A = [zeros(4),eye(4);J_states(0,0,0,0,0,0,0,0)];
             obj.B = [zeros(4,2);J_inputs(0,0,0,0,0,0,0,0)];
             
             %Decoupled State Coupling and Input Matrices
-            obj.A_uc = [obj.A(:,1),obj.A(:,5),obj.A(:,3),obj.A(:,7),obj.A(:,2),obj.A(:,6),obj.A(:,4),obj.A(:,8)];
-            obj.A_uc = [obj.A_uc(1,:);obj.A_uc(5,:);obj.A_uc(3,:);obj.A_uc(7,:);obj.A_uc(2,:);obj.A_uc(6,:);obj.A_uc(4,:);obj.A_uc(8,:)];
-            obj.B_uc = [obj.B(1,:);obj.B(5,:);obj.B(3,:);obj.B(7,:);obj.B(2,:);obj.B(6,:);obj.B(4,:);obj.B(8,:)];
+            obj.A = [obj.A(:,1),obj.A(:,5),obj.A(:,3),obj.A(:,7),obj.A(:,2),obj.A(:,6),obj.A(:,4),obj.A(:,8)];
+            obj.A = [obj.A_uc(1,:);obj.A_uc(5,:);obj.A_uc(3,:);obj.A_uc(7,:);obj.A_uc(2,:);obj.A_uc(6,:);obj.A_uc(4,:);obj.A_uc(8,:)];
+            obj.B = [obj.B(1,:);obj.B(5,:);obj.B(3,:);obj.B(7,:);obj.B(2,:);obj.B(6,:);obj.B(4,:);obj.B(8,:)];
             
             %Define these symbolic quantities for use in further analysis:
             obj.y_vec = [obj.VDefs.x obj.VDefs.y obj.VDefs.beta obj.VDefs.gamma].';
@@ -64,19 +71,20 @@ classdef Lnrzed_EOMs < handle
             obj.D = sym(zeros(4,2));  
             
             %Get system transfer function
-            syms s;
-            TF = obj.C_obs*(s*eye(8) - obj.A_uc)\obj.B_uc + obj.D_obs; 
-            
+            obj.C_obs = eye(8);
+            obj.D_obs = sym(zeros(8,2));
+            TF = obj.C_obs*(obj.VDefs.s*eye(8) - obj.A)\obj.B + obj.D_obs; 
+
            %Return outputs
-            A = obj.A;
-            B = obj.B;
+            A_init = obj.A_init;
+            B_init = obj.B_init;
             y_vec = obj.y_vec;
             C = obj.C;
             D = obj.D;
             C_obs = obj.C_obs;
             D_obs = obj.D_obs;
-            A_uc = obj.A_uc;
-            B_uc = obj.B_uc;
+            A = obj.A;
+            B = obj.B;
             
         end
         

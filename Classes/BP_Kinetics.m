@@ -57,7 +57,8 @@ classdef BP_Kinetics < handle
             %Derive the Plate's angular momentum vector. First, find it in the S2 basis,
             %then rotate it into the S1 basis - moments will be taken in the u-joint axle
             %frame
-            Hp2s = obj.VDefs.Ip2ms*(obj.UJ_Knmtcs.Omega2vs); %In S2, the plates Inertia tensor is easily defined and its angular velocity is known from prior analysis
+            Hp2s = obj.VDefs.Ip2ms*(obj.UJ_Knmtcs.Omega2vs); %In S2, the plates Inertia
+            %tensor is easily defined and its angular velocity is known from prior analysis
             Hp1s = obj.VDefs.R21*Hp2s; %Apply rotation matrix to S2 angular momentum vector
            
             %Find the time derivative of Hp2s
