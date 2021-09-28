@@ -2,28 +2,41 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
-        Property1
+    properties (SetAccess = private)
+        
+        sys_matrices
+        
     end
     
+    properties 
+        
+        K
+        tspan
+        
+    end 
+    
     methods
-        function obj = untitled(inputArg1,inputArg2)
+        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs,type)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+            
+            switch type
+                
+                case 'SS Integral Controller'
+                 
+                case 'SS PID Controller'    
+                    
+                otherwise
+                    error('Not a valid moving setpoint controller type')
+                    
+            end 
         end
         
-        function  [] = Set_Sim_Params(obj,Params)
+        
+        function sim_response = Run_Sim(obj,sp_symfun, tspan, sim_string)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-            
-            
-        end
-        
-        function sim_results = run_sim(obj,sp_symfun, tspan, sim_string)
-            
-            
-            sim_results = simout;
+            sim_response = simout;
             
         end
         

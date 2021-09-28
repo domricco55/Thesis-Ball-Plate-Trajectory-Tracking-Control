@@ -2,27 +2,44 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
-        Property1
+    properties (SetAccess = private)
+        Params
     end
     
     methods
-        function obj = untitled(inputArg1,inputArg2)
+        function obj = Lin_Mvng_Stpt_Cntr_SS(type)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+            switch type
+                
+                case   
         end
         
-        function  null = Set_Sim_Params(obj,Params)
+        function  [] = Set_Sim_Params(obj,Params)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
             
             
             
-            null = 0;
+            A1a_sim = double(Params.Aa);
+            B1a_sim = double(Params.Ba);
+            S1a_sim = double(Params.Sa);
+            
+            
+            
+            
         end
         
-        function [
+        function sim_response = Run_Sim(obj,sp_symfun, tspan, sim_string)
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            sim_response = simout;
+            
+        end
+        
+        function [] = plot_results(obj, sim_results)
+            
+        end 
         
     end
 end
