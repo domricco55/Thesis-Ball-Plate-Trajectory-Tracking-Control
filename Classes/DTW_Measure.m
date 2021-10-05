@@ -2,21 +2,23 @@ classdef DTW_Measure < handle
     %DTW_Measure_Dev  Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
-        Property1
+    properties (SetAccess = private)
+ 
     end
     
     methods
-        function obj = untitled(inputArg1,inputArg2)
-            %UNTITLED Construct an instance of this class
+        function obj = DTW_Measure()
+            %DTW_Measure Construct an instance of this class
             %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+
         end
         
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
+        function [DTW_measure,  = Resample_n_Plot(obj,samp_f, response, setpoint)
+            %Plot_DTW_Comparison Summary of this method goes here
             %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+  
+            t_samp1 = 
+            
         end
     end
 end
