@@ -74,14 +74,16 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Augmented B Matrix
                     obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
                     
-
-                    
                     %S matrix
                     obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
                     
+                    %Our desired control output is the x state (want it to match as closely as possible to x_s
+                    %for all times). Given that x = x_s - e_x, C and D are:
+                    obj.sys_mats.C = [0 -1 0 0 0]; 
+                    obj.sys_mats.D = [1 0 0];
                     
-                    
-                    
+                    %x setpoint selector matrix (plotting in Simulink purposes)
+                    obj.sys_mats.x_s_select = obj.sys_mats.D;
                     
                 otherwise
                     error('Not a valid moving setpoint controller type/dimension specification')
@@ -141,9 +143,6 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             switch obj.ctrl_type_dim
                 
-                
-                
-                
                 case 'SS Integral Controller x dimension'
                     
                     figure_obj = figure;
@@ -176,10 +175,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 case 'SS PID Controller x dimension' 
                     
                     
-                case  'SS Integral Controller y dimension'   
+                case 'SS Integral Controller y dimension'   
                     
                     
-                case  'SS PID Controller y dimension'    
+                case 'SS PID Controller y dimension'    
                     
             end 
             
