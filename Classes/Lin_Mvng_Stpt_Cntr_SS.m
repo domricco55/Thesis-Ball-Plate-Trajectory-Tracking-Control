@@ -147,7 +147,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     figure_obj = figure;
                     
-                    title(obj.ctrl_type_dim)
+                    title(obj.ctrl_type_dim);
                     
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.y,...
@@ -174,6 +174,29 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                 case 'SS PID Controller x dimension' 
                     
+                    figure_obj = figure;
+                    
+                    title(obj.ctrl_type_dim);
+                    
+                    ax1 = subplot(3,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('x [mm]')
+                    title('PID with full state feedback pole placement')
+
+
+                    ax2 = subplot(3,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.xa(:,4)))
+                    xlabel('time [s]')
+                    ylabel('\beta [deg]')
+
+
+                    ax3 = subplot(3,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.T)
+                    xlabel('time [s]')
+                    ylabel('Torque')
+                    linkaxes([ax1,ax2, ax3],'x');
+                    set(gcf,'position',[0,0,800,900]);
                     
                 case 'SS Integral Controller y dimension'   
                     
