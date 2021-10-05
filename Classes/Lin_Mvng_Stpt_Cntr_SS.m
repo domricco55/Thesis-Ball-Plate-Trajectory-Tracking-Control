@@ -9,13 +9,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         ctrl_type_dim %The type of control system this object represents 
                   %(SS Integral Controller, or SS PID Controller)
                   
-        %Augmented state vector for the PID controller x dimension          
-        stateVec1a_PID 
-        stateVec1a_dot_PID
-        
-        %Augmented state vector for the PID controller y dimension          
-        stateVec2a_PID 
-        stateVec2a_dot_PID
+        %Definitions of the state vector, roc of state vector, and setpoint
+        %vector for a particular controller associated with an instance of the class        
+        stateVec_a 
+        stateVec_a_dot
+        setpointVec
     end
     
     
@@ -31,6 +29,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 
                 case 'SS Integral Controller x dimension'
                     
+                    %State vector augmented with integral of the error in x
+                    obj.stateVec_a = [VDefs.e_ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
+                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.x_dot, VDefs.x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Augmented A Matrix
                     obj.sys_mats.Aa = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A1]]; 
@@ -54,19 +55,29 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
-                    obj.stateVec1a_PID = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec1a_dot_PID = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
-                    x_1a_dot_eqn = obj.stateVec1a_dot_PID == [VDefs.e_x VDefs.e_x_dot...
+                    obj.stateVec_a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
+                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
+                    
+                    %Setpoint vector
+                    obj.setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
+                    
+                    %Derive augmented dynamics for x direction, SS PID controller
+                    x_1a_dot_eqn = obj.stateVec_a_dot == [VDefs.e_x VDefs.e_x_dot...
                         (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
-                    x_1a_dot_eqn = obj.stateVec1a_dot_PID == subs(rhs(x_1a_dot_eqn),...
+                    x_1a_dot_eqn = obj.stateVec_a_dot == subs(rhs(x_1a_dot_eqn),...
                         VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
                     x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
-
-                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec1a_PID);
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_a);
+                    
+                    %Augmented B Matrix
                     obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
+                    
 
-                    setpointVec1 = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
-                    obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), setpointVec1);
+                    
+                    %S matrix
+                    obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
                     
                     
                     
