@@ -6,31 +6,22 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         
         sys_mats %System Matrices
         sim_response %Latest system response for this object
-        ctrl_type_dim %The type of control system this object represents 
+        ctrl_type %The type of control system this object represents 
                   %(SS Integral Controller, or SS PID Controller)
-                  
-        %Augmented state vector for the PID controller x dimension          
-        stateVec1a_PID 
-        stateVec1a_dot_PID
-        
-        %Augmented state vector for the PID controller y dimension          
-        stateVec2a_PID 
-        stateVec2a_dot_PID
     end
     
     
     methods
-        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs, VDefs, type_dim)
+        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs,VDefs,type)
             %Lin_Mvng_Stpt_Cntr_SS Construct an instance of this class
             %   Detailed explanation goes here
             
-            %Set this object's controller/dimension type
-            obj.ctrl_type_dim = type_dim;
-            
-            switch type_dim
+            switch type
                 
-                case 'SS Integral Controller x dimension'
+                case 'SS Integral Controller'
                     
+                    %Set this object's controller type
+                    obj.ctrl_type = type;
                     
                     %Augmented A Matrix
                     obj.sys_mats.Aa = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A1]]; 
@@ -49,35 +40,29 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %x setpoint selector matrix (plotting in Simulink purposes)
                     obj.sys_mats.x_s_select = 1;
+                case 'SS PID Controller'    
                     
-                case 'SS PID Controller x dimension'    
-                    
+                    %Set this object's controller type
+                    obj.ctrl_type = type;
                     
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
-                    obj.stateVec1a_PID = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec1a_dot_PID = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
-                    x_1a_dot_eqn = obj.stateVec1a_dot_PID == [VDefs.e_x VDefs.e_x_dot...
-                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
-                    x_1a_dot_eqn = obj.stateVec1a_dot_PID == subs(rhs(x_1a_dot_eqn),...
-                        VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
-                    x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
+                    stateVec_a_PID = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].';
+                    stateVec_a_PID_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
+                    x_1a_dot_eqn = stateVec_a_PID_dot == [e_x e_x_dot (x_ddot_s - x_ddot) beta_dot rhs(Lnrzed_EOMs.LIN_EOMS1(4))].';
+                    x_1a_dot_eqn = stateVec_a_PID_dot == subs(rhs(x_1a_dot_eqn), x_ddot , rhs(Lnrzed_EOMs.LIN_EOMS1(2)));
+                    x_1a_dot_eqn = subs(x_1a_dot_eqn, x, x_s - e_x);
 
-                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec1a_PID);
-                    obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
+                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), stateVec_a_PID);
+                    obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), T_beta);
 
-                    setpointVec1 = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
-                    obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), setpointVec1);
-                    
-                    
-                    
+                    setpointVec1 = [x_s x_dot_s x_ddot_s].';
+                    S1a = equationsToMatrix(rhs(x_1a_dot_eqn), setpointVec1)
                     
                     
                 otherwise
-                    error('Not a valid moving setpoint controller type/dimension specification')
+                    error('Not a valid moving setpoint controller type')
                     
-            end
-            
-            
+            end 
         end
         
         
@@ -128,17 +113,14 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %plot_results Summary of this method goes here
             %   Detailed explanation goes here 
             
-            switch obj.ctrl_type_dim
+            switch obj.ctrl_type
                 
                 
                 
                 
-                case 'SS Integral Controller x dimension'
+                case 'SS Integral Controller'
                     
                     figure_obj = figure;
-                    
-                    title(obj.ctrl_type_dim)
-                    
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.y,...
                         obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
@@ -162,13 +144,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     
-                case 'SS PID Controller x dimension' 
                     
                     
-                case  'SS Integral Controller y dimension'   
+                case 'SS PID Controller' 
                     
                     
-                case  'SS PID Controller y dimension'    
+                    
                     
             end 
             
