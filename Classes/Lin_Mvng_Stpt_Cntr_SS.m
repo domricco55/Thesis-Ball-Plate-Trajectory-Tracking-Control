@@ -137,7 +137,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
         end
         
-        function [figure_obj] = plot_results(obj)
+        function [figure_obj] = plot_results(obj, title_str)
             %plot_results Summary of this method goes here
             %   Detailed explanation goes here 
             
@@ -154,7 +154,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                         obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('x [mm]')
-                    title('Integral control with full state feedback pole placement')
+                    title(title_str)
 
 
                     ax2 = subplot(3,1,2);
@@ -182,7 +182,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('x [mm]')
-                    title('PID with full state feedback pole placement')
+                    title(title_str)
 
 
                     ax2 = subplot(3,1,2);
