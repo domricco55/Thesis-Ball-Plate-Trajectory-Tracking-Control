@@ -14,34 +14,45 @@ classdef DTW_Measure_1D < handle
         i_wrpd_rspnse
         i_wrpd_stpt
         t_warped
+        
+        %y axis label
+        ylabel_str
     end
     
     methods
         function obj = DTW_Measure_1D(samp_f, response, setpoint, tsim, ylabel_str, plot_cmd)
             %DTW_Measure Construct an instance of this class
             %   Detailed explanation goes here
+            
+            %Object's y axis label (what is the trajectory we are talking about?)
+            obj.ylabel_str = ylabel_str;
+            
+            %Control Output Resample
+            obj.t_samp = linspace(tsim(1), tsim(end), samp_f*(tsim(end) - tsim(1)));  
+            obj.resamp_rspnse = interp1(tsim,response, obj.t_samp);
 
-        %Control Output Resample
-        obj.t_samp = linspace(tsim(1), tsim(end), samp_f*(tsim(end) - tsim(1)));  
-        obj.resamp_rspnse = interp1(tsim,response, obj.t_samp);
+            %Setpoint Resample
+            %This will have sample frequency of samp_f
+            obj.resamp_stpt = interp1(tsim, setpoint, obj.t_samp);
 
-        %Setpoint Resample
-        %This will have sample frequency of samp_f
-        obj.resamp_stpt = interp1(tsim, setpoint, obj.t_samp);
+            %If the plot_cmd is true, plot the resampled signals
+            if plot_cmd
 
-        if strcmp(plot_cmd,'yes')
-            figure
-            plot(obj.t_samp, obj.resamp_rspnse,obj.t_samp,obj.resamp_stpt)
-            xlabel('time [s]')
-            ylabel(ylabel_str)
-            title('Resampled Controller Data')
-            legend('Controller Output', 'Reference')
-        end   
+                figure
+                plot(obj.t_samp, obj.resamp_rspnse,obj.t_samp,obj.resamp_stpt)
+                xlabel('time [s]')
+                ylabel(obj.ylabel_str)
+                title('Resampled Controller Data')
+                legend('Controller Output', 'Reference')
+
+            end   
             
         end
         
-        function []  = Get_DTW_Measure(obj)
-            %Get_DTW_Measure Summary of this method goes here
+        function []  = Get_DTW_Measure(obj, plot_cmd)
+            %Get_DTW_Measure Get the DTW distance measure and warping path (indices of
+            %linked points in the minimization). If plot_cmd is true, plot the 
+            %warped signals in a manner that spaces the data equally in the time axis. 
             %   Detailed explanation goes here
   
             %Get the DTW distance measure for the resampled data, and get the indeces of the
@@ -51,9 +62,52 @@ classdef DTW_Measure_1D < handle
             
             obj.t_warped = linspace(obj.t_samp(1),obj.t_samp(end), numel(obj.i_wrpd_rspnse));
             
+            %If the plot_cmd is true, plot the warped signals
+            if plot_cmd
+                
+                figure
+                % plot(1:numel(i_wrp_trj_int), y1_int(i_wrp_trj_int),1:numel(i_wrp_trj_int), x_s_int(i_wrp_sp_int))
+                plot(obj.t_warped, obj.resamp_rspnse(obj.i_wrpd_rspnse),obj.t_warped, obj.resamp_stpt(obj.i_wrpd_stpt))
+                xlabel('time [s]')
+                ylabel(obj.ylabel_str)
+                title('Dynamic Time Warped Integral Controller Data')
+                legend('Warped Controller Output', 'Warped Reference')   
+                
+                
+            end
             
+        end 
+        
+        function [] = Plot_DTW_Links(obj, num_links)
+            %Plot_DTW_Links Plot as many DTW links as num_links
+            %     The DTW algorithm relates adjacent data points of two trajectories,
+            %     duplicating some of the points (warping) in such a way as to minimize the total
+            %     euclidean distance between each pair of points in the warped
+            %     trajectories. This function plots a line between some of these pairs of
+            %     points, but not all - only num_links many. This decreases the clutter in
+            %     the resulting plots. 
+           
+            % t_samp_int1(i_wrp_sp_int); t_samp_int1(i_wrp_sp_int)
+            num_links = 75;
+
+            increment = length(i_wrp_sp_int)/num_links;
+
+            sparser_index_vec = round(1:increment:length(i_wrp_sp_int));
+
+            i_wrp_trj_int = i_wrp_trj_int(sparser_index_vec);
+            i_wrp_sp_int = i_wrp_sp_int(sparser_index_vec);
+
+            figure
+            plot(t_samp_int1, y1_int,t_samp_int2,x_s_int, [t_samp_int1(i_wrp_trj_int); t_samp_int2(i_wrp_sp_int)], [y1_int(i_wrp_trj_int); x_s_int(i_wrp_sp_int)], 'r')
+            xlabel('time [s]')
+            ylabel('x [mm]')
+            title('Dynamic Time Warping Links')
+            legend('Controller Output', 'Reference')
+
             
         end
+            
+            
         
         
     end
