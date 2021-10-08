@@ -87,20 +87,24 @@ classdef DTW_Measure_1D < handle
             %     points, but not all - only num_links many. This decreases the clutter in
             %     the resulting plots. 
            
-            % t_samp_int1(i_wrp_sp_int); t_samp_int1(i_wrp_sp_int)
-            num_links = 75;
+            %The evenly spaced increment between the first link and the last link that
+            %produces the number of links, less than originally output from the DTW
+            %algorithm, present in the plot
+            increment = length(obj.i_wrpd_stpt)/num_links;
 
-            increment = length(i_wrp_sp_int)/num_links;
-
-            sparser_index_vec = round(1:increment:length(i_wrp_sp_int));
-
-            i_wrp_trj_int = i_wrp_trj_int(sparser_index_vec);
-            i_wrp_sp_int = i_wrp_sp_int(sparser_index_vec);
+            %Since the increment is likely not an integer, the sparse index vector
+            %generated with even spacing 
+            sparser_index_vec = round(1:increment:length(obj.i_wrpd_stpt));
+            
+            sparse_i_wrpd_rspnse = obj.i_wrpd_rspnse(sparser_index_vec);
+            sparse_i_wrpd_stpt = obj.i_wrpd_stpt(sparser_index_vec);
 
             figure
-            plot(t_samp_int1, y1_int,t_samp_int2,x_s_int, [t_samp_int1(i_wrp_trj_int); t_samp_int2(i_wrp_sp_int)], [y1_int(i_wrp_trj_int); x_s_int(i_wrp_sp_int)], 'r')
+            plot(obj.t_samp, obj.resamp_rspnse,obj.t_samp,obj.resamp_stpt, ...
+                [obj.t_samp(sparse_i_wrpd_rspnse); obj.t_samp(sparse_i_wrpd_stpt)],...
+                [obj.resamp_rspnse(sparse_i_wrpd_rspnse); obj.resamp_stpt(sparse_i_wrpd_stpt)], 'r')
             xlabel('time [s]')
-            ylabel('x [mm]')
+            ylabel(obj.ylabel_str)
             title('Dynamic Time Warping Links')
             legend('Controller Output', 'Reference')
 
