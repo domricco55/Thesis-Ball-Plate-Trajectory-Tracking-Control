@@ -129,7 +129,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             %Replace the definition of the "Input_Function" MATLAB function block with the
             %setpoint_symfun input
-                open('Linear_Moving_Setpoint_SS');
+                load_system('Linear_Moving_Setpoint_SS');
                 matlabFunctionBlock('Linear_Moving_Setpoint_SS/Input_Function', setpoint_symfun)
             
             %Run the simulation    
