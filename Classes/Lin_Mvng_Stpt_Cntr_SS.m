@@ -1,5 +1,5 @@
 classdef Lin_Mvng_Stpt_Cntr_SS < handle
-    %UNTITLED Summary of this class goes here
+    %Lin_Mvng_Stpt_Cntr_SS  Summary of this class goes here
     %   Detailed explanation goes here
     
     properties (SetAccess = private)

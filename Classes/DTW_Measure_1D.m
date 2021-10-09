@@ -49,7 +49,7 @@ classdef DTW_Measure_1D < handle
             
         end
         
-        function []  = Get_DTW_Measure(obj, plot_cmd)
+        function [DTW_dist]  = Get_DTW_Measure(obj, plot_cmd)
             %Get_DTW_Measure Get the DTW distance measure and warping path (indices of
             %linked points in the minimization). If plot_cmd is true, plot the 
             %warped signals in a manner that spaces the data equally in the time axis. 
@@ -58,7 +58,9 @@ classdef DTW_Measure_1D < handle
             %Get the DTW distance measure for the resampled data, and get the indeces of the
             %warped data (the point to point correspondance that minimizes the DTW
             %distance measure for this particular simulation)
-            [obj.DTW_dist, obj.i_wrpd_rspnse, obj.i_wrpd_stpt] = dtw(obj.resamp_rspnse, obj.resamp_stpt, 'absolute');
+            [DTW_dist, obj.i_wrpd_rspnse, obj.i_wrpd_stpt] = dtw(obj.resamp_rspnse, obj.resamp_stpt, 'absolute');
+            
+            obj.DTW_dist = DTW_dist;
             
             obj.t_warped = linspace(obj.t_samp(1),obj.t_samp(end), numel(obj.i_wrpd_rspnse));
             
