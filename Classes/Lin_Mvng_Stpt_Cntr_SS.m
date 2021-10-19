@@ -63,10 +63,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %Derive augmented dynamics for x direction, SS PID controller
                     x_1a_dot_eqn = obj.stateVec_a_dot == [VDefs.e_x VDefs.e_x_dot...
-                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].'
+                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
                     x_1a_dot_eqn = obj.stateVec_a_dot == subs(rhs(x_1a_dot_eqn),...
-                        VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)))
-                    x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x)
+                        VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
+                    x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
                     
                     %Augmented A Matrix
                     obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_a);
@@ -84,34 +84,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %x setpoint selector matrix (plotting in Simulink purposes)
                     obj.sys_mats.x_s_select = obj.sys_mats.D;
-
-
-%JUST TESTING A FULL STATE FEEDBACK WITH THIS CODE, COMMENTED OUT THE PID ABOVE
-%                     %Augmented A Matrix
-%                     obj.sys_mats.Aa = [0 1 0 0;
-%                                        5.217 0 -4.0111 0;
-%                                        0 0 0 1;
-%                                        112.8871 0 64.8295 0];
-%                     
-%                     %Augmented B Matrix
-%                     obj.sys_mats.Ba = [0;17.7268;0;383.5785];
-%                     
-%                     %S matrix
-%                     obj.sys_mats.S = [ 0 0 0;
-%                                        5.2170 0 1;
-%                                        0 0 0;
-%                                        112.8871 0 0];
-%                    
-%                     %Our desired control output is the x state (want it to match as closely as possible to x_s
-%                     %for all times). Given that x = x_s - e_x, C and D are:
-%                     obj.sys_mats.C = [1 0 0 0]; 
-%                     obj.sys_mats.D = 0;
                     
                     %x setpoint selector matrix (plotting in Simulink purposes)
                     obj.sys_mats.x_s_select = obj.sys_mats.D;
-                    
-
-%                     
+                                    
                 otherwise
                     error('Not a valid moving setpoint controller type/dimension specification')
                     
@@ -181,7 +157,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     plot(obj.sim_response.tout,obj.sim_response.y,...
                         obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
                     xlabel('time [s]')
-                    ylabel('x [mm]')
+                    ylabel('x [m]')
                     title(title_str)
 
 
@@ -194,7 +170,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ax3 = subplot(3,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.T)
                     xlabel('time [s]')
-                    ylabel('Torque [mNm]')
+                    ylabel('Torque [Nm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);   
@@ -210,7 +186,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
                     xlabel('time [s]')
-                    ylabel('x [mm]')
+                    ylabel('x [m]')
                     title(title_str)
 
 
@@ -223,7 +199,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ax3 = subplot(3,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.T)
                     xlabel('time [s]')
-                    ylabel('Torque [mNm]')
+                    ylabel('Torque [Nm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);
