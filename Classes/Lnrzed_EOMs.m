@@ -36,34 +36,27 @@ classdef Lnrzed_EOMs < handle
             
         end 
         
-        function [A_init, B_init, A, B, y_vec, C, D, C_obs, D_obs, TF] = Derive_8th_Ordr_Lin_Sys(obj)
+        function [A, B, y_vec, C, D, C_obs, D_obs, TF] = Derive_8th_Ordr_Lin_Sys(obj)
             %Derive_8th_Ordr_Lin_Sys Linearize the NL EOMS and produce an 8th order linear
             %system of equations representing the dynamics near the unstable equilibrium
             %point
             %   Detailed explanation goes here
             
-            %Define an initial state vector differently than will be utilized in later
-            %analysis. This is used in the derivation of the linear equations but the
-            %system will be put in a form where the decoupling of system is more apparent
-            stateVec_init = [obj.VDefs.x, obj.VDefs.y, obj.VDefs.beta, ...
-                obj.VDefs.gamma, obj.VDefs.x_dot, obj.VDefs.y_dot, ...
-                obj.VDefs.beta_dot, obj.VDefs.gamma_dot].';
             
             %Derive the linearized 8th order equations of motion
-            J_states(stateVec_init) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
-                stateVec_init); %Take Jacobian WRT States
-            J_inputs(stateVec_init) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+            J_states(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+                obj.VDefs.stateVec); %Take Jacobian WRT States
+            J_inputs(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
                 obj.VDefs.inputVec); %Take Jacobian WRT Inputs
             
             %State Coupling and Input Matrices from evaluation of the Jacobians at the
             %unstable equilibrium point
-            A_init = [zeros(4),eye(4);J_states(0,0,0,0,0,0,0,0)];
-            B_init = [zeros(4,2);J_inputs(0,0,0,0,0,0,0,0)];
+            obj.A = J_states(0,0,0,0,0,0,0,0);
+            obj.B = J_inputs(0,0,0,0,0,0,0,0);
             
-            %Decoupled State Coupling and Input Matrices
-            obj.A = [A_init(:,1),A_init(:,5),A_init(:,3),A_init(:,7),A_init(:,2),A_init(:,6),A_init(:,4),A_init(:,8)];
-            obj.A = [obj.A(1,:);obj.A(5,:);obj.A(3,:);obj.A(7,:);obj.A(2,:);obj.A(6,:);obj.A(4,:);obj.A(8,:)];
-            obj.B = [B_init(1,:);B_init(5,:);B_init(3,:);B_init(7,:);B_init(2,:);B_init(6,:);B_init(4,:);B_init(8,:)];
+            A = obj.A;
+            B =obj.B;
+
             
             %Define these symbolic quantities for use in further analysis:
             obj.y_vec = [obj.VDefs.x obj.VDefs.y obj.VDefs.beta obj.VDefs.gamma].';
@@ -81,8 +74,6 @@ classdef Lnrzed_EOMs < handle
             D = obj.D;
             C_obs = obj.C_obs;
             D_obs = obj.D_obs;
-            A = obj.A;
-            B = obj.B;
             
         end
         

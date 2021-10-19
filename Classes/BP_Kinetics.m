@@ -88,10 +88,13 @@ classdef BP_Kinetics < handle
             %Generate equations of motion by isolating the highest order terms in the x
             %and y moment equations
             Moment_Eqns = [SumMBall(1:2);SumMPlate(1:2)];
-            HOTs = [obj.VDefs.x_ddot; obj.VDefs.y_ddot; obj.VDefs.beta_ddot; obj.VDefs.gamma_ddot];
-            [CoeffMat,ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs); 
-            obj.NL_EOMs = HOTs == CoeffMat\ExtTerms;
+            HOTs = [obj.VDefs.x_ddot; obj.VDefs.beta_ddot; obj.VDefs.y_ddot; obj.VDefs.gamma_ddot];
+            [CoeffMat,ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs);
             
+            HighOrderEOMs = CoeffMat\ExtTerms;
+            
+            obj.NL_EOMs = obj.VDefs.stateVec_dot == subs(obj.VDefs.stateVec_dot, HOTs, HighOrderEOMs);
+
             %Return outputs
             NL_EOMs = obj.NL_EOMs;
         end 
