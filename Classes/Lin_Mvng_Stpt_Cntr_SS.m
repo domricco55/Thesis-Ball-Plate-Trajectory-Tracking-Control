@@ -168,9 +168,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax3 = subplot(3,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.T)
+                    plot(obj.sim_response.tout,obj.sim_response.T*1000)
                     xlabel('time [s]')
-                    ylabel('Torque [Nm]')
+                    ylabel('Torque [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);   
@@ -197,9 +197,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax3 = subplot(3,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.T)
+                    plot(obj.sim_response.tout,obj.sim_response.T*1000)
                     xlabel('time [s]')
-                    ylabel('Torque [Nm]')
+                    ylabel('Torque [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);
