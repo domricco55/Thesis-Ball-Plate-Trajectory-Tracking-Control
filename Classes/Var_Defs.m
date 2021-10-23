@@ -106,11 +106,20 @@ classdef Var_Defs
         e_x      
         e_x_dot 
         e_x_ddot
-        e_ix    
+        e_ix  
         ix_s    
         x_s     
         x_dot_s 
         x_ddot_s
+        
+        e_y      
+        e_y_dot 
+        e_y_ddot
+        e_iy  
+        iy_s
+        y_s
+        y_dot_s
+        y_ddot_s
         
     %Vectors
         %Symbolic Angular Velocity Vectors
@@ -273,7 +282,8 @@ classdef Var_Defs
 
             syms T_beta T_gamma M_z
 
-            syms e_x e_x_dot e_x_ddot e_ix ix_s x_s x_dot_s x_ddot_s 
+            syms e_x e_x_dot e_x_ddot e_ix ix_s x_s x_dot_s x_ddot_s...
+                e_y e_y_dot e_y_ddot e_iy iy_s y_s y_dot_s y_ddot_s 
 
             
             
@@ -383,7 +393,14 @@ classdef Var_Defs
             obj.x_s = x_s;      
             obj.x_dot_s = x_dot_s;
             obj.x_ddot_s = x_ddot_s;
-
+            obj.e_y = e_y;       
+            obj.e_y_dot = e_y_dot; 
+            obj.e_y_ddot = e_y_ddot;
+            obj.e_iy = e_iy;   
+            obj.y_s = y_s;      
+            obj.y_dot_s = y_dot_s;
+            obj.y_ddot_s = y_ddot_s;
+            
         %Vectors
             %Symbolic Angular Velocity Vectors
 
