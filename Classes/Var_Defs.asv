@@ -396,8 +396,8 @@ classdef Var_Defs
 
             %Normal and friction forces
             obj.N_z = N_z; 
-            obj.f_x = f_x;
-            obj.f_y = f_y; 
+            obj.f_x = fx;
+            obj.f_y = fy; 
             
             %Error States and Setpoints (x and y Variables)
             obj.e_x = e_x;       
@@ -439,8 +439,7 @@ classdef Var_Defs
             obj.Tb1 = [0;obj.T_beta;0];            
             obj.Tg1 = [obj.T_gamma;0;0];            
             obj.Mz1 = [0;0;obj.M_z];
-            obj.N = [0;0;N_z];
-            obj.F_f = [f_x;f_y;0];
+            obj.N = [0;0
 
             %Displacement Vectors of the Constraining Kinematic Loops
             obj.d_oc_1 = sym('d__oc_', [3 1],'real');             
