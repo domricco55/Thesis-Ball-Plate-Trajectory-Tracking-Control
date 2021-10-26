@@ -389,7 +389,8 @@ classdef Var_Defs
             obj.e_x = e_x;       
             obj.e_x_dot = e_x_dot; 
             obj.e_x_ddot = e_x_ddot;
-            obj.e_ix = e_ix;   
+            obj.e_ix = e_ix; 
+            obj.ix_s = ix_s;  
             obj.x_s = x_s;      
             obj.x_dot_s = x_dot_s;
             obj.x_ddot_s = x_ddot_s;
