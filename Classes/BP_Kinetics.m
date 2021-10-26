@@ -58,7 +58,7 @@ classdef BP_Kinetics < handle
             %Take the sum of moments about the ball's contact point, for the ball alone.
             %This is done in the S2 basis. 
             SumMBall = expand(cross(obj.VDefs.armb2s, obj.VDefs.R02*obj.VDefs.Wb0s) == ...
-                cross(obj.VDefs.armb2s, obj.VDefs.m_b*obj.BP_Knmtcs.ab2s) + Hb2ds);
+                cross(obj.VDefs.armb2s, obj.VDefs.m_b*obj.BP_Knmtcs.ab2s) + obj.Hb2ds);
             SumMBall = subs(SumMBall, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
             
             %Derive the Plate's angular momentum vector. First, find it in the S2 basis,
@@ -82,7 +82,7 @@ classdef BP_Kinetics < handle
             %Rotate pertinent vectors into S1 basis
             ap1s = expand(subs(obj.VDefs.R21*obj.BP_Knmtcs.ap2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
             ab1s = subs(obj.VDefs.R21*obj.BP_Knmtcs.ab2s, obj.VDefs.symFunVec, obj.VDefs.symVarVec);
-            Hb1ds = expand(obj.VDefs.R21*Hb2ds);
+            Hb1ds = expand(obj.VDefs.R21*obj.Hb2ds);
             
             %Sum moments about the center of the u-joint for the ball and plate combined
             %system. This is done in the S1 basis
