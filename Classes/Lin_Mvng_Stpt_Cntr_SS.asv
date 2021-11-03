@@ -15,8 +15,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         stateVec_a_dot
         setpointVec
 
-        %String for name of Simulink Model to use
-        sim_string
+        %String for accessing the relevant 
+        sim_path_string
     end
     
     
@@ -55,7 +55,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.sys_mats.x_s_select = 1;
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_Int';
+                    obj.sim_string = 
                     
                 case 'SS PID Controller x dimension'    
                     
@@ -93,9 +93,6 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %x setpoint selector matrix (plotting in Simulink purposes)
                     obj.sys_mats.x_s_select = obj.sys_mats.D;
-
-                    %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
                                     
                 otherwise
                     error('Not a valid moving setpoint controller type/dimension specification')
@@ -142,9 +139,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Replace the definition of the "Input_Function" MATLAB function block with the
             %setpoint_symfun input
                 setpoint = setpoint_symfun;
-                sim_path_string = strcat(obj.sim_string,'/Setpoint_Function');
-                load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, setpoint)
+                load_system('Linear_Moving_Setpoint_SS');
+                matlabFunctionBlock('Linear_Moving_Setpoint_SS/Setpoint_Function', setpoint)
             
             %Run the simulation    
                 obj.sim_response = sim('Linear_Moving_Setpoint_SS');
