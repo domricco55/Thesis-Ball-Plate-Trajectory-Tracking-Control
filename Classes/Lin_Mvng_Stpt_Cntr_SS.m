@@ -6,7 +6,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         
         sys_mats %System Matrices
         sim_response %Latest system response for this object
-        ctrl_type_dim %The type of control system this object represents 
+        ctrl_type %The type of control system this object represents 
                   %(SS Integral Controller, or SS PID Controller)
                   
         %Definitions of the state vector, roc of state vector, and setpoint
@@ -15,7 +15,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         stateVec_1a_dot
         stateVec_2a 
         stateVec_2a_dot
-        setpointVec
+        x_setpointVec
+        y_setpointVec
 
         %String for name of Simulink Model to use
         sim_string
@@ -26,17 +27,17 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     
     
     methods
-        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs,plant_model, VDefs, type_dim)
+        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs,plant_model, VDefs, type)
             %Lin_Mvng_Stpt_Cntr_SS Construct an instance of this class
             %   Detailed explanation goes here
             
-            %Set this object's controller/dimension type
-            obj.ctrl_type_dim = type_dim;
+            %Set this object's controller type
+            obj.ctrl_type = type;
             
             %Bring in the plant function/model
             obj.plant = plant_model;
 
-            switch type_dim
+            switch type
                 
                 case 'SS Integral Controller'
 
@@ -87,13 +88,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                 case 'SS PID Controller'    
                     
-                    
+                    % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
                     obj.stateVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
                     obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Setpoint vector
-                    obj.setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
+                    obj.x_setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
                     
                     %Derive augmented dynamics for x direction, SS PID controller
                     x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
@@ -109,12 +110,41 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.sys_mats.B1a = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
                     
                     %S matrix
-                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
+                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.x_setpointVec);
                     
                     %Our desired control output is the x state (want it to match as closely as possible to x_s
                     %for all times). Given that x = x_s - e_x, C and D are:
                     obj.sys_mats.C1a = [0 -1 0 0 0]; 
                     obj.sys_mats.D1a = [1 0 0];
+
+                    % y DIMENSION DERIVATIONS
+                    %State vector augmented with integral of the error in y AND with y and y_dot replaced with error states
+                    obj.stateVec_2a = [VDefs.e_iy, VDefs.e_y, VDefs.e_y_dot, VDefs.gamma, VDefs.gamma_dot].'; 
+                    obj.stateVec_2a_dot = [VDefs.e_y, VDefs.e_y_dot, VDefs.e_y_ddot, VDefs.gamma_dot, VDefs.gamma_ddot].';
+                    
+                    %Setpoint vector
+                    obj.y_setpointVec = [VDefs.y_s VDefs.y_dot_s VDefs.y_ddot_s].';
+                    
+                    %Derive augmented dynamics for x direction, SS PID controller
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
+                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.gamma_dot rhs(Lnrzed_EOMs.Lin_EOMs2(4))].';
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == subs(rhs(x_2a_dot_eqn),...
+                        VDefs.y_ddot , rhs(Lnrzed_EOMs.Lin_EOMs2(2)));
+                    x_2a_dot_eqn = subs(x_2a_dot_eqn, VDefs.y, VDefs.y_s - VDefs.e_y);
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.A2a = equationsToMatrix(rhs(x_2a_dot_eqn), obj.stateVec_2a);
+                    
+                    %Augmented B Matrix
+                    obj.sys_mats.B2a = equationsToMatrix(rhs(x_2a_dot_eqn), VDefs.T_gamma);
+                    
+                    %S matrix
+                    obj.sys_mats.S2 = equationsToMatrix(rhs(x_2a_dot_eqn), obj.y_setpointVec);
+                    
+                    %Our desired control output is the x state (want it to match as closely as possible to x_s
+                    %for all times). Given that x = x_s - e_x, C and D are:
+                    obj.sys_mats.C2a = [0 -1 0 0 0]; 
+                    obj.sys_mats.D2a = [1 0 0];
                     
 
                     %Set the name of the simulink model to use
@@ -193,25 +223,49 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title(obj.ctrl_type_dim);
                     
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.y,...
-                        obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
+                        obj.sim_response.tout,obj.sim_response.x_s,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
 
 
                     ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.xa(:,4)))
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
                     xlabel('time [s]')
                     ylabel('\beta [deg]')
 
 
                     ax3 = subplot(3,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.T*1000)
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
                     xlabel('time [s]')
-                    ylabel('Torque [mNm]')
+                    ylabel('Tbeta [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
+                    set(gcf,'position',[0,0,800,900]);   
+
+                    title(obj.ctrl_type_dim);
+                    
+                    ax4 = subplot(3,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
+                        obj.sim_response.tout,obj.sim_response.x_s,'--' )
+                    xlabel('time [s]')
+                    ylabel('y [m]')
+                    title(title_str)
+
+
+                    ax5 = subplot(3,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
+                    xlabel('time [s]')
+                    ylabel('\gamma[deg]')
+
+
+                    ax6 = subplot(3,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tgamma [mNm]')
+                    
+                    linkaxes([ax4,ax5, ax6],'x');
                     set(gcf,'position',[0,0,800,900]);   
                     
 

@@ -15,7 +15,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         stateVec_1a_dot
         stateVec_2a 
         stateVec_2a_dot
-        setpointVec
+        x_setpointVec
+        y_setpointVec
 
         %String for name of Simulink Model to use
         sim_string
@@ -87,13 +88,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                 case 'SS PID Controller'    
                     
-                    
+                    % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
                     obj.stateVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
                     obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Setpoint vector
-                    obj.setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
+                    obj.x_setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
                     
                     %Derive augmented dynamics for x direction, SS PID controller
                     x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
@@ -109,12 +110,41 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.sys_mats.B1a = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
                     
                     %S matrix
-                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
+                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.x_setpointVec);
                     
                     %Our desired control output is the x state (want it to match as closely as possible to x_s
                     %for all times). Given that x = x_s - e_x, C and D are:
                     obj.sys_mats.C1a = [0 -1 0 0 0]; 
                     obj.sys_mats.D1a = [1 0 0];
+
+                    % y DIMENSION DERIVATIONS
+                    %State vector augmented with integral of the error in y AND with y and y_dot replaced with error states
+                    obj.stateVec_2a = [VDefs.e_iy, VDefs.e_y, VDefs.e_y_dot, VDefs.gamma, VDefs.gamma_dot].'; 
+                    obj.stateVec_2a_dot = [VDefs.e_y, VDefs.e_y_dot, VDefs.e_y_ddot, VDefs.gamma_dot, VDefs.gamma_ddot].';
+                    
+                    %Setpoint vector
+                    obj.y_setpointVec = [VDefs.y_s VDefs.y_dot_s VDefs.y_ddot_s].';
+                    
+                    %Derive augmented dynamics for x direction, SS PID controller
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
+                        (VDefs.xy_ddot_s - VDefs.y_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs2(4))].';
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == subs(rhs(x_2a_dot_eqn),...
+                        VDefs.y_ddot , rhs(Lnrzed_EOMs.Lin_EOMs2(2)));
+                    x_2a_dot_eqn = subs(x_2a_dot_eqn, VDefs.y, VDefs.y_s - VDefs.e_y);
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.A2a = equationsToMatrix(rhs(x_2a_dot_eqn), obj.stateVec_2a);
+                    
+                    %Augmented B Matrix
+                    obj.sys_mats.B2a = equationsToMatrix(rhs(x_2a_dot_eqn), VDefs.T_gamma);
+                    
+                    %S matrix
+                    obj.sys_mats.S2 = equationsToMatrix(rhs(x_2a_dot_eqn), obj.y_setpointVec);
+                    
+                    %Our desired control output is the x state (want it to match as closely as possible to x_s
+                    %for all times). Given that x = x_s - e_x, C and D are:
+                    obj.sys_mats.C2a = [0 -1 0 0 0]; 
+                    obj.sys_mats.D2a = [1 0 0];
                     
 
                     %Set the name of the simulink model to use
@@ -144,10 +174,6 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 %ICs
                 x_0 = Simulink.Parameter(x_0);
                 assignin('base', 'xa_0', x_0);  
-                
-                %Output matrix
-                C = Simulink.Parameter(obj.sys_mats.C);
-                assignin('base', 'C', C); 
 
                 %Gain matrix K1 - x direction
                 K1 = Simulink.Parameter(K1);
@@ -167,7 +193,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %with a function generated from y_setpoint_symfun
                 sim_path_string = strcat(obj.sim_string,'/y_Setpoint_Function');
                 load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'x_setpoint')
+                matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'y_setpoint')
 
             %Replace the definition of the "Plant_Function" MATLAB function block with a
             %function generated from obj.plant symbolic function
@@ -197,7 +223,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title(obj.ctrl_type_dim);
                     
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.y,...
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
                         obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
