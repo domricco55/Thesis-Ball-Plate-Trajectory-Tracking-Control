@@ -75,7 +75,8 @@ classdef Var_Defs
         x_hat          
         y_hat           
         z_b                     
-        ix               
+        ix 
+        iy
         x          
         y     
         x_dot  
@@ -367,7 +368,8 @@ classdef Var_Defs
             obj.y_hat = y_hat;      
             obj.z_b  = z_b;     
                                
-            obj.ix = ix;                
+            obj.ix = ix;
+            obj.iy = iy;
             obj.x  = x;        
             obj.y = y;      
             obj.x_dot = x_dot;   
