@@ -71,7 +71,7 @@ classdef Lnrzed_EOMs < handle
 
             %Create symbolic equation object for the total system (used later in
             %control system design)
-            obj.Lin_EOMs = obj.VDefs.stateVec_dot == obj.A*obj.VDefs.stateVec + obj.B*[obj.VDefs.T_beta;obj.VDefs.T_gamma];
+            obj.Lin_EOMs = obj.A*obj.VDefs.stateVec + obj.B*[obj.VDefs.T_beta;obj.VDefs.T_gamma];
 
            %Return outputs
             y_vec = obj.y_vec;

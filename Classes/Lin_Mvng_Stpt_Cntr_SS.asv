@@ -142,12 +142,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             %Replace the definition of the "Setpoint_Function" MATLAB function block with the
             %setpoint_symfun input
-                sim_path_string = strcat(obj.sim_string,'/Plant/Plant_Function');
+                sim_path_string = strcat(obj.sim_string,'/Plant_Function');
                 load_system(obj.sim_string);
-                %Generate a matlab function from the linearized plant model
-                input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
-                output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
-                matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
+                matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot',)
             
             %Run the simulation    
                 obj.sim_response = sim(obj.sim_string);
