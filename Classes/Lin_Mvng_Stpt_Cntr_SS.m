@@ -36,7 +36,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             switch type_dim
                 
-                case 'SS Integral Controller x dimension'
+                case 'SS Integral Controller'
                     
                     %State vector augmented with integral of the error in x
                     obj.stateVec_a = [VDefs.e_ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
@@ -57,22 +57,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.sys_mats.Ca = sym([0 1 0 0 0]); 
                     obj.sys_mats.Da = 0;  
 
-                    %In the non-augmented state equations (used by Simulink), the C matrix
-                    %is different - it grabs our absolute x and y for the integral
-                    %controller
-                    obj.sys_mats.C = [1 0 0 0 0 0 0 0;
-                                      0 0 0 0 1 0 0 0];
-
-                    
-%                     %x setpoint selector matrix (plotting in Simulink purposes)
-%                     obj.sys_mats.x_s_select = 1;
-
-
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_Int';
                     
                     
-                case 'SS PID Controller x dimension'    
+                case 'SS PID Controller'    
                     
                     
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
@@ -102,15 +91,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %for all times). Given that x = x_s - e_x, C and D are:
                     obj.sys_mats.Ca = [0 -1 0 0 0]; 
                     obj.sys_mats.Da = [1 0 0];
-
-%                     %x setpoint selector matrix (plotting in Simulink purposes)
-%                     obj.sys_mats.x_s_select = obj.sys_mats.D;
                     
-                    %In the non-augmented state equations (used by Simulink), the C matrix
-                    %is different - it grabs our absolute x, xdot and y for the integral
-                    %controller
-                    obj.sys_mats.C = [1 0 0 0 0 0 0 0;
-                                      0 0 0 0 1 0 0 0];
 
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
@@ -125,7 +106,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         end
         
         
-        function [] = Run_Sim(obj,setpoint_symfun,tspan, xa_0, K)
+        function [] = Run_Sim(obj,setpoint_symfun,tspan, x_0, K1, K2)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
          
@@ -137,16 +118,20 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 assignin('base', 'tspan', tspan)
 
                 %ICs
-                xa_0 = Simulink.Parameter(xa_0);
-                assignin('base', 'xa_0', xa_0);  
+                x_0 = Simulink.Parameter(x_0);
+                assignin('base', 'xa_0', x_0);  
                 
                 %Output matrix
                 C = Simulink.Parameter(obj.sys_mats.C);
                 assignin('base', 'C', C); 
 
-                %Gain matrix K
-                K = Simulink.Parameter(K);
-                assignin('base', 'K', K); %Create the simulink paramter in the base workspace   
+                %Gain matrix K1 - x direction
+                K1 = Simulink.Parameter(K1);
+                assignin('base', 'K1', K1); %Create the simulink paramter in the base workspace   
+
+                %Gain matrix K2 - y direction
+                K2 = Simulink.Parameter(K2);
+                assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
             
             %Replace the definition of the "Setpoint_Function" MATLAB function block with the
             %setpoint_symfun input
@@ -176,7 +161,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             switch obj.ctrl_type_dim
                 
-                case 'SS Integral Controller x dimension'
+                case 'SS Integral Controller'
                     
                     figure_obj = figure;
                     
@@ -206,7 +191,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     
-                case 'SS PID Controller x dimension' 
+                case 'SS PID Controller' 
                     
                     figure_obj = figure;
                     
