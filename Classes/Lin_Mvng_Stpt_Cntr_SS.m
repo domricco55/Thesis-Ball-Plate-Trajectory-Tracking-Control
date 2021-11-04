@@ -229,6 +229,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 %             %   Detailed explanation goes here
 %         end 
         
+%         
+%         function [] = create_animation(obj)
+%             %METHOD3 Summary of this method goes here
+%             %   Detailed explanation goes here
+%         end 
+
+
     end
 end
 

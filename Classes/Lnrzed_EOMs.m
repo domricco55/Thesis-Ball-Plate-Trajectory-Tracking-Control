@@ -20,6 +20,7 @@ classdef Lnrzed_EOMs < handle
         B1
         A2
         B2
+        Lin_EOMs
         Lin_EOMs1
         Lin_EOMs2
     end
@@ -36,7 +37,7 @@ classdef Lnrzed_EOMs < handle
             
         end 
         
-        function [A, B, y_vec, C, D, C_obs, D_obs, TF] = Derive_8th_Ordr_Lin_Sys(obj)
+        function [A, B, y_vec, C, D, C_obs, D_obs, TF, Lin_EOMs] = Derive_8th_Ordr_Lin_Sys(obj)
             %Derive_8th_Ordr_Lin_Sys Linearize the NL EOMS and produce an 8th order linear
             %system of equations representing the dynamics near the unstable equilibrium
             %point
@@ -68,12 +69,17 @@ classdef Lnrzed_EOMs < handle
             obj.D_obs = sym(zeros(8,2));
             TF = obj.C_obs*(obj.VDefs.s*eye(8) - obj.A)\obj.B + obj.D_obs; 
 
+            %Create symbolic equation object for the total system (used later in
+            %control system design)
+            obj.Lin_EOMs = obj.VDefs.stateVec_dot == obj.A*obj.VDefs.stateVec + obj.B*[obj.VDefs.T_beta;obj.VDefs.T_gamma];
+
            %Return outputs
             y_vec = obj.y_vec;
             C = obj.C;
             D = obj.D;
             C_obs = obj.C_obs;
             D_obs = obj.D_obs;
+            Lin_EOMs = obj.Lin_EOMs;
             
         end
         
