@@ -173,7 +173,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                 %ICs
                 x_0 = Simulink.Parameter(x_0);
-                assignin('base', 'xa_0', x_0);  
+                assignin('base', 'x_0', x_0);  
 
                 %Gain matrix K1 - x direction
                 K1 = Simulink.Parameter(K1);
@@ -214,13 +214,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %plot_results Summary of this method goes here
             %   Detailed explanation goes here 
             
-            switch obj.ctrl_type_dim
+            switch obj.ctrl_type
                 
                 case 'SS Integral Controller'
                     
                     figure_obj = figure;
                     
-                    title(obj.ctrl_type_dim);
+                    title(obj.ctrl_type);
                     
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
@@ -244,7 +244,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);   
 
-                    title(obj.ctrl_type_dim);
+                    title(obj.ctrl_type);
                     
                     ax4 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
@@ -272,30 +272,30 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                 case 'SS PID Controller' 
                     
-                    figure_obj = figure;
-                    
-                    title(obj.ctrl_type_dim);
-                    
-                    ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
-                    xlabel('time [s]')
-                    ylabel('x [m]')
-                    title(title_str)
-
-
-                    ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.xa(:,4)))
-                    xlabel('time [s]')
-                    ylabel('\beta [deg]')
-
-
-                    ax3 = subplot(3,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.T*1000)
-                    xlabel('time [s]')
-                    ylabel('Torque [mNm]')
-                    
-                    linkaxes([ax1,ax2, ax3],'x');
-                    set(gcf,'position',[0,0,800,900]);
+%                     figure_obj = figure;
+%                     
+%                     title(obj.ctrl_type_dim);
+%                     
+%                     ax1 = subplot(3,1,1);
+%                     plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+%                     xlabel('time [s]')
+%                     ylabel('x [m]')
+%                     title(title_str)
+% 
+% 
+%                     ax2 = subplot(3,1,2);
+%                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.xa(:,4)))
+%                     xlabel('time [s]')
+%                     ylabel('\beta [deg]')
+% 
+% 
+%                     ax3 = subplot(3,1,3);
+%                     plot(obj.sim_response.tout,obj.sim_response.T*1000)
+%                     xlabel('time [s]')
+%                     ylabel('Torque [mNm]')
+%                     
+%                     linkaxes([ax1,ax2, ax3],'x');
+%                     set(gcf,'position',[0,0,800,900]);
                     
                 case 'SS Integral Controller y dimension'   
                     
