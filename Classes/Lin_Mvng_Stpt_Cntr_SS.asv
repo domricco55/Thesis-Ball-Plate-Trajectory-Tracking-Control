@@ -11,8 +11,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                   
         %Definitions of the state vector, roc of state vector, and setpoint
         %vector for a particular controller associated with an instance of the class        
-        stateVec_a 
-        stateVec_a_dot
+        stateVec_1a 
+        stateVec_1a_dot
+        stateVec_2a 
+        stateVec_2a_dot
         setpointVec
 
         %String for name of Simulink Model to use
@@ -37,60 +39,82 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             switch type_dim
                 
                 case 'SS Integral Controller'
-                    
+
+                    % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x
-                    obj.stateVec_a = [VDefs.e_ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.x_dot, VDefs.x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
+                    obj.stateVec_1a = [VDefs.e_ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
+                    obj.stateVec_1a_dot = [VDefs.e_x, VDefs.x_dot, VDefs.x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Augmented A Matrix
-                    obj.sys_mats.Aa = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A1]]; 
+                    obj.sys_mats.A1a = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A1]]; 
                     
                     %Augmented B Matrix
-                    obj.sys_mats.Ba = [0;Lnrzed_EOMs.B1];
+                    obj.sys_mats.B1a = [0;Lnrzed_EOMs.B1];
                     
                     %S matrix, the setpoint matrix
-                    obj.sys_mats.S = sym([1;0;0;0;0]);
+                    obj.sys_mats.S1 = sym([1;0;0;0;0]);
                     
                     %Our desired control output is the x state (want it to match as 
                     %closely as possible to x_s for all times). C and D select the x state
                     %from the augmented state vector
-                    obj.sys_mats.Ca = sym([0 1 0 0 0]); 
-                    obj.sys_mats.Da = 0;  
+                    obj.sys_mats.C1a = sym([0 1 0 0 0]); 
+                    obj.sys_mats.D1a = 0;  
+
+                    % Y DIMENSION DERIVATIONS
+                    %State vector augmented with integral of the error in y
+                    obj.stateVec_2a = [VDefs.e_iy, VDefs.y, VDefs.y_dot, VDefs.gamma, VDefs.gamma_dot].'; 
+                    obj.stateVec_2a_dot = [VDefs.e_y, VDefs.y_dot, VDefs.y_ddot, VDefs.gamma_dot, VDefs.gamma_ddot].';
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.A2a = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A2]]; 
+                    
+                    %Augmented B Matrix
+                    obj.sys_mats.B2a = [0;Lnrzed_EOMs.B2];
+                    
+                    %S matrix, the setpoint matrix
+                    obj.sys_mats.S2 = sym([1;0;0;0;0]);
+                    
+                    %Our desired control output is the x state (want it to match as 
+                    %closely as possible to x_s for all times). C and D select the x state
+                    %from the augmented state vector
+                    obj.sys_mats.C2a = sym([0 1 0 0 0]); 
+                    obj.sys_mats.D2a = 0;  
+
 
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_Int';
                     
                     
-                case 'SS PID Controller x dimension'    
+                case 'SS PID Controller'    
                     
                     
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
-                    obj.stateVec_a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
+                    obj.stateVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
+                    obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Setpoint vector
                     obj.setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
                     
                     %Derive augmented dynamics for x direction, SS PID controller
-                    x_1a_dot_eqn = obj.stateVec_a_dot == [VDefs.e_x VDefs.e_x_dot...
+                    x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
                         (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
-                    x_1a_dot_eqn = obj.stateVec_a_dot == subs(rhs(x_1a_dot_eqn),...
+                    x_1a_dot_eqn = obj.stateVec_1a_dot == subs(rhs(x_1a_dot_eqn),...
                         VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
                     x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
                     
                     %Augmented A Matrix
-                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_a);
+                    obj.sys_mats.A1a = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_1a);
                     
                     %Augmented B Matrix
-                    obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
+                    obj.sys_mats.B1a = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
                     
                     %S matrix
-                    obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
+                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
                     
                     %Our desired control output is the x state (want it to match as closely as possible to x_s
                     %for all times). Given that x = x_s - e_x, C and D are:
-                    obj.sys_mats.Ca = [0 -1 0 0 0]; 
-                    obj.sys_mats.Da = [1 0 0];
+                    obj.sys_mats.C1a = [0 -1 0 0 0]; 
+                    obj.sys_mats.D1a = [1 0 0];
                     
 
                     %Set the name of the simulink model to use
@@ -106,7 +130,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         end
         
         
-        function [] = Run_Sim(obj,setpoint_symfun,tspan, x_0, K1, K2)
+        function [] = Run_Sim(obj,x_setpoint_symfun,y_setpoint_symfun,tspan, x_0, K1, K2)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
          
@@ -133,20 +157,25 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 K2 = Simulink.Parameter(K2);
                 assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
             
-            %Replace the definition of the "Setpoint_Function" MATLAB function block with the
-            %setpoint_symfun input
-                setpoint = setpoint_symfun;
-                sim_path_string = strcat(obj.sim_string,'/Setpoint_Function');
+            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+            %with a function generated from x_setpoint_symfun
+                sim_path_string = strcat(obj.sim_string,'/x_Setpoint_Function');
                 load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, setpoint)
+                matlabFunctionBlock(sim_path_string, x_setpoint_symfun,'FunctionName', 'x_setpoint')
 
-            %Replace the definition of the "Setpoint_Function" MATLAB function block with the
-            %setpoint_symfun input
+            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+            %with a function generated from y_setpoint_symfun
+                sim_path_string = strcat(obj.sim_string,'/y_Setpoint_Function');
+                load_system(obj.sim_string);
+                matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'x_setpoint')
+
+            %Replace the definition of the "Plant_Function" MATLAB function block with a
+            %function generated from obj.plant symbolic function
                 sim_path_string = strcat(obj.sim_string,'/Plant/Plant_Function');
                 load_system(obj.sim_string);
                 %Generate a matlab function from the linearized plant model
                 input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
-                output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
+%                 output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
                 matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
             
             %Run the simulation    
@@ -161,7 +190,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             switch obj.ctrl_type_dim
                 
-                case 'SS Integral Controller x dimension'
+                case 'SS Integral Controller'
                     
                     figure_obj = figure;
                     
@@ -191,7 +220,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     
-                case 'SS PID Controller x dimension' 
+                case 'SS PID Controller' 
                     
                     figure_obj = figure;
                     
