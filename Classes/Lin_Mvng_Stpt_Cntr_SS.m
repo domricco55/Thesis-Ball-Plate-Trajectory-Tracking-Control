@@ -222,45 +222,43 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     title(obj.ctrl_type);
                     
-                    ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
+                    ax1 = subplot(6,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(1,:),...
                         obj.sim_response.tout,obj.sim_response.x_s,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
 
 
-                    ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
+                    ax2 = subplot(6,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(3,:)))
                     xlabel('time [s]')
                     ylabel('\beta [deg]')
 
 
-                    ax3 = subplot(3,1,3);
+                    ax3 = subplot(6,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
                     xlabel('time [s]')
                     ylabel('Tbeta [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);   
-
-                    title(obj.ctrl_type);
                     
-                    ax4 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
-                        obj.sim_response.tout,obj.sim_response.x_s,'--' )
+                    ax4 = subplot(6,1,4);
+                    plot(obj.sim_response.tout,obj.sim_response.x(5,:),...
+                        obj.sim_response.tout,obj.sim_response.y_s,'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
 
 
-                    ax5 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
+                    ax5 = subplot(6,1,5);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(7,:)))
                     xlabel('time [s]')
                     ylabel('\gamma[deg]')
 
 
-                    ax6 = subplot(3,1,3);
+                    ax6 = subplot(6,1,6);
                     plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
                     xlabel('time [s]')
                     ylabel('Tgamma [mNm]')
@@ -272,30 +270,51 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                 case 'SS PID Controller' 
                     
-%                     figure_obj = figure;
-%                     
-%                     title(obj.ctrl_type_dim);
-%                     
-%                     ax1 = subplot(3,1,1);
-%                     plot(obj.sim_response.tout,obj.sim_response.y,obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
-%                     xlabel('time [s]')
-%                     ylabel('x [m]')
-%                     title(title_str)
-% 
-% 
-%                     ax2 = subplot(3,1,2);
-%                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.xa(:,4)))
-%                     xlabel('time [s]')
-%                     ylabel('\beta [deg]')
-% 
-% 
-%                     ax3 = subplot(3,1,3);
-%                     plot(obj.sim_response.tout,obj.sim_response.T*1000)
-%                     xlabel('time [s]')
-%                     ylabel('Torque [mNm]')
-%                     
-%                     linkaxes([ax1,ax2, ax3],'x');
-%                     set(gcf,'position',[0,0,800,900]);
+                    figure_obj = figure;
+                    
+                    title(obj.ctrl_type);
+                    
+                    ax1 = subplot(6,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(1,:),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('x [m]')
+                    title(title_str)
+
+
+                    ax2 = subplot(6,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(3,:)))
+                    xlabel('time [s]')
+                    ylabel('\beta [deg]')
+
+
+                    ax3 = subplot(6,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tbeta [mNm]')
+                    
+                    linkaxes([ax1,ax2, ax3],'x');
+                    set(gcf,'position',[0,0,800,900]);
+
+                    ax4 = subplot(6,1,4);
+                    plot(obj.sim_response.tout,obj.sim_response.x(5,:),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('y [m]')
+                    title(title_str)
+
+
+                    ax5 = subplot(6,1,5);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(7,:)))
+                    xlabel('time [s]')
+                    ylabel('\gamma [deg]')
+
+
+                    ax6 = subplot(6,1,6);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tgamma [mNm]')
+                    
+                    linkaxes([ax4,ax5, ax6],'x');
+                    set(gcf,'position',[0,0,800,900]);
                     
                 case 'SS Integral Controller y dimension'   
                     
