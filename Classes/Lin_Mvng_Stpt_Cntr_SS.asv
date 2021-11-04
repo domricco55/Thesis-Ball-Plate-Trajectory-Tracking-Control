@@ -54,11 +54,18 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Our desired control output is the x state (want it to match as 
                     %closely as possible to x_s for all times). C and D select the x state
                     %from the augmented state vector
-                    obj.sys_mats.C = sym([0 1 0 0 0]); 
-                    obj.sys_mats.D = 0;  
+                    obj.sys_mats.Ca = sym([0 1 0 0 0]); 
+                    obj.sys_mats.Da = 0;  
+
+                    %In the non-augmented state equations (used by Simulink), the C matrix
+                    %is different - it grabs our absolute x and y for the integral
+                    %controller
+                    obj.sys_mats.C = [1 0 0 0 0 0 0 0;
+                                      0 0 0 0 1 0 0 0];
+
                     
-                    %x setpoint selector matrix (plotting in Simulink purposes)
-                    obj.sys_mats.x_s_select = 1;
+%                     %x setpoint selector matrix (plotting in Simulink purposes)
+%                     obj.sys_mats.x_s_select = 1;
 
 
                     %Set the name of the simulink model to use
@@ -93,13 +100,17 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %Our desired control output is the x state (want it to match as closely as possible to x_s
                     %for all times). Given that x = x_s - e_x, C and D are:
-                    obj.sys_mats.C = [0 -1 0 0 0]; 
-                    obj.sys_mats.D = [1 0 0];
-                    %x setpoint selector matrix (plotting in Simulink purposes)
-                    obj.sys_mats.x_s_select = obj.sys_mats.D;
+                    obj.sys_mats.Ca = [0 -1 0 0 0]; 
+                    obj.sys_mats.Da = [1 0 0];
+
+%                     %x setpoint selector matrix (plotting in Simulink purposes)
+%                     obj.sys_mats.x_s_select = obj.sys_mats.D;
                     
-                    %x setpoint selector matrix (plotting in Simulink purposes)
-                    obj.sys_mats.x_s_select = obj.sys_mats.D;
+                    %In the non-augmented state equations (used by Simulink), the C matrix
+                    %is different - it grabs our absolute x, xdot and y for the integral
+                    %controller
+                    obj.sys_mats.C = [1 0 0 0 0 0 0 0;
+                                      0 0 0 0 1 0 0 0];
 
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
@@ -127,7 +138,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                 %ICs
                 xa_0 = Simulink.Parameter(xa_0);
-                assignin('base', 'xa_0', xa_0);     
+                assignin('base', 'xa_0', xa_0);  
+                
+                %Output matrix
+                C = Simulink.Parameter(obj.sys_mats.C);
+                assignin('base', 'C', C); 
 
                 %Gain matrix K
                 K = Simulink.Parameter(K);
@@ -142,9 +157,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             %Replace the definition of the "Setpoint_Function" MATLAB function block with the
             %setpoint_symfun input
-                sim_path_string = strcat(obj.sim_string,'/Plant_Function');
+                sim_path_string = strcat(obj.sim_string,'/Plant/Plant_Function');
                 load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot',)
+                %Generate a matlab function from the linearized plant model
+                input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
+                output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
+                matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
             
             %Run the simulation    
                 obj.sim_response = sim(obj.sim_string);
