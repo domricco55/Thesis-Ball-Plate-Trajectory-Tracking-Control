@@ -17,71 +17,39 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
         %String for name of Simulink Model to use
         sim_string
+
+        %Plant symfun or MATLAB Anonymous function
+        plant
     end
     
     
     methods
-        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs, VDefs, type_dim)
+        function obj = Lin_Mvng_Stpt_Cntr_SS(plant_model, VDefs, type_dim)
             %Lin_Mvng_Stpt_Cntr_SS Construct an instance of this class
             %   Detailed explanation goes here
             
             %Set this object's controller/dimension type
             obj.ctrl_type_dim = type_dim;
             
+            %Bring in the plant function/model
+            obj.plant = plant_model;
+
             switch type_dim
                 
                 case 'SS Integral Controller x dimension'
                     
-                    %State vector augmented with integral of the error in x
-                    obj.stateVec_a = [VDefs.e_ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.x_dot, VDefs.x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
-                    %Augmented A Matrix
-                    obj.sys_mats.Aa = [zeros(5,1),[-1 0 0 0; Lnrzed_EOMs.A1]]; 
-                    
-                    %Augmented B Matrix
-                    obj.sys_mats.Ba = [0;Lnrzed_EOMs.B1];
-                    
-                    %S matrix, the setpoint matrix
-                    obj.sys_mats.S = sym([1;0;0;0;0]);
-                    
-                    %Our desired control output is the x state (want it to match as 
-                    %closely as possible to x_s for all times). C and D select the x state
-                    %from the augmented state vector
-                    obj.sys_mats.C = sym([0 1 0 0 0]); 
-                    obj.sys_mats.D = 0;  
-                    
-                    %x setpoint selector matrix (plotting in Simulink purposes)
-                    obj.sys_mats.x_s_select = 1;
+
 
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_Int';
                     
+                    
                 case 'SS PID Controller x dimension'    
                     
                     
-                    %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
-                    obj.stateVec_a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.beta, VDefs.beta_dot].'; 
-                    obj.stateVec_a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
-                    
-                    %Setpoint vector
-                    obj.setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
-                    
-                    %Derive augmented dynamics for x direction, SS PID controller
-                    x_1a_dot_eqn = obj.stateVec_a_dot == [VDefs.e_x VDefs.e_x_dot...
-                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
-                    x_1a_dot_eqn = obj.stateVec_a_dot == subs(rhs(x_1a_dot_eqn),...
-                        VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
-                    x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
-                    
-                    %Augmented A Matrix
-                    obj.sys_mats.Aa = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_a);
-                    
-                    %Augmented B Matrix
-                    obj.sys_mats.Ba = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
-                    
-                    %S matrix
-                    obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
+%                     %S matrix
+%                     obj.sys_mats.S = equationsToMatrix(rhs(x_1a_dot_eqn), obj.setpointVec);
                     
                     %Our desired control output is the x state (want it to match as closely as possible to x_s
                     %for all times). Given that x = x_s - e_x, C and D are:
@@ -98,6 +66,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
                                     
                 otherwise
+                    
                     error('Not a valid moving setpoint controller type/dimension specification')
                     
             end
@@ -106,7 +75,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         end
         
         
-        function [] = Run_Sim(obj,setpoint_symfun, tspan, xa_0, K)
+        function [] = Run_Sim(obj,setpoint_symfun,tspan, xa_0, K)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
          
@@ -119,35 +88,27 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                 %ICs
                 xa_0 = Simulink.Parameter(xa_0);
-                assignin('base', 'xa_0', xa_0);
-
-                %Symbolic matrices derived or assigned in the constructor
-                Aa = Simulink.Parameter(double(obj.sys_mats.Aa));
-                assignin('base', 'Aa', Aa); %Create the simulink paramter in the base workspace 
-                Ba = Simulink.Parameter(double(obj.sys_mats.Ba));
-                assignin('base', 'Ba', Ba); %Create the simulink paramter in the base workspace 
-                S = Simulink.Parameter(double(obj.sys_mats.S));
-                assignin('base', 'S', S); %Create the simulink paramter in the base workspace 
-                C = Simulink.Parameter(double(obj.sys_mats.C));
-                assignin('base', 'C', C); %Create the simulink paramter in the base workspace 
-                D = Simulink.Parameter(double(obj.sys_mats.D));
-                assignin('base', 'D', D); %Create the simulink paramter in the base workspace 
-                x_s_select = Simulink.Parameter(obj.sys_mats.x_s_select);
-                assignin('base', 'x_s_select', x_s_select); %Create the simulink paramter in the base workspace         
+                assignin('base', 'xa_0', xa_0);     
 
                 %Gain matrix K
                 K = Simulink.Parameter(K);
                 assignin('base', 'K', K); %Create the simulink paramter in the base workspace   
             
-            %Replace the definition of the "Input_Function" MATLAB function block with the
+            %Replace the definition of the "Setpoint_Function" MATLAB function block with the
             %setpoint_symfun input
                 setpoint = setpoint_symfun;
                 sim_path_string = strcat(obj.sim_string,'/Setpoint_Function');
                 load_system(obj.sim_string);
                 matlabFunctionBlock(sim_path_string, setpoint)
+
+            %Replace the definition of the "Setpoint_Function" MATLAB function block with the
+            %setpoint_symfun input
+                sim_path_string = strcat(obj.sim_string,'/Plant_Function');
+                load_system(obj.sim_string);
+                matlabFunctionBlock(sim_path_string, obj.plant)
             
             %Run the simulation    
-                obj.sim_response = sim('Linear_Moving_Setpoint_SS');
+                obj.sim_response = sim(obj.sim_string);
                 
             
         end
