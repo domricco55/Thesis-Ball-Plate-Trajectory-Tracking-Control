@@ -210,7 +210,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
         end
         
-        function [figure_obj_x figure_obj_y] = plot_results(obj, title_str)
+        function [figure_obj_x, figure_obj_y] = plot_results(obj, title_str)
             %plot_results Summary of this method goes here
             %   Detailed explanation goes here 
             
@@ -223,7 +223,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('SS_Integral_Controller x direction');
                     
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(1,:),...
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
                         obj.sim_response.tout,obj.sim_response.x_s,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
@@ -231,7 +231,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(3,:)))
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
                     xlabel('time [s]')
                     ylabel('\beta [deg]')
 
@@ -248,7 +248,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     title('SS_Integral_Controller y direction');
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(5,:),...
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
                         obj.sim_response.tout,obj.sim_response.y_s,'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
@@ -256,7 +256,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(7,:)))
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
                     xlabel('time [s]')
                     ylabel('\gamma[deg]')
 
@@ -278,14 +278,14 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('SS PID Controller x direction');
                     
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(1,:),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
 
 
                     ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(3,:)))
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
                     xlabel('time [s]')
                     ylabel('\beta [deg]')
 
@@ -303,14 +303,14 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('SS PID Controller y direction');
 
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(5,:),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
 
 
                     ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(7,:)))
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
                     xlabel('time [s]')
                     ylabel('\gamma [deg]')
 
@@ -331,18 +331,6 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             end 
             
         end 
-%         
-%         function [] = create_animation(obj)
-%             %METHOD3 Summary of this method goes here
-%             %   Detailed explanation goes here
-%         end 
-        
-%         
-%         function [] = create_animation(obj)
-%             %METHOD3 Summary of this method goes here
-%             %   Detailed explanation goes here
-%         end 
-
 
     end
 end
