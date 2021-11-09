@@ -24,9 +24,10 @@ classdef NL_Dcpld_EOMs <handle
         %Total decoupled system
         f
         g
-        SolvedEOMs
+        DcpldEOMs
+        
         %Numerical EOMs
-
+        NumDcpldEOMs
     end
 
     methods
@@ -82,37 +83,30 @@ classdef NL_Dcpld_EOMs <handle
             %Total Decoupled System
             obj.f = [obj.f_1;obj.f_2];
             obj.g = [obj.g_1,zeros(size(obj.g_1));zeros(size(obj.g_1)),obj.g_2];
-            obj.SolvedEOMs = obj.VDefs.stateVec_dot == obj.f + obj.g*obj.VDefs.inputVec;    
+            obj.DcpldEOMs = obj.VDefs.stateVec_dot == obj.f + obj.g*obj.VDefs.inputVec;    
 
 
         end
 
-        function [] = Num_Params_n_Assumptions(obj)
-%         %Num_Params_n_Assumptions Input estimated numerical parameters of the system
-%             % and simplify the system with a few assumptions
-%             %   Detailed explanation goes here
-%             
-% 
-%             %Numerical Parameters in terms of symbolic variables utilized in 
-%             %the model 
-%             Num_Params = [obj.VDefs.rB  (obj.VDefs.rC+obj.VDefs.rB) ...
-%             obj.VDefs.mB obj.VDefs.mP obj.VDefs.IP obj.VDefs.IB ...
-%             obj.VDefs.g_num obj.VDefs.rG];
-%         
-%             Sym_Params = [obj.VDefs.r_b obj.VDefs.z_b obj.VDefs.m_b...
-%                 obj.VDefs.m_p obj.VDefs.I_p__xx obj.VDefs.I_b obj.VDefs.g...
-%                 obj.VDefs.z_p];
-%             
-%             %Simplifying assumptions
-%             Assumption_Params = [obj.VDefs.psi_dot_z obj.VDefs.psi_z obj.VDefs.I_p__zz];
-%             Assumptions = [0 0 0];
-%             
-%             %Substitute in all numerical parameters and assumptions
-%             obj.NL_NumEOMs = subs(obj.NL_EOMs, [Sym_Params Assumption_Params],[Num_Params  Assumptions]);
-%             
-%             %Return outputs
-%             NL_NumEOMs = obj.NL_NumEOMs;
+        function [] = Num_Params(obj)
+        %Num_ParamsInput estimated numerical parameters of the system
+            %   Detailed explanation goes here
+            
 
+            %Numerical Parameters in terms of symbolic variables utilized in 
+            %the model 
+            Num_Params = [obj.VDefs.rB  (obj.VDefs.rC+obj.VDefs.rB) ...
+            obj.VDefs.mB obj.VDefs.mP obj.VDefs.IP obj.VDefs.IB ...
+            obj.VDefs.g_num obj.VDefs.rG];
+        
+            Sym_Params = [obj.VDefs.r_b obj.VDefs.z_b obj.VDefs.m_b...
+                obj.VDefs.m_p obj.VDefs.I_p__xx obj.VDefs.I_b obj.VDefs.g...
+                obj.VDefs.z_p];
+            
+            
+            %Substitute in all numerical parameters and assumptions
+            obj.NumDcpldEOMs = subs(obj.DcpldEOMs, Sym_Params, Num_Params );
+            
         end
     end
 end
