@@ -14,6 +14,17 @@ classdef NL_Dcpld_EOMs <handle
         g_1
         f_1
 
+        %x-axis results
+        SumMBall_y
+        SumMPlate_y
+        SolvedEOMs_y
+        g_2
+        f_2
+
+        %Total decoupled system
+        f
+        g
+        SolvedEOMs
         %Numerical EOMs
 
     end
@@ -46,6 +57,34 @@ classdef NL_Dcpld_EOMs <handle
             g_1_extra_terms = -g_1_extra_terms;
             
             obj.f_1 = - g_1_extra_terms + obj.VDefs.stateVec1_dot;
+
+
+            %Decouple the y axis
+
+            %Ball Kinetics y direction
+            obj.SumMBall_y = simplify(subs(obj.BP_Kinetics.SumMBall(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]));
+            
+            %Plate Kinetics x direction
+            obj.SumMPlate_y = subs(obj.BP_Kinetics.SumMPlate(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]);
+
+            %Bring Together Nonlinear Decoupled Moment Equations and Solve for Highest Order Terms
+            EOMS_y = [obj.SumMBall_y;obj.SumMPlate_y];
+            [CoeffMat_y,ExtTerms_y] = equationsToMatrix(EOMS_y , [obj.VDefs.y_ddot, obj.VDefs.gamma_ddot]); 
+            obj.SolvedEOMs_y = obj.VDefs.stateVec2_dot == [obj.VDefs.y_dot; [1 0]*(CoeffMat_y\ExtTerms_y); obj.VDefs.gamma_dot;[0 1]*(CoeffMat_y\ExtTerms_y)];
+
+            %Find input matrix g(x) x direction
+            [obj.g_2,g_2_extra_terms] = equationsToMatrix(obj.SolvedEOMs_y , obj.VDefs.T_gamma);
+            obj.g_2 = -obj.g_2;
+            g_2_extra_terms = -g_2_extra_terms;
+            
+            obj.f_2 = - g_2_extra_terms + obj.VDefs.stateVec2_dot;
+
+            %Total Decoupled System
+            obj.f = [obj.f_1;obj.f_2];
+            obj.g = [obj.g_1,zeros(size(obj.g_1));zeros(size(obj.g_1)),obj.g_2];
+            obj.SolvedEOMs = obj.VDefs.stateVec_dot == obj.f + obj.g*obj.VDefs.inputVec;    
+
+
         end
 
         function [] = Num_Params_n_Assumptions(obj)
