@@ -3,6 +3,7 @@ classdef Lnrzed_EOMs < handle
     %   Detailed explanation goes here
     
     properties (SetAccess = private)
+        %Ball Plate System Objects
         VDefs
         BP_Kinetics
         
