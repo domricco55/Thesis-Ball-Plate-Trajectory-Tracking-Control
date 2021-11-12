@@ -65,15 +65,16 @@ classdef NL_Dcpld_EOMs <handle
             %Ball Kinetics y direction
             obj.SumMBall_y = simplify(subs(obj.BP_Kinetics.SumMBall(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]));
             
-            %Plate Kinetics x direction
+            %Plate Kinetics y direction
             obj.SumMPlate_y = subs(obj.BP_Kinetics.SumMPlate(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]);
 
             %Bring Together Nonlinear Decoupled Moment Equations and Solve for Highest Order Terms
-            EOMS_y = [obj.SumMBall_y;obj.SumMPlate_y];
+            EOMS_y = simplify([obj.SumMBall_y;obj.SumMPlate_y]);
             [CoeffMat_y,ExtTerms_y] = equationsToMatrix(EOMS_y , [obj.VDefs.y_ddot, obj.VDefs.gamma_ddot]); 
             obj.SolvedEOMs_y = obj.VDefs.stateVec2_dot == [obj.VDefs.y_dot; [1 0]*(CoeffMat_y\ExtTerms_y); obj.VDefs.gamma_dot;[0 1]*(CoeffMat_y\ExtTerms_y)];
 
-            %Find input matrix g(x) x direction
+
+            %Find input matrix g(y) y direction
             [obj.g_2,g_2_extra_terms] = equationsToMatrix(obj.SolvedEOMs_y , obj.VDefs.T_gamma);
             obj.g_2 = -obj.g_2;
             g_2_extra_terms = -g_2_extra_terms;
