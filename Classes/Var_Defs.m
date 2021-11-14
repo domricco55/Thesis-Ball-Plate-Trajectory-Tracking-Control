@@ -250,7 +250,7 @@ classdef Var_Defs
             syms t g s real
 
             syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
-            theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t)
+            theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t) real
             
             beta = sym('beta'); 
             gamma = sym('gamma');
@@ -262,34 +262,34 @@ classdef Var_Defs
             %exists in .m files. 
             
             syms  theta_3 theta_4 theta_5 theta_6 theta_7... 
-            theta_8 beta_dot gamma_dot beta_ddot gamma_ddot
+            theta_8 beta_dot gamma_dot beta_ddot gamma_ddot real
 
             syms omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) ...
-                psi_hat_x(t) psi_hat_y(t) psi_hat_z(t)
+                psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) real
 
-            syms omega_x omega_y omega_z psi_x psi_y psi_z
+            syms omega_x omega_y omega_z psi_x psi_y psi_z real
             
-            syms omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z
+            syms omega_dot_x omega_dot_y omega_dot_z psi_dot_x psi_dot_y psi_dot_z real
 
             syms w z_Pc z_p L_carm L_crod real
 
             syms I_b I_p__xx  I_p__yy I_p__zz m_b m_p r_b real 
             assume(I_b>0 & I_p__xx>0 &   I_p__yy>0 &  I_p__zz>0 &  m_b>0 &  m_p>0 &  r_b>0)
 
-            syms x_hat(t) y_hat(t) 
+            syms x_hat(t) y_hat(t) real
  
-            syms z_b ix x y x_dot y_dot x_ddot y_ddot;
+            syms z_b ix x y x_dot y_dot x_ddot y_ddot real
 
-            syms r_hat_1(t) r_hat_2(t) r_hat_3(t)
+            syms r_hat_1(t) r_hat_2(t) r_hat_3(t) real
 
-            syms r_1 r_2 r_3 r_dot_1 r_dot_2 r_dot_3 r_ddot_1 r_ddot_2 r_ddot_3
+            syms r_1 r_2 r_3 r_dot_1 r_dot_2 r_dot_3 r_ddot_1 r_ddot_2 r_ddot_3 real
 
-            syms T_beta T_gamma M_z
+            syms T_beta T_gamma M_z real
             
-            syms N_z f_x f_y
+            syms N_z f_x f_y real
 
             syms e_x e_x_dot e_x_ddot e_ix x_s x_dot_s x_ddot_s...
-                e_y e_y_dot e_y_ddot e_iy y_s y_dot_s y_ddot_s 
+                e_y e_y_dot e_y_ddot e_iy y_s y_dot_s y_ddot_s real
 
             
             
