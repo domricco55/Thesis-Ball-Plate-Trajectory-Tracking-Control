@@ -250,7 +250,7 @@ classdef Var_Defs
             syms t g s real
 
             syms beta_hat(t) gamma_hat(t) theta_hat_3(t) theta_hat_4(t)... 
-            theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t) real
+            theta_hat_5(t) theta_hat_6(t) theta_hat_7(t) theta_hat_8(t) 
             
             beta = sym('beta'); 
             gamma = sym('gamma');
@@ -265,7 +265,7 @@ classdef Var_Defs
             theta_8 beta_dot gamma_dot beta_ddot gamma_ddot real
 
             syms omega_hat_x(t) omega_hat_y(t) omega_hat_z(t) ...
-                psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) real
+                psi_hat_x(t) psi_hat_y(t) psi_hat_z(t) 
 
             syms omega_x omega_y omega_z psi_x psi_y psi_z real
             
@@ -280,7 +280,7 @@ classdef Var_Defs
  
             syms z_b ix x y x_dot y_dot x_ddot y_ddot real
 
-            syms r_hat_1(t) r_hat_2(t) r_hat_3(t) real
+            syms r_hat_1(t) r_hat_2(t) r_hat_3(t) 
 
             syms r_1 r_2 r_3 r_dot_1 r_dot_2 r_dot_3 r_ddot_1 r_ddot_2 r_ddot_3 real
 
