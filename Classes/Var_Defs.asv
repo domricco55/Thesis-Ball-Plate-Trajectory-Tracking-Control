@@ -605,14 +605,16 @@ classdef Var_Defs
 %             obj.g_num = 9.81; %[m/s^2]
 
             %New system (Scott's redesign)
-            obj.rB = .0105; %[m]
-            obj.rG = .08573; %[m]
-            obj.rC = .1025; %[m]
+            obj.rB = .0105; %[m] Radius of ball
+            obj.rG = .08573; %[m] Distance from u-joint to CG of the plate
+            obj.rC = .1025; %[m] Distance from teh u-joint to the plat
             obj.mB = .030; %[kg]
             obj.mP = 3.981; %[kg]
             obj.IP = 0.079; %[kg*m^2]
             obj.IB = (2/5)*obj.mB*obj.rB^2;%[kg-m^2] 
             obj.g_num = 9.81; %[m/s^2]
+            
+           
 
         end
         

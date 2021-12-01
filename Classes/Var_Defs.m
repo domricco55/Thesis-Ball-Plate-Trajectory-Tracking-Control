@@ -221,15 +221,15 @@ classdef Var_Defs
         symFunVec_rp2
         
     %Numerical System Parameters
-        rB 
-        rG 
-        rC 
-        mB
-        mP
-        IP
-        IB 
-        g_num
-        
+        rB %[m] Radius of ball
+        rG %[m] Distance from u-joint to CG of the plate
+        rC %[m] Distance from teh u-joint to the plate surface
+        mB %[kg] Mass of the ball
+        mP %[kg] Mass of the plate
+        IP %[kg*m^2] Moment of inertia of the plate (xx and yy)
+        IB %[kg-m^2] Moment of inertia of the ball (xx, yy, and zz)
+        g_num %[m/s^2] Gravity, imperial
+        lp %[m] Horizontal distance from u-joint to push rod pivot (about half width of the plate)   
     end
     
     properties 
@@ -605,14 +605,17 @@ classdef Var_Defs
 %             obj.g_num = 9.81; %[m/s^2]
 
             %New system (Scott's redesign)
-            obj.rB = .0105; %[m]
-            obj.rG = .08573; %[m]
-            obj.rC = .1025; %[m]
-            obj.mB = .030; %[kg]
-            obj.mP = 3.981; %[kg]
-            obj.IP = 0.079; %[kg*m^2]
-            obj.IB = (2/5)*obj.mB*obj.rB^2;%[kg-m^2] 
-            obj.g_num = 9.81; %[m/s^2]
+            obj.rB = .0105; %[m] Radius of ball
+            obj.rG = .08573; %[m] Distance from u-joint to CG of the plate
+            obj.rC = .1025; %[m] Distance from teh u-joint to the plate surface
+            obj.mB = .030; %[kg] Mass of the ball
+            obj.mP = 3.981; %[kg] Mass of the plate
+            obj.IP = 0.079; %[kg*m^2] Moment of inertia of the plate (xx and yy)
+            obj.IB = (2/5)*obj.mB*obj.rB^2;%[kg-m^2] Moment of inertia of the ball (xx, yy, and zz)
+            obj.g_num = 9.81; %[m/s^2] Gravity, imperial
+            obj.lp = 0.2499; %[m] Horizontal distance from u-joint to push rod pivot (about half width of the plate)
+            
+           
 
         end
         
