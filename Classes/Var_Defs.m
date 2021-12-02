@@ -223,7 +223,7 @@ classdef Var_Defs
     %Numerical System Parameters
         rB %[m] Radius of ball
         rG %[m] Distance from u-joint to CG of the plate
-        rC %[m] Distance from teh u-joint to the plate surface
+        rC %[m] Distance from the u-joint to the plate surface
         mB %[kg] Mass of the ball
         mP %[kg] Mass of the plate
         IP %[kg*m^2] Moment of inertia of the plate (xx and yy)
@@ -276,7 +276,7 @@ classdef Var_Defs
             syms I_b I_p__xx  I_p__yy I_p__zz m_b m_p r_b real 
             assume(I_b>0 & I_p__xx>0 &   I_p__yy>0 &  I_p__zz>0 &  m_b>0 &  m_p>0 &  r_b>0)
 
-            syms x_hat(t) y_hat(t) real
+            syms x_hat(t) y_hat(t)
  
             syms z_b ix x y x_dot y_dot x_ddot y_ddot real
 
