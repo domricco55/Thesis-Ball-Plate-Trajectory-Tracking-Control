@@ -607,7 +607,7 @@ classdef Var_Defs
             %New system (Scott's redesign)
             obj.rB = .0105; %[m] Radius of ball
             obj.rG = .08573; %[m] Distance from u-joint to CG of the plate
-            obj.rC = .1025; %[m] Distance from teh u-joint to the plate surface
+            obj.rC = .1025; %[m] Distance from the u-joint to the plate surface
             obj.mB = .030; %[kg] Mass of the ball
             obj.mP = 3.981; %[kg] Mass of the plate
             obj.IP = 0.079; %[kg*m^2] Moment of inertia of the plate (xx and yy)
