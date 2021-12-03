@@ -4,6 +4,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     
     properties (SetAccess = private)
         
+        VDefs
+
         sys_mats %System Matrices
         sim_response %Latest system response for this object
         ctrl_type %The type of control system this object represents 
@@ -36,6 +38,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             %Bring in the plant function/model
             obj.plant = plant_model;
+
+            %Bring in a VDefs object
+            obj.VDefs = VDefs;
 
             switch type
                 
@@ -182,6 +187,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 %Gain matrix K2 - y direction
                 K2 = Simulink.Parameter(K2);
                 assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
+
+                %Saturation torque
+                Tmax = Simulink.Parameter(obj.VDefs.Tmax);
+                assignin('base', 'Tmax', Tmax); %Create the simulink paramter in the base workspace             
             
             %Replace the definition of the "x_Setpoint_Function" MATLAB function block
             %with a function generated from x_setpoint_symfun
