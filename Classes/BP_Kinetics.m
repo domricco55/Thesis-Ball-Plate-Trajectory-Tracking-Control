@@ -20,6 +20,8 @@ classdef BP_Kinetics < handle
         Hp2s
         Hp1s
         Hp1ds
+        CoeffMat
+        ExtTerms
         NL_EOMs
         SumMBall
         SumMPlate
@@ -98,9 +100,9 @@ classdef BP_Kinetics < handle
             %and y moment equations
             Moment_Eqns = [obj.SumMBall(1:2);obj.SumMPlate(1:2)];
             HOTs = [obj.VDefs.x_ddot; obj.VDefs.beta_ddot; obj.VDefs.y_ddot; obj.VDefs.gamma_ddot];
-            [CoeffMat,ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs);
+            [obj.CoeffMat,obj.ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs);
             
-            HighOrderEOMs = CoeffMat\ExtTerms;
+            HighOrderEOMs = obj.CoeffMat\obj.ExtTerms;
             
             obj.NL_EOMs = obj.VDefs.stateVec_dot == subs(obj.VDefs.stateVec_dot, HOTs, HighOrderEOMs);
 

@@ -467,7 +467,7 @@ classdef Var_Defs
 
             %Inertia Tensors
             obj.Ib2ms = [obj.I_b 0 0; 0 obj.I_b 0; 0 0 obj.I_b];
-            obj.Ib2ms = subs(obj.Ib2ms, obj.I_b, 2/5*obj.m_b*obj.r_b^2); 
+%             obj.Ib2ms = subs(obj.Ib2ms, obj.I_b, 2/5*obj.m_b*obj.r_b^2); 
             obj.Ip2ms = [obj.I_p_xx 0 0; 0 obj.I_p_xx 0; 0 0 obj.I_p_zz];
 
             %Rotation Matrices
