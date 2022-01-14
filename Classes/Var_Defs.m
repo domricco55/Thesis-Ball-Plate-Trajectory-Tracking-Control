@@ -64,9 +64,9 @@ classdef Var_Defs
         
         %Variables Related to Mass and Geometry of the Ball
         I_b  
-        I_p__xx 
-        I_p__yy   
-        I_p__zz  
+        I_p_xx 
+        I_p_yy   
+        I_p_zz  
         m_b    
         m_p     
         r_b    
@@ -274,8 +274,8 @@ classdef Var_Defs
 
             syms w z_Pc z_p L_carm L_crod real
 
-            syms I_b I_p__xx  I_p__yy I_p__zz m_b m_p r_b real 
-            assume(I_b>0 & I_p__xx>0 &   I_p__yy>0 &  I_p__zz>0 &  m_b>0 &  m_p>0 &  r_b>0)
+            syms I_b I_p_xx  I_p_yy I_p_zz m_b m_p r_b real 
+            assume(I_b>0 & I_p_xx>0 &   I_p_yy>0 &  I_p_zz>0 &  m_b>0 &  m_p>0 &  r_b>0)
 
             syms x_hat(t) y_hat(t)
  
@@ -353,9 +353,9 @@ classdef Var_Defs
 
             %Variables Related to Mass and Geometry of the Ball
             obj.I_b = I_b;    
-            obj.I_p__xx = I_p__xx; 
-            obj.I_p__yy = I_p__yy;   
-            obj.I_p__zz = I_p__zz;   
+            obj.I_p_xx = I_p_xx; 
+            obj.I_p_yy = I_p_yy;   
+            obj.I_p_zz = I_p_zz;   
             obj.m_b = m_b;    
             obj.m_p = m_p;   
             obj.r_b = r_b;    
@@ -468,7 +468,7 @@ classdef Var_Defs
             %Inertia Tensors
             obj.Ib2ms = [obj.I_b 0 0; 0 obj.I_b 0; 0 0 obj.I_b];
             obj.Ib2ms = subs(obj.Ib2ms, obj.I_b, 2/5*obj.m_b*obj.r_b^2); 
-            obj.Ip2ms = [obj.I_p__xx 0 0; 0 obj.I_p__xx 0; 0 0 obj.I_p__zz];
+            obj.Ip2ms = [obj.I_p_xx 0 0; 0 obj.I_p_xx 0; 0 0 obj.I_p_zz];
 
             %Rotation Matrices
             obj.R01 = sym('WHOCARES', [3 3]);

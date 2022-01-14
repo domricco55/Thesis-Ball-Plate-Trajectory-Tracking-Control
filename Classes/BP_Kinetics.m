@@ -129,11 +129,11 @@ classdef BP_Kinetics < handle
             obj.VDefs.g_num obj.VDefs.rG];
         
             Sym_Params = [obj.VDefs.r_b obj.VDefs.z_b obj.VDefs.m_b...
-                obj.VDefs.m_p obj.VDefs.I_p__xx obj.VDefs.I_b obj.VDefs.g...
+                obj.VDefs.m_p obj.VDefs.I_p_xx obj.VDefs.I_b obj.VDefs.g...
                 obj.VDefs.z_p];
             
             %Simplifying assumptions
-            Assumption_Params = [obj.VDefs.psi_dot_z obj.VDefs.psi_z obj.VDefs.I_p__zz];
+            Assumption_Params = [obj.VDefs.psi_dot_z obj.VDefs.psi_z obj.VDefs.I_p_zz];
             Assumptions = [0 0 0];
             
             %Substitute in all numerical parameters and assumptions
