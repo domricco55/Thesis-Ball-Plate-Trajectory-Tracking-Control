@@ -115,6 +115,8 @@ classdef BP_Kinetics < handle
             SumMPlate = obj.SumMPlate;
             SumMBall = obj.SumMBall;
             NL_EOMs = obj.NL_EOMs;
+            CoeffMat = obj.CoeffMat;
+            ExtTerms = obj.ExtTerms;
         end 
         
         function [Num_Params, Sym_Params, Assumption_Params, Assumptions,...
