@@ -15,6 +15,8 @@ classdef Lnrzed_EOMs < handle
         D_obs
         A
         B
+        J_states
+        J_inputs
 
         %Two Uncoulpled 4th order systems
         A1
@@ -46,15 +48,17 @@ classdef Lnrzed_EOMs < handle
             
             
             %Derive the linearized 8th order equations of motion
-            J_states(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+            J_states_fun(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
                 obj.VDefs.stateVec); %Take Jacobian WRT States
-            J_inputs(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
+            obj.J_states = J_states_fun;
+            J_inputs_fun(obj.VDefs.stateVec) = jacobian(rhs(obj.BP_Kinetics.NL_NumEOMs),...
                 obj.VDefs.inputVec); %Take Jacobian WRT Inputs
+            obj.J_inputs = J_inputs_fun;
             
             %State Coupling and Input Matrices from evaluation of the Jacobians at the
             %unstable equilibrium point
-            obj.A = J_states(0,0,0,0,0,0,0,0);
-            obj.B = J_inputs(0,0,0,0,0,0,0,0);
+            obj.A = obj.J_states(0,0,0,0,0,0,0,0);
+            obj.B = obj.J_inputs(0,0,0,0,0,0,0,0);
             
             A = obj.A;
             B =obj.B;
