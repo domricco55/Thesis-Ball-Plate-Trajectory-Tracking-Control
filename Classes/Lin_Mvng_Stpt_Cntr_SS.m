@@ -206,7 +206,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             %Replace the definition of the "Plant_Function" MATLAB function block with a
             %function generated from obj.plant symbolic function
-                sim_path_string = strcat(obj.sim_string,'/Plant/Plant_Function');
+                sim_path_string = strcat('Plant','/Plant_Function');
                 load_system(obj.sim_string);
                 %Generate a matlab function from the linearized plant model
                 input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
@@ -233,7 +233,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
-                        obj.sim_response.tout,obj.sim_response.x_s,'--' )
+                        obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
@@ -263,7 +263,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('SS_Integral_Controller y direction');
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
-                        obj.sim_response.tout,obj.sim_response.y_s,'--' )
+                        obj.sim_response.tout,obj.sim_response.y_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
