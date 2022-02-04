@@ -194,13 +194,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             %Replace the definition of the "x_Setpoint_Function" MATLAB function block
             %with a function generated from x_setpoint_symfun
-                sim_path_string = strcat(obj.sim_string,'/x_Setpoint_Function');
+                sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/x_Setpoint_Function');
                 load_system(obj.sim_string);
                 matlabFunctionBlock(sim_path_string, x_setpoint_symfun,'FunctionName', 'x_setpoint')
 
             %Replace the definition of the "y_Setpoint_Function" MATLAB function block
             %with a function generated from y_setpoint_symfun
-                sim_path_string = strcat(obj.sim_string,'/y_Setpoint_Function');
+                sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/y_Setpoint_Function');
                 load_system(obj.sim_string);
                 matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'y_setpoint')
 
