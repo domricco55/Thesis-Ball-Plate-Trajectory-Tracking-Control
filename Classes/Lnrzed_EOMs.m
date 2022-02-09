@@ -76,9 +76,6 @@ classdef Lnrzed_EOMs < handle
             %unstable equilibrium point
             obj.A = obj.J_states(0,0,0,0,0,0,0,0);
             obj.B = obj.J_inputs(0,0,0,0,0,0,0,0);
-            
-            A = obj.A;
-            B =obj.B;
 
             
             %Define these symbolic quantities for use in further analysis:
@@ -149,6 +146,8 @@ classdef Lnrzed_EOMs < handle
             obj.Lin_EOMs = obj.A*obj.VDefs.stateVec + obj.B*[obj.VDefs.T_beta;obj.VDefs.T_gamma];
 
            %Return outputs
+            A = obj.A;
+            B =obj.B;
             y_vec = obj.y_vec;
             C = obj.C;
             D = obj.D;
