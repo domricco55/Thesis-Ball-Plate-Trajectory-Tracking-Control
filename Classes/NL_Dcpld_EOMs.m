@@ -32,6 +32,8 @@ classdef NL_Dcpld_EOMs <handle
         Num_f_1
         Num_g_2
         Num_f_2
+        Num_SumMBall_x
+        Num_SumMBall_y
 
     end
 
@@ -116,7 +118,8 @@ classdef NL_Dcpld_EOMs <handle
             obj.Num_f_1 = subs(obj.f_1, Sym_Params, Num_Params );
             obj.Num_g_2 = subs(obj.g_2, Sym_Params, Num_Params );
             obj.Num_f_2 = subs(obj.f_2, Sym_Params, Num_Params );
-            
+            obj.Num_SumMBall_x = subs(obj.SumMBall_x, Sym_Params, Num_Params);
+            obj.Num_SumMBall_y = subs(obj.SumMBall_y, Sym_Params, Num_Params);
         end
     end
 end
