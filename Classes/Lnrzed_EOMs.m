@@ -93,50 +93,54 @@ classdef Lnrzed_EOMs < handle
 
             %Get transfer function coefficients
                 %x direction
-            [n1,d1] = numden((TF(1,1)));
-            [n2,d2] = numden((TF(2,1)));
+            [n1,d1] = numden((obj.TF(1,1)));
+            [n2,d2] = numden((obj.TF(2,1)));
             n2 = expand(n2);
-            [n3,d3] = numden((TF(3,1)));
-            [n4,d4] = numden((TF(4,1)));
-
+            [n3,d3] = numden((obj.TF(3,1)));
+            [n4,d4] = numden((obj.TF(4,1)));
+            
+            num_coeffs1 = coeffs(n1,obj.VDefs.s,'All');
+            num_coeffs2 = coeffs(n2,obj.VDefs.s,'All');
+            num_coeffs3 = coeffs(n3,obj.VDefs.s,'All');
+            num_coeffs4 = coeffs(n4,obj.VDefs.s,'All');          
             den_coeffs1 = coeffs(d1,obj.VDefs.s,'All');
             den_coeffs2 = coeffs(d2,obj.VDefs.s,'All');
             den_coeffs3 = coeffs(d3,obj.VDefs.s,'All');
             den_coeffs4 = coeffs(d4,obj.VDefs.s,'All');
 
-            obj.norm_num_1 = (n1/den_coeffs1(1));
-            obj.norm_den_1 = (d1/den_coeffs1(1));
-            
-            obj.norm_num_2 = (n2/den_coeffs2(1));
-            obj.norm_den_2 = (d2/den_coeffs2(1));
-            
-            obj.norm_num_3 = (n3/den_coeffs3(1));
-            obj.norm_den_3 = (d3/den_coeffs3(1));
-            
-            obj.norm_num_4 = (n4/den_coeffs4(1));
-            obj.norm_den_4 = (d4/den_coeffs4(1));
+            obj.norm_num_1 = double(num_coeffs1/den_coeffs1(1));
+            obj.norm_den_1 = double(den_coeffs1/den_coeffs1(1));
+            obj.norm_num_2 = double(num_coeffs2/den_coeffs2(1));
+            obj.norm_den_2 = double(den_coeffs2/den_coeffs2(1));
+            obj.norm_num_3 = double(num_coeffs3/den_coeffs3(1));
+            obj.norm_den_3 = double(den_coeffs3/den_coeffs3(1));
+            obj.norm_num_4 = double(num_coeffs4/den_coeffs4(1));
+            obj.norm_den_4 = double(den_coeffs4/den_coeffs4(1));
             
                 %y direction
-            [n5,d5] = numden((TF(5,2)));
-            [n6,d6] = numden((TF(6,2)));
+            [n5,d5] = numden((obj.TF(5,2)));
+            [n6,d6] = numden((obj.TF(6,2)));
             n6 = expand(n6);
-            [n7,d7] = numden((TF(7,2)));
-            [n8,d8] = numden((TF(8,2)));
+            [n7,d7] = numden((obj.TF(7,2)));
+            [n8,d8] = numden((obj.TF(8,2)));
             
-            
+            num_coeffs5 = coeffs(n5,obj.VDefs.s,'All');
+            num_coeffs6 = coeffs(n6,obj.VDefs.s,'All');
+            num_coeffs7 = coeffs(n7,obj.VDefs.s,'All');
+            num_coeffs8 = coeffs(n8,obj.VDefs.s,'All');  
             den_coeffs5 = coeffs(d5,obj.VDefs.s,'All');
             den_coeffs6 = coeffs(d6,obj.VDefs.s,'All');
             den_coeffs7 = coeffs(d7,obj.VDefs.s,'All');
             den_coeffs8 = coeffs(d8,obj.VDefs.s,'All');
             
-            obj.norm_num_5 = (n5/den_coeffs5(1));
-            obj.norm_den_5 = (d5/den_coeffs5(1));
-            obj.norm_num_6 = (n6/den_coeffs6(1));
-            obj.norm_den_6 = (d6/den_coeffs6(1));
-            obj.norm_num_7 = (n7/den_coeffs7(1));
-            obj.norm_den_7 = (d7/den_coeffs7(1));
-            obj.norm_num_8 = (n8/den_coeffs8(1));
-            obj.norm_den_8 = (d8/den_coeffs8(1));
+            obj.norm_num_5 = double(num_coeffs5/den_coeffs5(1));
+            obj.norm_den_5 = double(den_coeffs5/den_coeffs5(1));
+            obj.norm_num_6 = double(num_coeffs6/den_coeffs6(1));
+            obj.norm_den_6 = double(den_coeffs6/den_coeffs6(1));
+            obj.norm_num_7 = double(num_coeffs7/den_coeffs7(1));
+            obj.norm_den_7 = double(den_coeffs7/den_coeffs7(1));
+            obj.norm_num_8 = double(num_coeffs8/den_coeffs8(1));
+            obj.norm_den_8 = double(den_coeffs8/den_coeffs8(1));
 
 
 
