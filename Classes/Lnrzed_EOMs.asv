@@ -26,14 +26,6 @@ classdef Lnrzed_EOMs < handle
         norm_den_3
         norm_num_4
         norm_den_4
-        norm_num_5
-        norm_den_5
-        norm_num_6
-        norm_den_6
-        norm_num_7
-        norm_den_7
-        norm_num_8
-        norm_den_8
 
         %Two Uncoulpled 4th order systems
         A1
@@ -124,19 +116,19 @@ classdef Lnrzed_EOMs < handle
             [n8,d8] = numden((TF(8,2)));
             
             
-            den_coeffs5 = coeffs(d5,obj.VDefs.s,'All');
-            den_coeffs6 = coeffs(d6,obj.VDefs.s,'All');
-            den_coeffs7 = coeffs(d7,obj.VDefs.s,'All');
-            den_coeffs8 = coeffs(d8,obj.VDefs.s,'All');
+            den_coeffs5 = coeffs(d5,VDefs.s,'All');
+            den_coeffs6 = coeffs(d6,VDefs.s,'All');
+            den_coeffs7 = coeffs(d7,VDefs.s,'All');
+            den_coeffs8 = coeffs(d8,VDefs.s,'All');
             
             obj.norm_num_5 = (n5/den_coeffs5(1));
-            obj.norm_den_5 = (d5/den_coeffs5(1));
-            obj.norm_num_6 = (n6/den_coeffs6(1));
-            obj.norm_den_6 = (d6/den_coeffs6(1));
-            obj.norm_num_7 = (n7/den_coeffs7(1));
-            obj.norm_den_7 = (d7/den_coeffs7(1));
-            obj.norm_num_8 = (n8/den_coeffs8(1));
-            obj.norm_den_8 = (d8/den_coeffs8(1));
+            norm_den_5 = (d5/den_coeffs5(1));
+            norm_num_6 = (n6/den_coeffs6(1));
+            norm_den_6 = (d6/den_coeffs6(1));
+            norm_num_7 = (n7/den_coeffs7(1));
+            norm_den_7 = (d7/den_coeffs7(1));
+            norm_num_8 = (n8/den_coeffs8(1));
+            norm_den_8 = (d8/den_coeffs8(1));
 
 
 
