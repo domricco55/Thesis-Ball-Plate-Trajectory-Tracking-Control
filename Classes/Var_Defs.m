@@ -122,6 +122,20 @@ classdef Var_Defs
         y_s
         y_dot_s
         y_ddot_s
+
+        e_beta      
+        e_beta_dot 
+        e_beta_ddot     
+        beta_s     
+        beta_dot_s 
+        beta_ddot_s
+
+        e_gamma      
+        e_gamma_dot 
+        e_gamma_ddot     
+        gamma_s     
+        gamma_dot_s 
+        gamma_ddot_s
         
     %Vectors
         %Symbolic Angular Velocity Vectors
@@ -290,7 +304,10 @@ classdef Var_Defs
             syms N_z f_x f_y real
 
             syms e_x e_x_dot e_x_ddot e_ix x_s x_dot_s x_ddot_s...
-                e_y e_y_dot e_y_ddot e_iy y_s y_dot_s y_ddot_s real
+                 e_y e_y_dot e_y_ddot e_iy y_s y_dot_s y_ddot_s...
+                 e_beta e_beta_dot e_beta_ddot beta_s beta_dot_s beta_ddot_s...
+                 e_gamma e_gamma_dot e_gamma_ddot gamma_s gamma_dot_s gamma_ddot_s...
+                 real
 
             
             
@@ -396,7 +413,7 @@ classdef Var_Defs
             obj.f_x = f_x;
             obj.f_y = f_y; 
             
-            %Error States and Setpoints (x and y Variables)
+            %Error States and Setpoints (x,y, beta, and gamma Variables)
             obj.e_x = e_x;       
             obj.e_x_dot = e_x_dot; 
             obj.e_x_ddot = e_x_ddot;
@@ -411,7 +428,20 @@ classdef Var_Defs
             obj.y_s = y_s;      
             obj.y_dot_s = y_dot_s;
             obj.y_ddot_s = y_ddot_s;
-            
+
+            obj.e_beta = e_beta;       
+            obj.e_beta_dot = e_beta_dot; 
+            obj.e_beta_ddot = e_beta_ddot;
+            obj.beta_s = beta_s;      
+            obj.beta_dot_s = beta_dot_s;
+            obj.beta_ddot_s = beta_ddot_s;
+            obj.e_gamma = e_gamma;       
+            obj.e_gamma_dot = e_gamma_dot; 
+            obj.e_gamma_ddot = e_gamma_ddot;   
+            obj.gamma_s = gamma_s;      
+            obj.gamma_dot_s = gamma_dot_s;
+            obj.gamma_ddot_s = gamma_ddot_s;
+
         %Vectors
             %Symbolic Angular Velocity Vectors
 
