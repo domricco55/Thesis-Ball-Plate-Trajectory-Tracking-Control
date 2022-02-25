@@ -232,7 +232,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_PID_FF';
+                    obj.sim_string = 'Linear_Moving_Setpoint_SS_w_FF';
 
                                     
                 otherwise
@@ -252,11 +252,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
-                case 'SS Int Controller'
+                case 'SS Integral Controller'
 
                     %Smooth path to trajectory from the initial conditions
-                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %Setpoint vectors here are just the smoothed x and y setpoints
                     obj.x_s_vec = x_s;
@@ -265,8 +265,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 case 'SS PID Controller' 
 
                     %Smooth path to trajectory from the initial conditions
-                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %For the PID the setpoint vector contains the derivative of 
                     % the desired x and y trajectories
@@ -312,7 +312,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; diff(x_s); beta_s_sol; diff(beta_s_sol)];
-                    obj.y_s_vec 
+                    obj.y_s_vec = [y_s; diff(y_s); gamma_s_sol; diff(gamma_s_sol)];
                     
 
             end 
@@ -392,7 +392,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
-
+                    legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
@@ -422,7 +422,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
-
+                    legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
@@ -451,7 +451,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
-
+                    legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
@@ -481,7 +481,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
-
+                    legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
@@ -496,12 +496,69 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);
+                     
+               case 'SS PID FF Controller'
+
+                    figure_obj_x = figure;
                     
-                case 'SS Integral Controller y dimension'   
+                    title('SS PID w FF Controller x direction');
                     
+                    ax1 = subplot(4,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('x [m]')
+                    title(title_str)
+                    legend('x', 'x_s')
+
+
+                    ax2 = subplot(4,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)),...
+                         obj.sim_response.tout,rad2deg(obj.sim_response.x_s_vec(:,3)))
+                    xlabel('time [s]')
+                    ylabel('\beta [deg]')
+                    legend('beta', 'beta_s')
+
+
+                    ax3 = subplot(4,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tbeta [mNm]')
+
+                    ax4 = subplot(4,1,4);
+                    plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
+                    xlabel('time [s]')
+                    ylabel('error in x [m]')
+
+
+                    linkaxes([ax1,ax2, ax3, ax4],'x');
+                    set(gcf,'position',[0,0,800,900]);
+
+                    figure_obj_y = figure;
+
+                    title('SS PID w FF Controller y direction');
+
+                    ax1 = subplot(3,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('y [m]')
+                    title(title_str)
+                    legend('y', 'y_s')
+
+                    ax2 = subplot(3,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
+                    xlabel('time [s]')
+                    ylabel('\gamma [deg]')
+                    legend('gamma', 'gamma_s')
+
+                    ax3 = subplot(3,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tgamma [mNm]')
                     
-                case 'SS PID Controller y dimension'    
-                    
+                    linkaxes([ax1,ax2, ax3],'x');
+                    set(gcf,'position',[0,0,800,900]);
+
+
             end 
             
         end 

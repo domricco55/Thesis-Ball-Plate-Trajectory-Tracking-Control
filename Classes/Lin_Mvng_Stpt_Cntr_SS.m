@@ -4,7 +4,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     
     properties (SetAccess = private)
         
-        VDefs
+        %Bring in class objects
+        VDefs %Variable definitions object
+        Lnrzed_EOMs %Linearized EOMs object
 
         sys_mats %System Matrices
         sim_response %Latest system response for this object
@@ -52,6 +54,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             %Bring in a VDefs object
             obj.VDefs = VDefs;
+
+            %Bring in a Lnrzed_EOMs object
+            obj.Lnrzed_EOMs = Lnrzed_EOMs;
 
             switch type
                 
@@ -232,7 +237,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_PID_FF';
+                    obj.sim_string = 'Linear_Moving_Setpoint_SS_w_FF';
 
                                     
                 otherwise
@@ -252,11 +257,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
-                case 'SS Int Controller'
+                case 'SS Integral Controller'
 
                     %Smooth path to trajectory from the initial conditions
-                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %Setpoint vectors here are just the smoothed x and y setpoints
                     obj.x_s_vec = x_s;
@@ -265,8 +270,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                 case 'SS PID Controller' 
 
                     %Smooth path to trajectory from the initial conditions
-                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %For the PID the setpoint vector contains the derivative of 
                     % the desired x and y trajectories
@@ -278,37 +283,39 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Solve for the angular setpoints that are consistent with the x and y
                     %setpoints (in the linear dynamics)
 
-                    syms beta_s(t) gamma_s(t)
+                    syms beta_s(t) gamma_s(t) C1 C2
 
                     %Beta 
-                    T_beta_eqn = isolate(obj.VDefs.beta_ddot == Lnrzed_EOMs.Lin_EOMs(4), obj.VDefs.T_beta);
-                    T_beta_eqn = sub(T_beta_eqn,[obj.VDefs.beta, obj.VDefs.beta_ddot],[beta_s, diff(beta_s,2)]);    
-                    ode_beta_s = diff(x_s,2) == subs(Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
+                    T_beta_eqn = isolate(obj.VDefs.beta_ddot == obj.Lnrzed_EOMs.Lin_EOMs(4), obj.VDefs.T_beta);
+                    T_beta_eqn = subs(T_beta_eqn,[obj.VDefs.beta, obj.VDefs.beta_ddot],[beta_s, diff(beta_s,2)]);    
+                    ode_beta_s = diff(x_s,2) == subs(obj.Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
+                    ode_beta_s = subs(ode_beta_s, obj.VDefs.beta, beta_s); 
                     %Solve the linear ODE for beta_s(t)
                     beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
                     %Take only the particular solution 
                     beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
 
                     %Gamma
-                    T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
-                    T_gamma_eqn = sub(T_gamma_eqn,[obj.VDefs.gamma, obj.VDefs.gamma_ddot],[gamma_s, diff(gamma_s,2)]);    
-                    ode_gamma_s = diff(y_s,2) == subs(Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
+                    T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == obj.Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
+                    T_gamma_eqn = subs(T_gamma_eqn,[obj.VDefs.gamma, obj.VDefs.gamma_ddot],[gamma_s, diff(gamma_s,2)]);    
+                    ode_gamma_s = diff(y_s,2) == subs(obj.Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
+                    ode_gamma_s = subs(ode_gamma_s, obj.VDefs.gamma, gamma_s); 
                     %Solve the linear ODE for gamma_s(t)
                     gamma_s_sol(obj.VDefs.t) = dsolve(ode_gamma_s);
                     %Take only the particular solution 
                     gamma_s_sol(obj.VDefs.t) = subs(gamma_s_sol, [C1 C2], [0 0]);
 
                     %Feed-Forward input functions
-                    T_beta = rhs(T_beta_eqn, [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
-                    T_gamma = rhs(T_gamma_eqn, [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
+                    T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
+                    T_gamma = subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
                     obj.u_FF = [T_beta;T_gamma];
 
                     %Apply a first order smoothing to both the position and angular
                     %setpoints
-                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
-                    beta_s_sol(obj.VDefs.t) = beta_s_sol(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(3)*exp(-obj.VDefs.t/Tau);
-                    gamma_s_sol(obj.VDefs.t) = gamma_s_sol(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
+                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    beta_s_sol = beta_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(3)*exp(-obj.VDefs.t/Tau);
+                    gamma_s_sol = gamma_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; diff(x_s); beta_s_sol; diff(beta_s_sol)];
@@ -356,7 +363,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         if strcmp(obj.ctrl_type,'SS PID FF Controller')
   
             sim_path_string = strcat(obj.sim_string,'/u_FF');
-            matlabFunctionBlock(sim_path_string, u_FF_symfun,'FunctionName', 'u_FF')
+            matlabFunctionBlock(sim_path_string, obj.u_FF,'FunctionName', 'u_FF')
         end 
 
         %Replace the definition of the "Plant_Function" MATLAB function block with a
@@ -392,7 +399,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
-
+                    legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
@@ -422,7 +429,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
-
+                    legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
@@ -451,7 +458,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(title_str)
-
+                    legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)))
@@ -481,7 +488,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
-
+                    legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
@@ -496,12 +503,69 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,800,900]);
+                     
+               case 'SS PID FF Controller'
+
+                    figure_obj_x = figure;
                     
-                case 'SS Integral Controller y dimension'   
+                    title('SS PID w FF Controller x direction');
                     
+                    ax1 = subplot(4,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('x [m]')
+                    title(title_str)
+                    legend('x', 'x_s')
+
+
+                    ax2 = subplot(4,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)),...
+                         obj.sim_response.tout,rad2deg(obj.sim_response.x_s_vec(:,3)))
+                    xlabel('time [s]')
+                    ylabel('\beta [deg]')
+                    legend('beta', 'beta_s')
+
+
+                    ax3 = subplot(4,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tbeta [mNm]')
+
+                    ax4 = subplot(4,1,4);
+                    plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
+                    xlabel('time [s]')
+                    ylabel('error in x [m]')
+
+
+                    linkaxes([ax1,ax2, ax3, ax4],'x');
+                    set(gcf,'position',[0,0,800,900]);
+
+                    figure_obj_y = figure;
+
+                    title('SS PID w FF Controller y direction');
+
+                    ax1 = subplot(3,1,1);
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    xlabel('time [s]')
+                    ylabel('y [m]')
+                    title(title_str)
+                    legend('y', 'y_s')
+
+                    ax2 = subplot(3,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
+                    xlabel('time [s]')
+                    ylabel('\gamma [deg]')
+                    legend('gamma', 'gamma_s')
+
+                    ax3 = subplot(3,1,3);
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    xlabel('time [s]')
+                    ylabel('Tgamma [mNm]')
                     
-                case 'SS PID Controller y dimension'    
-                    
+                    linkaxes([ax1,ax2, ax3],'x');
+                    set(gcf,'position',[0,0,800,900]);
+
+
             end 
             
         end 
