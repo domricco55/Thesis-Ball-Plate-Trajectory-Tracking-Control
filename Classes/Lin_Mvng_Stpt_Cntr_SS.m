@@ -154,6 +154,71 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     %Set the name of the simulink model to use
                     obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
+
+                case 'SS PID FF Controller'
+
+                    % X DIMENSION DERIVATIONS
+                    %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
+                    obj.stateVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.e_beta, VDefs.e_beta_dot].'; 
+                    obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.e_beta_dot, VDefs.e_beta_ddot].';
+                    
+                    %Setpoint vector
+                    obj.x_setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s VDefs.beta_dot_s VDefs.beta_ddot_s].';
+                    
+                    %Derive augmented dynamics for x direction, SS PID controller
+                    x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
+                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.beta_dot rhs(Lnrzed_EOMs.Lin_EOMs1(4))].';
+                    x_1a_dot_eqn = obj.stateVec_1a_dot == subs(rhs(x_1a_dot_eqn),...
+                        VDefs.x_ddot , rhs(Lnrzed_EOMs.Lin_EOMs1(2)));
+                    x_1a_dot_eqn = subs(x_1a_dot_eqn, VDefs.x, VDefs.x_s - VDefs.e_x);
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.A1a = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_1a);
+                    
+                    %Augmented B Matrix
+                    obj.sys_mats.B1a = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
+                    
+                    %S matrix
+                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.x_setpointVec);
+                    
+                    %Our desired control output is the x state (want it to match as closely as possible to x_s
+                    %for all times). Given that x = x_s - e_x, C and D are:
+                    obj.sys_mats.C1a = [0 -1 0 0 0]; 
+                    obj.sys_mats.D1a = [1 0 0];
+
+                    % y DIMENSION DERIVATIONS
+                    %State vector augmented with integral of the error in y AND with y and y_dot replaced with error states
+                    obj.stateVec_2a = [VDefs.e_iy, VDefs.e_y, VDefs.e_y_dot, VDefs.gamma, VDefs.gamma_dot].'; 
+                    obj.stateVec_2a_dot = [VDefs.e_y, VDefs.e_y_dot, VDefs.e_y_ddot, VDefs.gamma_dot, VDefs.gamma_ddot].';
+                    
+                    %Setpoint vector
+                    obj.y_setpointVec = [VDefs.y_s VDefs.y_dot_s VDefs.y_ddot_s].';
+                    
+                    %Derive augmented dynamics for x direction, SS PID controller
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
+                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.gamma_dot rhs(Lnrzed_EOMs.Lin_EOMs2(4))].';
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == subs(rhs(x_2a_dot_eqn),...
+                        VDefs.y_ddot , rhs(Lnrzed_EOMs.Lin_EOMs2(2)));
+                    x_2a_dot_eqn = subs(x_2a_dot_eqn, VDefs.y, VDefs.y_s - VDefs.e_y);
+                    
+                    %Augmented A Matrix
+                    obj.sys_mats.A2a = equationsToMatrix(rhs(x_2a_dot_eqn), obj.stateVec_2a);
+                    
+                    %Augmented B Matrix
+                    obj.sys_mats.B2a = equationsToMatrix(rhs(x_2a_dot_eqn), VDefs.T_gamma);
+                    
+                    %S matrix
+                    obj.sys_mats.S2 = equationsToMatrix(rhs(x_2a_dot_eqn), obj.y_setpointVec);
+                    
+                    %Our desired control output is the x state (want it to match as closely as possible to x_s
+                    %for all times). Given that x = x_s - e_x, C and D are:
+                    obj.sys_mats.C2a = [0 -1 0 0 0]; 
+                    obj.sys_mats.D2a = [1 0 0];
+                    
+
+                    %Set the name of the simulink model to use
+                    obj.sim_string = 'Linear_Moving_Setpoint_SS_PID_FF';
+
                                     
                 otherwise
                     
@@ -169,7 +234,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
          
-            
+            %If not a feed-forward controller, do this
+            if ~ strcmp(obj.ctrl_type ,'SS PID FF Controller') 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
         
                 %Timespan
@@ -215,7 +281,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
             %Run the simulation    
                 obj.sim_response = sim(obj.sim_string);
-                
+            
+            %Else, it's a feed-forward controller, so do this
+            else
+
+            end
             
         end
         
