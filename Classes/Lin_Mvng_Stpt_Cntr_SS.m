@@ -249,23 +249,42 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
 
-            %Smooth path to trajectory from the initial conditions
-            x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-            y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
-
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
                 case 'SS Int Controller'
+
+                    %Smooth path to trajectory from the initial conditions
+                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+
+                    %Setpoint vectors here are just the smoothed x and y setpoints
                     obj.x_s_vec = x_s;
                     obj.y_s_vec = y_s;
+
                 case 'SS PID Controller' 
+
+                    %Smooth path to trajectory from the initial conditions
+                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+
                     %For the PID the setpoint vector contains the derivative of 
                     % the desired x and y trajectories
                     obj.x_s_vec = [x_s; diff(x_s,1)]; 
                     obj.y_s_vec = [y_s; diff(y_s,1)];
+
                 case 'SS PID FF Controller'
-                    
+
+                    %Compute the angular setpoints that are consistent with the x and y
+                    %setpoints (in the linear dynamics)
+                    syms beta_s(t) gamma_s(t)
+                    T_beta_eqn = isolate(obj.VDefs.beta_ddot == Lnrzed_EOMs.Lin_EOMs(4), obj.VDefs.T_beta);
+                    T_beta_eqn = sub(T_beta_eqn,[obj.VDefs.beta, obj.VDefs.beta_ddot],[beta_s, diff(beta_s,2)]);    
+                    ode_beta_s = diff(x_s,2) == subs(Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
+                    %Solve the linear ODE for beta_s(t)
+                    beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
+                    %Take only the particular solution to be 
+                    beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
 
 
             end 
