@@ -275,17 +275,45 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                 case 'SS PID FF Controller'
 
-                    %Compute the angular setpoints that are consistent with the x and y
+                    %Solve for the angular setpoints that are consistent with the x and y
                     %setpoints (in the linear dynamics)
+
                     syms beta_s(t) gamma_s(t)
+
+                    %Beta 
                     T_beta_eqn = isolate(obj.VDefs.beta_ddot == Lnrzed_EOMs.Lin_EOMs(4), obj.VDefs.T_beta);
                     T_beta_eqn = sub(T_beta_eqn,[obj.VDefs.beta, obj.VDefs.beta_ddot],[beta_s, diff(beta_s,2)]);    
                     ode_beta_s = diff(x_s,2) == subs(Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
                     %Solve the linear ODE for beta_s(t)
                     beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
-                    %Take only the particular solution to be 
+                    %Take only the particular solution 
                     beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
 
+                    %Gamma
+                    T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
+                    T_gamma_eqn = sub(T_gamma_eqn,[obj.VDefs.gamma, obj.VDefs.gamma_ddot],[gamma_s, diff(gamma_s,2)]);    
+                    ode_gamma_s = diff(y_s,2) == subs(Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
+                    %Solve the linear ODE for gamma_s(t)
+                    gamma_s_sol(obj.VDefs.t) = dsolve(ode_gamma_s);
+                    %Take only the particular solution 
+                    gamma_s_sol(obj.VDefs.t) = subs(gamma_s_sol, [C1 C2], [0 0]);
+
+                    %Feed-Forward input functions
+                    T_beta = rhs(T_beta_eqn, [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
+                    T_gamma = rhs(T_gamma_eqn, [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
+                    obj.u_FF = [T_beta;T_gamma];
+
+                    %Apply a first order smoothing to both the position and angular
+                    %setpoints
+                    x_s(obj.VDefs.t) = x_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+                    y_s(obj.VDefs.t) = y_s(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+                    beta_s_sol(obj.VDefs.t) = beta_s_sol(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(3)*exp(-obj.VDefs.t/Tau);
+                    gamma_s_sol(obj.VDefs.t) = gamma_s_sol(obj.VDefs.t)*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
+
+                    %Bring setpoints together into the setpoint vectors
+                    obj.x_s_vec = [x_s; diff(x_s); beta_s_sol; diff(beta_s_sol)];
+                    obj.y_s_vec = [y_s; diff(y_s); gamma_s_sol; diff(gamma_s_sol)];
+                    
 
             end 
 
