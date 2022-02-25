@@ -544,25 +544,31 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     title('SS PID w FF Controller y direction');
 
-                    ax1 = subplot(3,1,1);
+                    ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(title_str)
                     legend('y', 'y_s')
 
-                    ax2 = subplot(3,1,2);
-                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)))
+                    ax2 = subplot(4,1,2);
+                    plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)), ...
+                         obj.sim_response.tout,rad2deg(obj.sim_response.y_s_vec(:,3)))
                     xlabel('time [s]')
                     ylabel('\gamma [deg]')
                     legend('gamma', 'gamma_s')
 
-                    ax3 = subplot(3,1,3);
+                    ax3 = subplot(4,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
                     xlabel('time [s]')
                     ylabel('Tgamma [mNm]')
                     
-                    linkaxes([ax1,ax2, ax3],'x');
+                    ax4 = subplot(4,1,4);
+                    plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
+                    xlabel('time [s]')
+                    ylabel('error in x [m]')
+
+                    linkaxes([ax1,ax2, ax3, ax4],'x');
                     set(gcf,'position',[0,0,800,900]);
 
 
