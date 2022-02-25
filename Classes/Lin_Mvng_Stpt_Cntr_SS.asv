@@ -234,62 +234,75 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         end
         
         
-        function [] = Run_Sim(obj,x_setpoint_symfun,y_setpoint_symfun,tspan, x_0, K1, K2)
+        function [] = Run_Sim(obj,x_setpoint_symfun,y_setpoint_symfun,...
+                beta_setpoint_symfun, gamma_setpoint_symfun, u_FF_symfun,...
+                tspan, x_0, K1, K2)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
-         
-            %If not a feed-forward controller, do this
-            if ~ strcmp(obj.ctrl_type ,'SS PID FF Controller') 
+          
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
         
-                %Timespan
-                tspan = Simulink.Parameter(tspan);
-                assignin('base', 'tspan', tspan)
+            %Timespan
+            tspan = Simulink.Parameter(tspan);
+            assignin('base', 'tspan', tspan)
 
-                %ICs
-                x_0 = Simulink.Parameter(x_0);
-                assignin('base', 'x_0', x_0);  
+            %ICs
+            x_0 = Simulink.Parameter(x_0);
+            assignin('base', 'x_0', x_0);  
 
-                %Gain matrix K1 - x direction
-                K1 = Simulink.Parameter(K1);
-                assignin('base', 'K1', K1); %Create the simulink paramter in the base workspace   
+            %Gain matrix K1 - x direction
+            K1 = Simulink.Parameter(K1);
+            assignin('base', 'K1', K1); %Create the simulink paramter in the base workspace   
 
-                %Gain matrix K2 - y direction
-                K2 = Simulink.Parameter(K2);
-                assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
+            %Gain matrix K2 - y direction
+            K2 = Simulink.Parameter(K2);
+            assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
 
-                %Saturation torque
-                Tmax = Simulink.Parameter(obj.VDefs.Tmax);
-                assignin('base', 'Tmax', Tmax); %Create the simulink paramter in the base workspace             
+            %Saturation torque
+            Tmax = Simulink.Parameter(obj.VDefs.Tmax);
+            assignin('base', 'Tmax', Tmax); %Create the simulink paramter in the base workspace             
+        
+        %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+        %with a function generated from x_setpoint_symfun
+            sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/x_Setpoint_Function');
+            load_system(obj.sim_string);
+            matlabFunctionBlock(sim_path_string, x_setpoint_symfun,'FunctionName', 'x_setpoint')
+
+        %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+        %with a function generated from y_setpoint_symfun
+            sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/y_Setpoint_Function');
+            load_system(obj.sim_string);
+            matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'y_setpoint')
+
+        %Replace the definition of the "beta_Setpoint_Function" MATLAB function block
+        %with a function generated from beta_setpoint_symfun
+            sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/beta_Setpoint_Function');
+            load_system(obj.sim_string);
+            matlabFunctionBlock(sim_path_string, beta_setpoint_symfun,'FunctionName', 'beta_setpoint')
+
+        %Replace the definition of the "gamma_Setpoint_Function" MATLAB function block
+        %with a function generated from y_setpoint_symfun
+            sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/gamma_Setpoint_Function');
+            load_system(obj.sim_string);
+            matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'gamma_setpoint')
+
+        %Replace the definition of the "u_FF" MATLAB function block
+        %with a function generated from u_FF_symfun
+        
+
+        %Replace the definition of the "Plant_Function" MATLAB function block with a
+        %function generated from obj.plant symbolic function
+            sim_path_string = 'Plant/Plant_Function';
+            load_system(obj.sim_string);
+            %Generate a matlab function from the linearized plant model
+            input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
+            %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
+            matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
+        
+        %Run the simulation    
+            obj.sim_response = sim(obj.sim_string);
             
-            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
-            %with a function generated from x_setpoint_symfun
-                sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/x_Setpoint_Function');
-                load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, x_setpoint_symfun,'FunctionName', 'x_setpoint')
 
-            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
-            %with a function generated from y_setpoint_symfun
-                sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/y_Setpoint_Function');
-                load_system(obj.sim_string);
-                matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'y_setpoint')
-
-            %Replace the definition of the "Plant_Function" MATLAB function block with a
-            %function generated from obj.plant symbolic function
-                sim_path_string = strcat('Plant','/Plant_Function');
-                load_system(obj.sim_string);
-                %Generate a matlab function from the linearized plant model
-                input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
-                %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
-                matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
-            
-            %Run the simulation    
-                obj.sim_response = sim(obj.sim_string);
-            
-            %Else, it's a feed-forward controller, so do this
-            else
-
-            end
             
         end
         
