@@ -214,7 +214,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     %Derive augmented dynamics for x direction, SS PID controller
                     x_2a_dot_eqn = obj.stateVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
-                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.gamma_dot (VDefs.gamma_ddot_s - VDefs.gamma_ddot)].';
+                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.e_gamma_dot (VDefs.gamma_ddot_s - VDefs.gamma_ddot)].';
                     x_2a_dot_eqn = obj.stateVec_2a_dot == subs(rhs(x_2a_dot_eqn),...
                         [VDefs.y_ddot VDefs.gamma_ddot] , [rhs(Lnrzed_EOMs.Lin_EOMs2(2)), rhs(Lnrzed_EOMs.Lin_EOMs2(4))]);
                     x_2a_dot_eqn = subs(x_2a_dot_eqn, [VDefs.y VDefs.gamma], [VDefs.y_s - VDefs.e_y, VDefs.gamma_s - VDefs.e_gamma]);
