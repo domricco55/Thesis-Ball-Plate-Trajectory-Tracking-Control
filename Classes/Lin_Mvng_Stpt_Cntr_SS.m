@@ -25,6 +25,17 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
         %Plant symfun or MATLAB Anonymous function
         plant
+
+        %Setpoint symfuns - the input to the "Run_Sim" method is a desired x_s and y_s
+        %trajectory (position only). This class then generates the necessary x_s_vec and
+        %y_s_vec from those setpoints, depending on the control architecture selected. 
+        x_s_vec
+        y_s_vec
+
+        %Feed-Forward torque - depending on the control architecture, a feed-forward
+        %torque symfun may or may not be generated
+        u_FF
+
     end
     
     
@@ -234,10 +245,18 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         end
         
         
-        function [] = Run_Sim(obj,x_setpoint_symfun,y_setpoint_symfun, u_FF_symfun, tspan, x_0, K1, K2)
+        function [] = Run_Sim(obj,x_setpoint_symfun,y_setpoint_symfun, tspan, x_0, K1, K2)
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
           
+            %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
+            %from x_setpoint_symfun and y_setpoint_symfun
+            switch obj.ctrl_type
+                case 'SS Int Controller'
+                case 'SS PID Controller'   
+                case 'SS PID FF Controller'
+            end 
+
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
         
             %Timespan
@@ -273,19 +292,17 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/y_Setpoint_Function');
             matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'y_setpoint')
 
-        %Replace the definition of the "beta_Setpoint_Function" MATLAB function block
-        %with a function generated from beta_setpoint_symfun
-            sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/beta_Setpoint_Function');
-            matlabFunctionBlock(sim_path_string, beta_setpoint_symfun,'FunctionName', 'beta_setpoint')
-
         %Replace the definition of the "gamma_Setpoint_Function" MATLAB function block
         %with a function generated from y_setpoint_symfun
             sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/gamma_Setpoint_Function');
             matlabFunctionBlock(sim_path_string, y_setpoint_symfun,'FunctionName', 'gamma_setpoint')
 
-        %Replace the definition of the "u_FF" MATLAB function block
+        %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
+        if strcmp(obj.ctrl_type,'SS PID FF Controller')
+  
             sim_path_string = strcat(obj.sim_string,'/u_FF');
             matlabFunctionBlock(sim_path_string, u_FF_symfun,'FunctionName', 'u_FF')
+        end 
 
         %Replace the definition of the "Plant_Function" MATLAB function block with a
         %function generated from obj.plant symbolic function
