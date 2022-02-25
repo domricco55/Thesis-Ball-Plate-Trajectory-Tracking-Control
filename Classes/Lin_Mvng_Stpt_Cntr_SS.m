@@ -233,7 +233,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Our desired control output is the y state (want it to match as closely as possible to y_s
                     %for all times). Given that y = y_s - e_y, C and D are:
                     obj.sys_mats.C2a = [0 -1 0 0 0]; 
-                    obj.sys_mats.D2a = [1 0 0];
+                    obj.sys_mats.D2a = [1 0 0 0 0];
                     
 
                     %Set the name of the simulink model to use
