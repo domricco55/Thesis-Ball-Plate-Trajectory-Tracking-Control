@@ -398,7 +398,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                         obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
-                    title(title_str)
+                    title(strcat(title_str,' x direction'))
                     legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
@@ -422,13 +422,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     figure_obj_y = figure;
                     
-                    title('SS_Integral_Controller y direction');
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
                         obj.sim_response.tout,obj.sim_response.y_s_vec,'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
-                    title(title_str)
+                    title(strcat(title_str,' y direction'))
                     legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
@@ -451,13 +450,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     figure_obj_x = figure;
                     
-                    title('SS PID Controller x direction');
                     
                     ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
-                    title(title_str)
+                    title(strcat(title_str,' x direction'))
                     legend('x', 'x_s')
 
                     ax2 = subplot(4,1,2);
@@ -481,13 +479,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     figure_obj_y = figure;
 
-                    title('SS PID Controller y direction');
-
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
-                    title(title_str)
+                    title(strcat(title_str,' y direction'))
                     legend('y', 'y_s')
 
                     ax2 = subplot(3,1,2);
@@ -508,13 +504,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     figure_obj_x = figure;
                     
-                    title('SS PID w FF Controller x direction');
                     
                     ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('x [m]')
-                    title(title_str)
+                    title(strcat(title_str,' x direction'))
                     legend('x', 'x_s')
 
 
@@ -548,7 +543,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
                     xlabel('time [s]')
                     ylabel('y [m]')
-                    title(title_str)
+                    title(strcat(title_str,' y direction'))
                     legend('y', 'y_s')
 
                     ax2 = subplot(4,1,2);
