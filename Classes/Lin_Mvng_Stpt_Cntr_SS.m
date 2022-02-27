@@ -308,7 +308,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
                     T_gamma = subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
-                    obj.u_FF = [T_beta;T_gamma];
+                    obj.u_FF(obj.VDefs.t) = [T_beta;T_gamma];
 
                     %Apply a first order smoothing to both the position and angular
                     %setpoints
