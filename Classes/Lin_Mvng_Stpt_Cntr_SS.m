@@ -418,7 +418,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ylabel('error in x [m]')
 
                     linkaxes([ax1,ax2, ax3 ax4],'x');
-                    set(gcf,'position',[0,0,800,900]);   
+                    set(gcf,'position',[0,0,1200,1200]);   
 
                     figure_obj_y = figure;
                     
@@ -442,7 +442,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ylabel('Tgamma [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
-                    set(gcf,'position',[0,0,800,900]);   
+                    set(gcf,'position',[0,0,1200,1200]);   
                     
 
                     
@@ -475,7 +475,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ylabel('error in x [m]')
 
                     linkaxes([ax1,ax2, ax3, ax4],'x');
-                    set(gcf,'position',[0,0,800,900]);
+                    set(gcf,'position',[0,0,1200,1200]);
 
                     figure_obj_y = figure;
 
@@ -498,7 +498,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ylabel('Tgamma [mNm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
-                    set(gcf,'position',[0,0,800,900]);
+                    set(gcf,'position',[0,0,1200,1200]);
                      
                case 'SS PID FF Controller'
 
@@ -533,7 +533,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     linkaxes([ax1,ax2, ax3, ax4],'x');
-                    set(gcf,'position',[0,0,800,900]);
+                    set(gcf,'position',[0,0,1200,1200]);
 
                     figure_obj_y = figure;
 
@@ -564,7 +564,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     ylabel('error in x [m]')
 
                     linkaxes([ax1,ax2, ax3, ax4],'x');
-                    set(gcf,'position',[0,0,800,900]);
+                    set(gcf,'position',[0,0,1200,1200]);
 
 
             end 
