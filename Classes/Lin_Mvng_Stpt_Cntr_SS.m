@@ -318,10 +318,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     %Apply a first order smoothing to both the position and angular
                     %setpoints
-                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
-                    beta_s_sol = beta_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(3)*exp(-obj.VDefs.t/Tau);
-                    gamma_s_sol = gamma_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
+%                     x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
+%                     y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
+%                     beta_s_sol = beta_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(3)*exp(-obj.VDefs.t/Tau);
+%                     gamma_s_sol = gamma_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
