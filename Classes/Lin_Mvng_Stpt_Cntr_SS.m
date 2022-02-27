@@ -254,6 +254,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
 
+            %Remove any dirac deltas from the derivatives of the setpoints
+            [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(x_s, y_s);
+
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
@@ -266,6 +269,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Setpoint vectors here are just the smoothed x and y setpoints
                     obj.x_s_vec = x_s;
                     obj.y_s_vec = y_s;
+                   
 
                 case 'SS PID Controller' 
 
@@ -274,9 +278,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %For the PID the setpoint vector contains the derivative of 
-                    % the desired x and y trajectories
-                    obj.x_s_vec = [x_s; diff(x_s,1)]; 
-                    obj.y_s_vec = [y_s; diff(y_s,1)];
+                    % the desired x and y trajectories. 
+
+
+                    obj.x_s_vec = [x_s; d_x_s]; 
+                    obj.y_s_vec = [y_s; d_y_s];
 
                 case 'SS PID FF Controller'
 
@@ -288,7 +294,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Beta 
                     T_beta_eqn = isolate(obj.VDefs.beta_ddot == obj.Lnrzed_EOMs.Lin_EOMs(4), obj.VDefs.T_beta);
                     T_beta_eqn = subs(T_beta_eqn,[obj.VDefs.beta, obj.VDefs.beta_ddot],[beta_s, diff(beta_s,2)]);    
-                    ode_beta_s = diff(x_s,2) == subs(obj.Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
+                    ode_beta_s = dd_x_s == subs(obj.Lnrzed_EOMs.Lin_EOMs(2), obj.VDefs.T_beta, rhs(T_beta_eqn));
                     ode_beta_s = subs(ode_beta_s, obj.VDefs.beta, beta_s); 
                     %Solve the linear ODE for beta_s(t)
                     beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
@@ -298,7 +304,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Gamma
                     T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == obj.Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
                     T_gamma_eqn = subs(T_gamma_eqn,[obj.VDefs.gamma, obj.VDefs.gamma_ddot],[gamma_s, diff(gamma_s,2)]);    
-                    ode_gamma_s = diff(y_s,2) == subs(obj.Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
+                    ode_gamma_s = dd_y_s == subs(obj.Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
                     ode_gamma_s = subs(ode_gamma_s, obj.VDefs.gamma, gamma_s); 
                     %Solve the linear ODE for gamma_s(t)
                     gamma_s_sol(obj.VDefs.t) = dsolve(ode_gamma_s);
@@ -384,7 +390,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         function [figure_obj_x, figure_obj_y] = plot_results(obj, title_str)
             %plot_results Summary of this method goes here
             %   Detailed explanation goes here 
-            
+
             switch obj.ctrl_type
                 
                 case 'SS Integral Controller'
@@ -570,6 +576,61 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             end 
             
         end 
+        
+        function [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(x_s, y_s)
+
+                    %Make sure there are no dirac delta's in the derivatives of the
+                    %setpoint functions
+
+                    %First derivatives
+                    d_x_s = diff(x_s,1);
+                    sub_exps_d_x_s = children(d_x_s); %get each term in the derivative
+                    for n = 1:length(sub_exps_d_x_s)
+                        %If there is a delta, set its term to zero
+                        if hasSymType(sub_exps_d_x_s(n),'delta')
+                            sub_exps_d_x_s(n) = 0;
+                        end
+                    
+                    end
+                    d_x_s = sum(sub_exps_d_x_s);
+                    
+                    d_y_s = diff(y_s,1);
+                    sub_exps_d_y_s = children(d_y_s); %get each term in the derivative
+                    for n = 1:length(sub_exps_d_x_s)
+                        %If there is a delta, set its term to zero
+                        if hasSymType(sub_exps_d_y_s(n),'delta')
+                            sub_exps_d_y_s(n) = 0;
+                        end
+                    
+                    end
+                    d_y_s = sum(sub_exps_d_y_s);
+
+
+                    %Second derivatives
+                    dd_x_s = diff(x_s,2);
+                    sub_exps_dd_x_s = children(dd_x_s); %get each term in the derivative
+                    for n = 1:length(sub_exps_dd_x_s)
+                        %If there is a delta, set its term to zero
+                        if hasSymType(sub_exps_dd_x_s(n),'delta')
+                            sub_exps_dd_x_s(n) = 0;
+                        end
+                    
+                    end
+                    dd_x_s = sum(sub_exps_dd_x_s);
+                    
+                    dd_y_s = diff(y_s,2);
+                    sub_exps_dd_y_s = children(dd_y_s); %get each term in the derivative
+                    for n = 1:length(sub_exps_dd_x_s)
+                        %If there is a delta, set its term to zero
+                        if hasSymType(sub_exps_dd_y_s(n),'delta')
+                            sub_exps_dd_y_s(n) = 0;
+                        end
+                    
+                    end
+                    dd_y_s = sum(sub_exps_dd_y_s);
+
+        end
+
 
     end
 end
