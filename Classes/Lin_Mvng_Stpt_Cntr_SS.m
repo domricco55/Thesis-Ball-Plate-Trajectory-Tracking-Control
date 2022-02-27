@@ -255,7 +255,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %   Detailed explanation goes here
 
             %Remove any dirac deltas from the derivatives of the setpoints
-            [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(x_s, y_s);
+            [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
@@ -314,7 +314,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
                     T_gamma = subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
-                    obj.u_FF(obj.VDefs.t) = [T_beta;T_gamma];
+                    obj.u_FF = [T_beta;T_gamma];
 
                     %Apply a first order smoothing to both the position and angular
                     %setpoints
@@ -324,8 +324,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     gamma_s_sol = gamma_s_sol*(1-exp(-obj.VDefs.t/Tau)) + x_0(7)*exp(-obj.VDefs.t/Tau);
 
                     %Bring setpoints together into the setpoint vectors
-                    obj.x_s_vec = [x_s; diff(x_s); beta_s_sol; diff(beta_s_sol)];
-                    obj.y_s_vec = [y_s; diff(y_s); gamma_s_sol; diff(gamma_s_sol)];
+                    obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
+                    obj.y_s_vec = [y_s; d_y_s; gamma_s_sol; diff(gamma_s_sol)];
                     
 
             end 
@@ -577,7 +577,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             
         end 
         
-        function [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(x_s, y_s)
+        function [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(obj, x_s, y_s)
 
                     %Make sure there are no dirac delta's in the derivatives of the
                     %setpoint functions
@@ -587,47 +587,47 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     sub_exps_d_x_s = children(d_x_s); %get each term in the derivative
                     for n = 1:length(sub_exps_d_x_s)
                         %If there is a delta, set its term to zero
-                        if hasSymType(sub_exps_d_x_s(n),'delta')
-                            sub_exps_d_x_s(n) = 0;
+                        if hasSymType(sub_exps_d_x_s{n},'dirac')
+                            sub_exps_d_x_s{n} = sym(0);
                         end
                     
                     end
-                    d_x_s = sum(sub_exps_d_x_s);
+                    d_x_s = sum(cell2sym(sub_exps_d_x_s));
                     
                     d_y_s = diff(y_s,1);
                     sub_exps_d_y_s = children(d_y_s); %get each term in the derivative
                     for n = 1:length(sub_exps_d_x_s)
                         %If there is a delta, set its term to zero
-                        if hasSymType(sub_exps_d_y_s(n),'delta')
-                            sub_exps_d_y_s(n) = 0;
+                        if hasSymType(sub_exps_d_y_s{n},'dirac')
+                            sub_exps_d_y_s{n} = sym(0);
                         end
                     
                     end
-                    d_y_s = sum(sub_exps_d_y_s);
+                    d_y_s = sum(cell2sym(sub_exps_d_y_s));
 
 
                     %Second derivatives
-                    dd_x_s = diff(x_s,2);
+                    dd_x_s = diff(d_x_s,1);
                     sub_exps_dd_x_s = children(dd_x_s); %get each term in the derivative
                     for n = 1:length(sub_exps_dd_x_s)
                         %If there is a delta, set its term to zero
-                        if hasSymType(sub_exps_dd_x_s(n),'delta')
-                            sub_exps_dd_x_s(n) = 0;
+                        if hasSymType(sub_exps_d_y_s{n},'dirac')
+                            sub_exps_d_y_s{n} = 0;
                         end
                     
                     end
-                    dd_x_s = sum(sub_exps_dd_x_s);
+                    dd_x_s = sum(cell2sym(sub_exps_dd_x_s));
                     
-                    dd_y_s = diff(y_s,2);
+                    dd_y_s = diff(d_y_s,1);
                     sub_exps_dd_y_s = children(dd_y_s); %get each term in the derivative
                     for n = 1:length(sub_exps_dd_x_s)
                         %If there is a delta, set its term to zero
-                        if hasSymType(sub_exps_dd_y_s(n),'delta')
-                            sub_exps_dd_y_s(n) = 0;
+                        if hasSymType(sub_exps_d_y_s{n},'dirac')
+                            sub_exps_d_y_s{n} = 0;
                         end
                     
                     end
-                    dd_y_s = sum(sub_exps_dd_y_s);
+                    dd_y_s = sum(cell2sym(sub_exps_dd_y_s));
 
         end
 
