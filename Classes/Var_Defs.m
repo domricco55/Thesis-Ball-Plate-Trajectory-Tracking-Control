@@ -444,7 +444,6 @@ classdef Var_Defs
 
         %Vectors
             %Symbolic Angular Velocity Vectors
-
             obj.Omega2vs = [obj.omega_hat_x(t); obj.omega_hat_y(t); obj.omega_hat_z(t)];
             obj.Psi2vs = [obj.psi_hat_x(t); obj.psi_hat_y(t); obj.psi_hat_z(t)];
             

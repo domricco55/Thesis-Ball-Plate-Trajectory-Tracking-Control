@@ -24,7 +24,7 @@ classdef BP_Kinetics < handle
         ExtTerms
         NL_EOMs
         SumMBall
-        SumMPlate
+        SumMBallPlate
         
         %Substituted numerical parameters and assumptions (keep track of what 
         %is being substituted and assumed away)
@@ -46,7 +46,7 @@ classdef BP_Kinetics < handle
         
         
         function [Omega2b, Hb2s, Hb2ds, SumMBall, Hp1s, Hp1ds, armp1s, rb1s, ap1s,...
-                ab1s, Hb1ds, SumMPlate, CoeffMat, ExtTerms, NL_EOMs] = Derive_NL_EOMs(obj)
+                ab1s, Hb1ds, SumMBallPlate, CoeffMat, ExtTerms, NL_EOMs] = Derive_NL_EOMs(obj)
             %Derive_NL_EOMs Derive the Equations of Motion for the Ball and Plate system
             %   Detailed explanation goes here 
             
@@ -90,15 +90,15 @@ classdef BP_Kinetics < handle
             
             %Sum moments about the center of the u-joint for the ball and plate combined
             %system. This is done in the S1 basis
-            obj.SumMPlate = cross(armp1s, obj.VDefs.R01*obj.VDefs.Wp0s) + ...
+            obj.SumMBallPlate = cross(armp1s, obj.VDefs.R01*obj.VDefs.Wp0s) + ...
                 cross(rb1s,obj.VDefs.R01*obj.VDefs.Wb0s) + obj.VDefs.Tb1 +...
                 obj.VDefs.Tg1 + obj.VDefs.Mz1 == cross(armp1s, obj.VDefs.m_p*ap1s)...
                 + obj.Hp1ds + cross(rb1s, obj.VDefs.m_b*ab1s) + Hb1ds;
-            obj.SumMPlate = expand(subs(obj.SumMPlate, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
+            obj.SumMBallPlate = expand(subs(obj.SumMBallPlate, obj.VDefs.symFunVec, obj.VDefs.symVarVec));
             
             %Generate equations of motion by isolating the highest order terms in the x
             %and y moment equations
-            Moment_Eqns = [obj.SumMBall(1:2);obj.SumMPlate(1:2)];
+            Moment_Eqns = [obj.SumMBall(1:2);obj.SumMBallPlate(1:2)];
             HOTs = [obj.VDefs.x_ddot; obj.VDefs.beta_ddot; obj.VDefs.y_ddot; obj.VDefs.gamma_ddot];
             [obj.CoeffMat,obj.ExtTerms] = equationsToMatrix(Moment_Eqns, HOTs);
             
@@ -112,7 +112,7 @@ classdef BP_Kinetics < handle
             Hb2ds = obj.Hb2ds;
             Hp1s = obj.Hp1s;
             Hp1ds = obj.Hp1ds;
-            SumMPlate = obj.SumMPlate;
+            SumMBallPlate = obj.SumMBallPlate;
             SumMBall = obj.SumMBall;
             NL_EOMs = obj.NL_EOMs;
             CoeffMat = obj.CoeffMat;
@@ -128,7 +128,7 @@ classdef BP_Kinetics < handle
 
             %Numerical Parameters in terms of symbolic variables utilized in 
             %the model 
-            Num_Params = [obj.VDefs.rB  (obj.VDefs.rC+obj.VDefs.rB) ...
+            Num_Params = [obj.VDefs.rB (obj.VDefs.rC+obj.VDefs.rB) ...
             obj.VDefs.mB obj.VDefs.mP obj.VDefs.IP obj.VDefs.IB ...
             obj.VDefs.g_num obj.VDefs.rG];
         
