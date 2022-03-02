@@ -53,7 +53,7 @@ classdef NL_Dcpld_EOMs <handle
             %Decouple the x axis
 
             %Ball Kinetics x direction
-            obj.SumMBall_x = simplify(subs(obj.BP_Kinetics.SumMBall(2),[obj.VDefs.gamma obj.VDefs.gamma_dot obj.VDefs.gamma_ddot ], [0 0 0]));
+            obj.SumMBall_x = subs(obj.BP_Kinetics.SumMBall(2),[obj.VDefs.gamma obj.VDefs.gamma_dot obj.VDefs.gamma_ddot ], [0 0 0]);
             
             %Ball and Plate Kinetics x direction
             obj.SumMBallPlate_x = subs(obj.BP_Kinetics.SumMBallPlate(2),[obj.VDefs.gamma obj.VDefs.gamma_dot obj.VDefs.gamma_ddot], [0 0 0]);
@@ -74,7 +74,7 @@ classdef NL_Dcpld_EOMs <handle
             %Decouple the y axis
 
             %Ball Kinetics y direction
-            obj.SumMBall_y = simplify(subs(obj.BP_Kinetics.SumMBall(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]));
+            obj.SumMBall_y = subs(obj.BP_Kinetics.SumMBall(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]);
             
             %Plate Kinetics y direction
             obj.SumMBallPlate_y = subs(obj.BP_Kinetics.SumMBallPlate(1),[obj.VDefs.beta obj.VDefs.beta_dot obj.VDefs.beta_ddot ], [0 0 0]);
