@@ -449,7 +449,15 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,1200,1200]);   
                     
-
+                    %Plot the position space of the ball
+                    i_plot = obj.sim_response.tout > obj.sim_response.tout(round(length(obj.sim_response.tout)/2));
+                    figure
+                    plot(obj.sim_response.x(i_plot,1), obj.sim_response.x(i_plot,5),'b',...
+                         obj.sim_response.x_s_vec(i_plot,1), obj.sim_response.y_s_vec(i_plot,1), '--r')
+                    xlabel('x [m]')
+                    ylabel('y [m]')
+                    title('Position space of the ball in the plate frame')
+                    axis 'equal'
                     
                 case 'SS PID Controller' 
                     
@@ -504,6 +512,16 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,1200,1200]);
+
+                    %Plot the position space of the ball
+                    i_plot = obj.sim_response.tout > obj.sim_response.tout(round(length(obj.sim_response.tout)/2));
+                    figure
+                    plot(obj.sim_response.x(i_plot,1), obj.sim_response.x(i_plot,5),'b',...
+                         obj.sim_response.x_s_vec(i_plot,1), obj.sim_response.y_s_vec(i_plot,1), '--r')
+                    xlabel('x [m]')
+                    ylabel('y [m]')
+                    title('Position space of the ball in the plate frame')
+                    axis 'equal'
                      
                case 'SS PID FF Controller'
 
@@ -570,6 +588,16 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     linkaxes([ax1,ax2, ax3, ax4],'x');
                     set(gcf,'position',[0,0,1200,1200]);
+
+                    %Plot the position space of the ball
+                    i_plot = obj.sim_response.tout > obj.sim_response.tout(round(length(obj.sim_response.tout)/2));
+                    figure
+                    plot(obj.sim_response.x(i_plot,1), obj.sim_response.x(i_plot,5),'b',...
+                         obj.sim_response.x_s_vec(i_plot,1), obj.sim_response.y_s_vec(i_plot,1), '--r')
+                    xlabel('x [m]')
+                    ylabel('y [m]')
+                    title('Position space of the ball in the plate frame')
+                    axis 'equal'
 
 
             end 
