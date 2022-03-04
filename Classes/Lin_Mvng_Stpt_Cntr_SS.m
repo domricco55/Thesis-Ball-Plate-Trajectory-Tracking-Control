@@ -400,7 +400,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),...
-                        obj.sim_response.tout,obj.sim_response.x_s_vec,'--' )
+                        obj.sim_response.tout,obj.sim_response.x_s_vec,'--r' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(strcat(title_str,' x direction'))
@@ -429,7 +429,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     ax1 = subplot(3,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),...
-                        obj.sim_response.tout,obj.sim_response.y_s_vec,'--' )
+                        obj.sim_response.tout,obj.sim_response.y_s_vec,'--r' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(strcat(title_str,' y direction'))
@@ -457,7 +457,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     
                     ax1 = subplot(4,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(strcat(title_str,' x direction'))
@@ -485,7 +485,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     figure_obj_y = figure;
 
                     ax1 = subplot(3,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(strcat(title_str,' y direction'))
@@ -511,7 +511,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
                     
                     ax1 = subplot(4,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,1),obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('x [m]')
                     title(strcat(title_str,' x direction'))
@@ -520,7 +520,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)),...
-                         obj.sim_response.tout,rad2deg(obj.sim_response.x_s_vec(:,3)))
+                         obj.sim_response.tout,rad2deg(obj.sim_response.x_s_vec(:,3)), '--r')
                     xlabel('time [s]')
                     ylabel('\beta [deg]')
                     legend('beta', 'beta_s')
@@ -545,7 +545,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('SS PID w FF Controller y direction');
 
                     ax1 = subplot(4,1,1);
-                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--' )
+                    plot(obj.sim_response.tout,obj.sim_response.x(:,5),obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(strcat(title_str,' y direction'))
@@ -553,7 +553,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     ax2 = subplot(4,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)), ...
-                         obj.sim_response.tout,rad2deg(obj.sim_response.y_s_vec(:,3)))
+                         obj.sim_response.tout,rad2deg(obj.sim_response.y_s_vec(:,3)),'--r')
                     xlabel('time [s]')
                     ylabel('\gamma [deg]')
                     legend('gamma', 'gamma_s')
