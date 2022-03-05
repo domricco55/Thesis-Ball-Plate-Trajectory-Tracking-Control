@@ -635,7 +635,7 @@ classdef Var_Defs
 %             obj.g_num = 9.81; %[m/s^2]
 
             %New system (Scott's redesign)
-            obj.rB = .0381; %[m] Radius of ball
+            obj.rB = .0195; %[m] Radius of ball (steel large)
             obj.rG = .08573; %[m] Distance from u-joint to CG of the plate
             obj.rC = .1025; %[m] Distance from the u-joint to the plate surface
             obj.mB = .225; %[kg] Mass of the ball
