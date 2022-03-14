@@ -302,15 +302,29 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Take only the particular solution 
                     beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
 
+                    %Plot the particular solution
+                    figure
+                    fplot(matlabFunction(beta_s_sol),tspan)
+                    xlabel('Time [s]')
+                    ylabel('beta [rad]')
+                    title('beta analytical particular solution')
+
                     %Gamma
                     T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == obj.Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
                     T_gamma_eqn = subs(T_gamma_eqn,[obj.VDefs.gamma, obj.VDefs.gamma_ddot],[gamma_s, diff(gamma_s,2)]);    
                     ode_gamma_s = dd_y_s == subs(obj.Lnrzed_EOMs.Lin_EOMs(6), obj.VDefs.T_gamma, rhs(T_gamma_eqn));
                     ode_gamma_s = subs(ode_gamma_s, obj.VDefs.gamma, gamma_s); 
                     %Solve the linear ODE for gamma_s(t)
-                    gamma_s_sol(obj.VDefs.t) = dsolve(ode_gamma_s);
+                    gamma_s_sol(obj.VDefs.t) = simplify(dsolve(ode_gamma_s));
                     %Take only the particular solution 
                     gamma_s_sol(obj.VDefs.t) = subs(gamma_s_sol, [C1 C2], [0 0]);
+                    
+                    %Plot the particular solution
+                    figure
+                    fplot(matlabFunction(gamma_s_sol),tspan)
+                    xlabel('Time [s]')
+                    ylabel('gamma [rad]')
+                    title('gamma analytical particular solution')
 
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
