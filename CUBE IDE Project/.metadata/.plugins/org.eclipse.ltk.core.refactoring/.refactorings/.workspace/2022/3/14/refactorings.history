@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;STM32Cube Files&apos;" deleteContents="false" description="Delete resource &apos;STM32Cube Files&apos;" element1="/STM32Cube Files" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1648503884788"/>&#x0A;<refactoring comment="Delete 5 resources" deleteContents="false" description="Delete 5 resources" element1="/F411CE_IMUCalibration" element2="/F411CE_IMUTest" element3="/F411CE_SILClass_Based" element4="/F411CE_TouchPanelCalibration" element5="/F411CE_TouchScreenTestFilterNew" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="5" stamp="1648503893243"/>
+</session>
