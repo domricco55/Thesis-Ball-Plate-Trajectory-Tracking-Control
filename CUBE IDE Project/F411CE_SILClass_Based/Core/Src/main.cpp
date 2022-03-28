@@ -754,7 +754,7 @@ void UserInterface(void)
 {
 	//Initialize necessary variables:
 	char UXinput = 0; //character storage for the first array point of USB receive buffer
-	uint8_t UXstate = 0; //State of UX
+	uint8_t UXstate = 0; //State of UX (at initialization it's 0)
 	uint8_t runstate = 0; //Flag to trigger when correct command is sent from host PC
 	char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
 	char str[200] = {0}; //for messages to send through USB
