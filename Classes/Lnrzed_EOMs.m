@@ -43,6 +43,11 @@ classdef Lnrzed_EOMs < handle
         Lin_EOMs
         Lin_EOMs1
         Lin_EOMs2
+
+        %Output y_1 = x + a*beta
+        TF_y1
+        C_y1
+        D_y1
     end
     
     methods
@@ -182,6 +187,18 @@ classdef Lnrzed_EOMs < handle
             Lin_EOMs1 = obj.Lin_EOMs1;
             Lin_EOMs2 = obj.Lin_EOMs2;
             
+        end
+
+        function [] = Derive_TF_y1(obj)
+
+            %Get system transfer function
+            syms epsilon
+            obj.C_y1 = sym(zeros(1,8));
+            obj.C_y1(1) = 1;
+            obj.C_y1(3) = epsilon;
+            obj.D_y1 = sym(zeros(1,2));
+            obj.TF_y1 = simplify(obj.C_y1*inv(obj.VDefs.s*eye(8) - obj.A)*obj.B + obj.D_y1); 
+
         end
 
         
