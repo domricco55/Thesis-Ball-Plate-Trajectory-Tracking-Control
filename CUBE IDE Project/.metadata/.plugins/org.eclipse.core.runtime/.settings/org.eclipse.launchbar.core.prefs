@@ -4,5 +4,6 @@ LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=w
 configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUCalibration Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUTest Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_SILClass_Based Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_LinearLeastSquaresRegressionOverSample Debug (1),org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_LinearLeastSquaresRegressionOverSample Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_TouchPanelCalibration Debug,org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_TouchScreenTestFilterNew Debug
 eclipse.preferences.version=1
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUCalibration\ Debug/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUCalibration\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUTest\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUTest\ Debug/activeLaunchTarget=null\:---
