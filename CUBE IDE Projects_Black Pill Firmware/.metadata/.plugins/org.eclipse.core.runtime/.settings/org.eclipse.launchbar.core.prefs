@@ -7,4 +7,4 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUCalibration\ Debug/ac
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUCalibration\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUTest\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_IMUTest\ Debug/activeLaunchTarget=null\:---
-org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_SILClass_Based\ Debug/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:F411CE_SILClass_Based\ Debug/activeLaunchMode=debug

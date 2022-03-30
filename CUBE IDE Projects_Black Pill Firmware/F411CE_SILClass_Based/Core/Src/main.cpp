@@ -108,7 +108,7 @@ namespace GlobalVars
 {
 	//Logic Flags:
 	uint8_t timeconsistency = 0; //A boolean that alternates 1 and 0 to verify 5 ms timing on the Simulink data collection end.
-	bool End_UI = false; //A boolean used to signify the end of the UI and the start of the main program.
+	uint8_t End_UI = 0; //A boolean used to signify the end of the UI and the start of the main program.
 
 	//System:
 	float m0tor = 0; //Motor command for axis 0 (torque)
@@ -122,7 +122,7 @@ namespace GlobalVars
 
 // Communication variables
 extern uint8_t buffer[64]; //receive buffer from USB
-extern bool usb_flag; //flag is set true when a USB message is received
+extern uint8_t usb_flag; //flag is set true when a USB message is received
 char UARTstr[64] = {0}; //for messages to send through UART
 char strUSB[100] = {0}; //for messages to send back through USB
 char message[64] = {0}; //for message to break down string sent from PC
@@ -1013,6 +1013,12 @@ void UserInterface(void)
 		}
 		else
 		{
+			if(usb_flag)
+			{
+				sprintf(str,"Input Received Flag True");
+				str[strlen(str)+1] = '\0';
+				CDC_Transmit_FS((uint8_t *) str, strlen(str));
+			}
 
 			UXinput = buffer[0];
 

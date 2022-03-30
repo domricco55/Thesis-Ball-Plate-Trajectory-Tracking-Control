@@ -52,7 +52,7 @@
 /* USER CODE BEGIN PRIVATE_TYPES */
 
 uint8_t buffer[64]; //Extern defined in main - USB buffer
-bool usb_flag; //Extern defined in main - flag to indicate USB buffer has been written to
+uint8_t usb_flag; //Extern defined in main - flag to indicate USB buffer has been written to
 
 /* USER CODE END PRIVATE_TYPES */
 
@@ -276,7 +276,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 	memcpy(buffer, Buf, len);  // copy the data to the buffer
 	memset(Buf, '\0', len);   // clear the Buf also
 
-	usb_flag = true; //Set the usb message received flag true
+	usb_flag = 1; //Set the usb message received flag true
 
 	//From: https://www.openstm32.org/forumthread1447
 	__HAL_GPIO_EXTI_GENERATE_SWIT(EXTI_SWIER_SWIER13); //Does this work for this code?
