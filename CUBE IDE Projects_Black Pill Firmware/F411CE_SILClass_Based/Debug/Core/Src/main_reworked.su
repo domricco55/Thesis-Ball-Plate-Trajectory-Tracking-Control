@@ -1,0 +1,22 @@
+gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
+main_reworked.cpp:145:5:int main()	8	static
+main_reworked.cpp:218:6:void SystemClock_Config()	88	static
+main_reworked.cpp:262:13:void MX_ADC1_Init()	24	static
+main_reworked.cpp:312:13:void MX_I2C1_Init()	8	static
+main_reworked.cpp:346:13:void MX_TIM5_Init()	32	static
+main_reworked.cpp:391:13:void MX_TIM9_Init()	24	static
+main_reworked.cpp:429:13:void MX_TIM10_Init()	8	static
+main_reworked.cpp:460:13:void MX_TIM11_Init()	8	static
+main_reworked.cpp:491:13:void MX_USART1_UART_Init()	8	static
+main_reworked.cpp:522:13:void MX_DMA_Init()	16	static
+main_reworked.cpp:547:13:void MX_GPIO_Init()	48	static
+main_reworked.cpp:604:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
+main_reworked.cpp:619:6:void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef*)	16	static
+main_reworked.cpp:630:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
+main_reworked.cpp:644:6:void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef*)	16	static
+main_reworked.cpp:655:6:void CommunicationResponse(float, float, float, float, float, float, float, float)	272	static
+main_reworked.cpp:753:6:void UserInterface()	448	static
+main_reworked.cpp:1139:6:void Error_Handler()	4	static,ignoring_inline_asm
+main_reworked.cpp:1148:1:void __static_initialization_and_destruction_0(int, int)	24	static
+main_reworked.cpp:1148:1:cpp)	8	static
+main_reworked.cpp:1148:1:cpp)	8	static

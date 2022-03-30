@@ -1,0 +1,13 @@
+gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	16	static
+main.cpp:83:5:int main()	1136	static
+main.cpp:342:6:void SystemClock_Config()	88	static
+main.cpp:388:13:void MX_ADC1_Init()	24	static
+main.cpp:438:13:void MX_USART1_UART_Init()	8	static
+main.cpp:471:13:void MX_GPIO_Init()	48	static
+main.cpp:507:5:int linreg(int, const double*, const double*, double*, double*, double*)	232	static
+main.cpp:545:6:void insertionSort(unsigned int*, int)	176	static
+main.cpp:577:6:void Error_Handler()	4	static,ignoring_inline_asm
+cmath:415:5:constexpr typename __gnu_cxx::__promote_2<_Tp, _Up>::__type std::pow(_Tp, _Up) [with _Tp = double; _Up = int]	24	static
+main.cpp:586:1:void __static_initialization_and_destruction_0(int, int)	16	static
+main.cpp:586:1:cpp)	8	static
+main.cpp:586:1:cpp)	8	static

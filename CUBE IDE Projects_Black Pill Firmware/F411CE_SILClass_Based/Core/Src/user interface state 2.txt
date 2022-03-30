@@ -1,0 +1,11 @@
+else if (UXstate == 2)
+		{
+			sprintf(str,"Skipping zeroing process. Please close the serial terminal and EAT MY SHORTS, wait for 5 seconds, and run the Simulink model.\r\n");
+			str[strlen(str)+1] = '\0';
+			CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over USB
+
+			//Clear buffer and message for next prompt
+			memset(buffer, '\0', sizeof(buffer));  // clear the buffer for next message
+
+			GlobalVars::End_UI = true; //Set run state to active to leave UI state
+		}
