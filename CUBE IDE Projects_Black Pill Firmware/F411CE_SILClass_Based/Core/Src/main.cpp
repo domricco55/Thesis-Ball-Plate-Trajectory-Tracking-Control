@@ -122,6 +122,7 @@ namespace GlobalVars
 
 // Communication variables
 extern uint8_t buffer[64]; //receive buffer from USB
+extern bool usb_flag; //flag is set true when a USB message is received
 char UARTstr[64] = {0}; //for messages to send through UART
 char strUSB[100] = {0}; //for messages to send back through USB
 char message[64] = {0}; //for message to break down string sent from PC

@@ -1,0 +1,121 @@
+//====================================================================================
+		//Process inputs (same at every state)
+
+		if(buffer[0] == '\0')
+		{
+			//Do nothing
+		}
+		else
+		{
+
+			UXinput = buffer[0];
+
+			//Try code: https://www.delftstack.com/howto/c/c-string-to-int/
+			//UXinput = strtol(message,&ptr,10);
+
+			//Clear buffer and message for next prompt
+			memset(buffer, '\0', sizeof(buffer));  // clear the buffer for next message
+
+			switch(UXstate)
+			{
+			case 0: //For state 1
+				switch (UXinput) //Switch case for which UXstate is assigned
+				{
+				case '1':
+					UXstate = 1;
+					UIprint = 1;
+					break;
+				case '2':
+					UXstate = 2;
+					break;
+				default:
+					sprintf(str,"Invalid input, please select option through valid digits only.\r\n");
+					str[strlen(str)+1] = '\0';
+					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+					UIprint = 1;
+					break;
+				}
+				break;
+			case 1:
+				switch(UXinput)
+				{
+					case 'c':
+						waitflg = 1;
+						break;
+					case 'w':
+						//Tilt platform +y
+						sprintf(str,"Tilt platform +y\r\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis0encpos -= 0.001;
+
+						sprintf(ODrivemessage, "q 0 %.4f\n", axis0encpos); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						break;
+					case 'a':
+						//Tilt platform -x
+						sprintf(str,"Tilt platform -x\r\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis1encpos += 0.001;
+
+						sprintf(ODrivemessage, "q 1 %.4f\n", axis1encpos); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						break;
+					case 's':
+						//Tilt platform -y
+						sprintf(str,"Tilt platform -y\r\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis0encpos += 0.001;
+
+						sprintf(ODrivemessage, "q 0 %.4f\n", axis0encpos); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						break;
+					case 'd':
+						//Tilt platform +x
+						sprintf(str,"Tilt platform +x\r\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis1encpos -= 0.001;
+
+						sprintf(ODrivemessage, "q 1 %.4f\n", axis1encpos); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5);
+						break;
+					default:
+						sprintf(str,"Invalid input, please select option through valid digits only.\r\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+						UIprint = 1;
+						break;
+				}
+				break;
+			default:
+				sprintf(str,"Error: Invalid State.\r\n");
+				CDC_Transmit_FS((uint8_t *) str, strlen(str));
+				UIprint = 1;
+				UXstate = 0;
+				break;
+			}
+
+			UXinput = '\0'; //clear handled UX input
+
+		}
