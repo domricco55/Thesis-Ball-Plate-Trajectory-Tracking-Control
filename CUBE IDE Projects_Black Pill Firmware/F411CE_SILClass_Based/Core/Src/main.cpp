@@ -118,6 +118,9 @@ namespace GlobalVars
 	float enc_axis0zero = 0; //The zero position of the encoder on axis 0
 	float enc_axis1zero = 0; //The zero position of the encoder on axis 1
 
+	//State variables
+	uint8_t UI_state = 0; //
+
 }
 
 // Communication variables
@@ -753,40 +756,51 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 
 void UserInterface(void)
 {
-	if(UI_Init_Flag) //If the program has just been initialized, go into
+	//Run the user interface state machine
+	switch(GlobalVars::UI_state)
 	{
-		UI_Init_Flag = 0; //Clear the flag
-		uint8_t UXstate = 0; //Set the
+		case 0: //Initialization state
+
+			GlobalVars::UI_state = 1; //Set state variable to state 1
+
+			//Initialize necessary variables:
+			char UXinput = 0; //character storage for the first array point of USB receive buffer
+			uint8_t UXstate = 0; //State of UX (at initialization it's 0)
+			uint8_t runstate = 0; //Flag to trigger when correct command is sent from host PC
+			char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
+			char str[200] = {0}; //for messages to send through USB
+			char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
+			uint8_t UIprint = 1; //Prints UI for section
+			uint8_t waitflg = 0; //Flag to wait for user input
+
+			//variables to return encoder position
+			float axis0encpos = 0;
+			float axis1encpos = 0;
+
+			//variables to return torque output
+			float axis0torqueout = 0;
+			float axis1torqueout = 0;
+
+			const float axis0torqueconstant = 0.365; // N-m/A
+			const float axis1torqueconstant = 0.35; // N-m/A
+
+			// For processing string
+			static char delim[] = " ";
+			char *ptr;
+
+
+		case 1:
+			/*
+			 * Display initial prompt. This state asks the user if they would like to
+			 * 	1)
+			 * */
+
+
 
 	}
-	//Initialize necessary variables:
-	char UXinput = 0; //character storage for the first array point of USB receive buffer
-	uint8_t UXstate = 0; //State of UX (at initialization it's 0)
-	uint8_t runstate = 0; //Flag to trigger when correct command is sent from host PC
-	char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-	char str[200] = {0}; //for messages to send through USB
-	char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-	uint8_t UIprint = 1; //Prints UI for section
-	uint8_t waitflg = 0; //Flag to wait for user input
 
-	//variables to return encoder position
-	float axis0encpos = 0;
-	float axis1encpos = 0;
 
-	//variables to return torque output
-	float axis0torqueout = 0;
-	float axis1torqueout = 0;
 
-	const float axis0torqueconstant = 0.365; // N-m/A
-	const float axis1torqueconstant = 0.35; // N-m/A
-
-	// For processing string
-	static char delim[] = " ";
-	char *ptr;
-
-	//While loop until the system flag to run the system is set
-	while(!GlobalVars::End_UI)
-	{}
 }
 
 //======================END===========================//
