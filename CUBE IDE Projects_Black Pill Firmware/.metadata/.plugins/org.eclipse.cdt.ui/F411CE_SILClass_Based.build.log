@@ -1,10 +1,10 @@
-18:52:07 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+14:06:26 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-size   F411CE_SILClass_Based.elf 
    text	   data	    bss	    dec	    hex	filename
- 221436	   1176	  16028	 238640	  3a430	F411CE_SILClass_Based.elf
+ 213444	   1176	  16236	 230856	  385c8	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
 
-18:52:08 Build Finished. 0 errors, 0 warnings. (took 744ms)
+14:06:27 Build Finished. 0 errors, 0 warnings. (took 1s.338ms)
 

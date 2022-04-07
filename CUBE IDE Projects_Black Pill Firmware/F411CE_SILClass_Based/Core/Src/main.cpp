@@ -108,7 +108,7 @@ namespace GlobalVars
 {
 	//Logic Flags:
 	uint8_t timeconsistency = 0; //A boolean that alternates 1 and 0 to verify 5 ms timing on the Simulink data collection end.
-	//uint8_t End_UI = 0; //A boolean used to signify the end of the UI and the start of the main program.
+	uint8_t Operational = 0; //Flag to let HAL_GPIO_EXTI_Callback know that it can run the MATLAB communication code
 
 	//System:
 	float m0tor = 0; //Motor command for axis 0 (torque)
@@ -119,7 +119,8 @@ namespace GlobalVars
 	float enc_axis1zero = 0; //The zero position of the encoder on axis 1
 
 	//State variables
-	uint8_t UI_state = 0; //
+	uint8_t UI_state = 0; //User interface task's state variable
+
 
 }
 
@@ -188,11 +189,8 @@ int main(void)
   //Initialize the IMU for use in the zeroing process
   imu.Initialization();
 
-  //Run User Interface Code until platform is ready to operate (while loop inside):
-  UserInterface();
-
   //Initialize Touchscreen Class
-  TS.Initialization();
+  //TS.Initialization();
 
   /* USER CODE END 2 */
 
@@ -202,11 +200,14 @@ int main(void)
   {
 
 	  //Main code is solely used for waiting to process the touch panel data at the moment, can also place controller here as well
-	  if(TS.tsflg == 1)
+	  /*if(TS.tsflg == 1)
 	  {
 		  TS.ProcessPositionData(); //Process the position data
 		  TS.tsflg = 0; //Reset the flag for the next time the data has been collected for processing
-	  }
+	  }*/
+
+	  //Run User Interface Task
+	  UserInterface();
 
 	  /* USER CODE END WHILE */
 
@@ -633,11 +634,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 //Called when USB buffer receives value from MATLAB script
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(!GlobalVars::End_UI)
-	{
-		//Do Nothing
-	}
-	else
+	if(GlobalVars::Operational) //If operational, interpret the MATLAB communication message
 	{
 		CommunicationResponse(TS.xpos, TS.xvel, TS.ypos, TS.yvel, imu.EulerX, imu.AngularVelX, imu.EulerY, imu.AngularVelY);
 	}
@@ -756,46 +753,64 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 
 void UserInterface(void)
 {
+
+	//Variables accessible to all states of the UI:
+
+	//Messages
+	static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
+	static char str[200] = {0}; //for messages to send through USB
+	static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
+	static uint8_t UIprint = 1; //Prints UI for section
+
+	//variables to return encoder position
+	static float axis0encpos = 0;
+	static float axis1encpos = 0;
+
+	//variables to return torque output
+	static float axis0torqueout = 0;
+	static float axis1torqueout = 0;
+
+	static const float axis0torqueconstant = 0.365; // N-m/A
+	static const float axis1torqueconstant = 0.35; // N-m/A
+
+	// For processing string
+	static char delim[] = " ";
+	static char *ptr;
+
 	//Run the user interface state machine
 	switch(GlobalVars::UI_state)
 	{
-		case 0: //Initialization state
 
-			GlobalVars::UI_state = 1; //Set state variable to state 1
-
-			//Initialize necessary variables:
-			char UXinput = 0; //character storage for the first array point of USB receive buffer
-			uint8_t UXstate = 0; //State of UX (at initialization it's 0)
-			uint8_t runstate = 0; //Flag to trigger when correct command is sent from host PC
-			char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-			char str[200] = {0}; //for messages to send through USB
-			char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-			uint8_t UIprint = 1; //Prints UI for section
-			uint8_t waitflg = 0; //Flag to wait for user input
-
-			//variables to return encoder position
-			float axis0encpos = 0;
-			float axis1encpos = 0;
-
-			//variables to return torque output
-			float axis0torqueout = 0;
-			float axis1torqueout = 0;
-
-			const float axis0torqueconstant = 0.365; // N-m/A
-			const float axis1torqueconstant = 0.35; // N-m/A
-
-			// For processing string
-			static char delim[] = " ";
-			char *ptr;
-
-
-		case 1:
+		case 0 :
+		{
 			/*
 			 * Display initial prompt. This state asks the user if they would like to
-			 * 	1)
+			 * 	1) Go through motor commutation/calibration procedure
+			 * 	2) Go to zeroing procedure (WASD)
+			 * 	3) Do neither and move to main operational state (will display a reset ODrive prompt)
 			 * */
 
+			//Print UI
+			if (UIprint)
+			{
+				sprintf(str,"Welcome to utilizing the Balancing Platform! What would you like to do?\r\n1. Full Zero Run\r\n2. Bypass Zero Run\r\n");
+				CDC_Transmit_FS((uint8_t *) str, strlen(str));
 
+				//HAL_Delay(5);
+
+				UIprint = 0;
+
+			}
+
+			GlobalVars::UI_state = 1;
+
+			break;
+		}
+
+		case 1:
+		{
+			GlobalVars::UI_state = 0;
+		}
 
 	}
 
