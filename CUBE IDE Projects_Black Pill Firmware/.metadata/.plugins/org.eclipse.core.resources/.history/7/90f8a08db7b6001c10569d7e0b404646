@@ -793,8 +793,7 @@ void UserInterface(void)
 			//Print UI
 			if (UIprint)
 			{
-				sprintf(str,"Welcome Ball Balancer! What would you like to do?\r\n1."
-						" Full Zero Run\r\n2. Bypass Zero Run\r\n");
+				sprintf(str,"Welcome to utilizing the Balancing Platform! What would you like to do?\r\n1. Full Zero Run\r\n2. Bypass Zero Run\r\n");
 				CDC_Transmit_FS((uint8_t *) str, strlen(str));
 
 				HAL_Delay(5);
