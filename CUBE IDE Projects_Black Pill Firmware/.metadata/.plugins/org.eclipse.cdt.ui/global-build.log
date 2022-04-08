@@ -1,10 +1,7 @@
-12:05:22 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+15:44:54 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.cpp: In function 'void UserInterface()':
-../Core/Src/main.cpp:760:14: warning: unused variable 'ODrivemessage' [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
 ../Core/Src/main.cpp:762:14: warning: unused variable 'ODriveReceive' [-Wunused-variable]
   762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
       |              ^~~~~~~~~~~~~
@@ -52,9 +49,6 @@ arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBU
 ../Core/Src/main.cpp:762:14: warning: 'ODriveReceive' defined but not used [-Wunused-variable]
   762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
       |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:760:14: warning: 'ODrivemessage' defined but not used [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
 arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 Finished building target: F411CE_SILClass_Based.elf
  
@@ -62,34 +56,31 @@ arm-none-eabi-size   F411CE_SILClass_Based.elf
 arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
 arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
    text	   data	    bss	    dec	    hex	filename
- 213436	   1176	  16236	 230848	  385c0	F411CE_SILClass_Based.elf
+ 214196	   1176	  16332	 231704	  38918	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
 Finished building: F411CE_SILClass_Based.bin
  
 Finished building: F411CE_SILClass_Based.list
  
-12:05:38 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+15:45:05 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-size   F411CE_SILClass_Based.elf 
    text	   data	    bss	    dec	    hex	filename
- 213436	   1176	  16236	 230848	  385c0	F411CE_SILClass_Based.elf
+ 214196	   1176	  16332	 231704	  38918	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
-12:06:43 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+15:46:25 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-size   F411CE_SILClass_Based.elf 
    text	   data	    bss	    dec	    hex	filename
- 213436	   1176	  16236	 230848	  385c0	F411CE_SILClass_Based.elf
+ 214196	   1176	  16332	 231704	  38918	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
-12:08:02 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+15:47:43 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.cpp: In function 'void UserInterface()':
-../Core/Src/main.cpp:760:14: warning: unused variable 'ODrivemessage' [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
 ../Core/Src/main.cpp:762:14: warning: unused variable 'ODriveReceive' [-Wunused-variable]
   762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
       |              ^~~~~~~~~~~~~
@@ -137,9 +128,6 @@ arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBU
 ../Core/Src/main.cpp:762:14: warning: 'ODriveReceive' defined but not used [-Wunused-variable]
   762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
       |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:760:14: warning: 'ODrivemessage' defined but not used [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
 arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 Finished building target: F411CE_SILClass_Based.elf
  
@@ -147,171 +135,7 @@ arm-none-eabi-size   F411CE_SILClass_Based.elf
 arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
 arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
    text	   data	    bss	    dec	    hex	filename
- 213444	   1176	  16236	 230856	  385c8	F411CE_SILClass_Based.elf
-Finished building: default.size.stdout
- 
-Finished building: F411CE_SILClass_Based.bin
- 
-Finished building: F411CE_SILClass_Based.list
- 
-12:09:52 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
-make -j8 all 
-arm-none-eabi-size   F411CE_SILClass_Based.elf 
-   text	   data	    bss	    dec	    hex	filename
- 213444	   1176	  16236	 230856	  385c8	F411CE_SILClass_Based.elf
-Finished building: default.size.stdout
- 
-12:13:04 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
-make -j8 all 
-arm-none-eabi-size   F411CE_SILClass_Based.elf 
-   text	   data	    bss	    dec	    hex	filename
- 213444	   1176	  16236	 230856	  385c8	F411CE_SILClass_Based.elf
-Finished building: default.size.stdout
- 
-12:13:30 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
-make -j8 all 
-arm-none-eabi-size   F411CE_SILClass_Based.elf 
-   text	   data	    bss	    dec	    hex	filename
- 213444	   1176	  16236	 230856	  385c8	F411CE_SILClass_Based.elf
-Finished building: default.size.stdout
- 
-14:36:22 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
-make -j8 all 
-arm-none-eabi-gcc "../USB_DEVICE/App/usbd_cdc_if.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"USB_DEVICE/App/usbd_cdc_if.d" -MT"USB_DEVICE/App/usbd_cdc_if.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "USB_DEVICE/App/usbd_cdc_if.o"
-arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.cpp: In function 'void UserInterface()':
-../Core/Src/main.cpp:760:14: warning: unused variable 'ODrivemessage' [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:762:14: warning: unused variable 'ODriveReceive' [-Wunused-variable]
-  762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:766:15: warning: unused variable 'axis0encpos' [-Wunused-variable]
-  766 |  static float axis0encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:767:15: warning: unused variable 'axis1encpos' [-Wunused-variable]
-  767 |  static float axis1encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:770:15: warning: unused variable 'axis0torqueout' [-Wunused-variable]
-  770 |  static float axis0torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:771:15: warning: unused variable 'axis1torqueout' [-Wunused-variable]
-  771 |  static float axis1torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:773:21: warning: unused variable 'axis0torqueconstant' [-Wunused-variable]
-  773 |  static const float axis0torqueconstant = 0.365; // N-m/A
-      |                     ^~~~~~~~~~~~~~~~~~~
-../Core/Src/main.cpp:774:21: warning: unused variable 'axis1torqueconstant' [-Wunused-variable]
-  774 |  static const float axis1torqueconstant = 0.35; // N-m/A
-      |                     ^~~~~~~~~~~~~~~~~~~
-../Core/Src/main.cpp:777:14: warning: unused variable 'delim' [-Wunused-variable]
-  777 |  static char delim[] = " ";
-      |              ^~~~~
-../Core/Src/main.cpp:778:15: warning: unused variable 'ptr' [-Wunused-variable]
-  778 |  static char *ptr;
-      |               ^~~
-../Core/Src/main.cpp: At global scope:
-../Core/Src/main.cpp:778:15: warning: 'ptr' defined but not used [-Wunused-variable]
-../Core/Src/main.cpp:777:14: warning: 'delim' defined but not used [-Wunused-variable]
-  777 |  static char delim[] = " ";
-      |              ^~~~~
-../Core/Src/main.cpp:771:15: warning: 'axis1torqueout' defined but not used [-Wunused-variable]
-  771 |  static float axis1torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:770:15: warning: 'axis0torqueout' defined but not used [-Wunused-variable]
-  770 |  static float axis0torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:767:15: warning: 'axis1encpos' defined but not used [-Wunused-variable]
-  767 |  static float axis1encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:766:15: warning: 'axis0encpos' defined but not used [-Wunused-variable]
-  766 |  static float axis0encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:762:14: warning: 'ODriveReceive' defined but not used [-Wunused-variable]
-  762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:760:14: warning: 'ODrivemessage' defined but not used [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
-arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
-Finished building target: F411CE_SILClass_Based.elf
- 
-arm-none-eabi-size   F411CE_SILClass_Based.elf 
-arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
-arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
-   text	   data	    bss	    dec	    hex	filename
- 213484	   1176	  16236	 230896	  385f0	F411CE_SILClass_Based.elf
-Finished building: default.size.stdout
- 
-Finished building: F411CE_SILClass_Based.bin
- 
-Finished building: F411CE_SILClass_Based.list
- 
-14:37:56 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
-make -j8 all 
-arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.cpp: In function 'void UserInterface()':
-../Core/Src/main.cpp:760:14: warning: unused variable 'ODrivemessage' [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:762:14: warning: unused variable 'ODriveReceive' [-Wunused-variable]
-  762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:766:15: warning: unused variable 'axis0encpos' [-Wunused-variable]
-  766 |  static float axis0encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:767:15: warning: unused variable 'axis1encpos' [-Wunused-variable]
-  767 |  static float axis1encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:770:15: warning: unused variable 'axis0torqueout' [-Wunused-variable]
-  770 |  static float axis0torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:771:15: warning: unused variable 'axis1torqueout' [-Wunused-variable]
-  771 |  static float axis1torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:773:21: warning: unused variable 'axis0torqueconstant' [-Wunused-variable]
-  773 |  static const float axis0torqueconstant = 0.365; // N-m/A
-      |                     ^~~~~~~~~~~~~~~~~~~
-../Core/Src/main.cpp:774:21: warning: unused variable 'axis1torqueconstant' [-Wunused-variable]
-  774 |  static const float axis1torqueconstant = 0.35; // N-m/A
-      |                     ^~~~~~~~~~~~~~~~~~~
-../Core/Src/main.cpp:777:14: warning: unused variable 'delim' [-Wunused-variable]
-  777 |  static char delim[] = " ";
-      |              ^~~~~
-../Core/Src/main.cpp:778:15: warning: unused variable 'ptr' [-Wunused-variable]
-  778 |  static char *ptr;
-      |               ^~~
-../Core/Src/main.cpp: At global scope:
-../Core/Src/main.cpp:778:15: warning: 'ptr' defined but not used [-Wunused-variable]
-../Core/Src/main.cpp:777:14: warning: 'delim' defined but not used [-Wunused-variable]
-  777 |  static char delim[] = " ";
-      |              ^~~~~
-../Core/Src/main.cpp:771:15: warning: 'axis1torqueout' defined but not used [-Wunused-variable]
-  771 |  static float axis1torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:770:15: warning: 'axis0torqueout' defined but not used [-Wunused-variable]
-  770 |  static float axis0torqueout = 0;
-      |               ^~~~~~~~~~~~~~
-../Core/Src/main.cpp:767:15: warning: 'axis1encpos' defined but not used [-Wunused-variable]
-  767 |  static float axis1encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:766:15: warning: 'axis0encpos' defined but not used [-Wunused-variable]
-  766 |  static float axis0encpos = 0;
-      |               ^~~~~~~~~~~
-../Core/Src/main.cpp:762:14: warning: 'ODriveReceive' defined but not used [-Wunused-variable]
-  762 |  static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-      |              ^~~~~~~~~~~~~
-../Core/Src/main.cpp:760:14: warning: 'ODrivemessage' defined but not used [-Wunused-variable]
-  760 |  static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
-      |              ^~~~~~~~~~~~~
-arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
-Finished building target: F411CE_SILClass_Based.elf
- 
-arm-none-eabi-size   F411CE_SILClass_Based.elf 
-arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
-arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
-   text	   data	    bss	    dec	    hex	filename
- 213484	   1176	  16236	 230896	  385f0	F411CE_SILClass_Based.elf
+ 214196	   1176	  16332	 231704	  38918	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
 Finished building: F411CE_SILClass_Based.bin
