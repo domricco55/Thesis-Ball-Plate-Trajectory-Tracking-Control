@@ -126,7 +126,7 @@ namespace GlobalVars
 
 // Communication variables
 extern uint8_t buffer[64]; //receive buffer from USB
-extern uint8_t usb_flag; //flag is set true when a USB message is received
+extern uint8_t usb_Rx_flag; //flag is set true when a USB message is received
 char UARTstr[64] = {0}; //for messages to send through UART
 char strUSB[100] = {0}; //for messages to send back through USB
 char message[64] = {0}; //for message to break down string sent from PC
@@ -783,10 +783,9 @@ void UserInterface(void)
 
 		case 0 : //Wait for the user to press any key while in the serial terminal
 		{
-			if(usb_flag)
+			if(usb_Rx_flag)
 			{
-				usb_flag = 0;
-				//HAL_Delay(5);
+				usb_Rx_flag = 0;
 				GlobalVars::UI_state = 1;
 
 			}
@@ -795,30 +794,127 @@ void UserInterface(void)
 			break;
 		}
 
-		case 1: //Display the initial interface message. Jump to the state associated with the user input.
+		case 1: //Main menu
 		{
 			//Print UI
 			if (UIprint)
 			{
-				sprintf(str,"Welcome Ball Balancer! What would you like to do?\r\n1. "
-						"Commutate/calibrate the motors Run\r\n2. "
-						"Bypass Zero Run\r\n");
+				sprintf(str,"Welcome Ball Balancer! What would you like to do?\r\n"
+							"1. Commutate the Motors \r\n"
+							"2. Conduct Plate Zeroing Procedure\r\n"
+							"3. Reset ODrive Faults\r\n"
+							"4. Go operational \r\n");
 				CDC_Transmit_FS((uint8_t *) str, strlen(str));
-
-				//HAL_Delay(5);
 
 				UIprint = 0;
 
 			}
 
-			if (usb_flag)
+			//If user input was received
+			if (usb_Rx_flag)
 			{
+				UIprint = 1; //Lets the next state print its UI message
 
+				//Interpret the user input
+				switch(buffer)
 
+				case 1: //User selected "Commutate the Motors"
+				{
+					GlobalVars::UI_state = 2; //Go to state for displaying commutation prep prompt
+					break;
+				}
+
+				case 2: //User selected "Conduct Plate Zeroing Procedure"
+				{
+					GlobalVars::UI_state = 5; //Go to the state for zeroing the platform
+				}
+
+				case 3: //User selected "Reset ODrive Faults"
+				{
+					GlobalVars::UI_state = 1; //Self transition
+					//RESET MOTOR FAULTS CODE GOES HERE
+				}
+
+				case 4: //User selected "Go operational"
+				{
+					Operational = 1; //Set the operational flag so the MATLAB USB code can run
+					GlobalVars::UI_state = 6; //Go to the "Operational" state - Simulink model can now run
+				}
+
+				default:
+					sprintf(str,"Invalid input. \r\n");
+					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
+					break;
+			}
+			break;
+		}
+
+		case 2: //Commutation preparation. Wait for user to press C indicating they have disconnected the motor arms
+		{
+			if(UIprint)
+			{
+				sprintf(str,"Ensure that the platform arms are disconnected. Press c when complete.\r\n");
+				CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART. NOTE: SWITCH TO CDC TRANSMIT FOR REAL SYSTEM
+				UIprint = 0;
+			}
+
+			//If user input was received
+			if (usb_Rx_flag)
+			{
+				UIprint = 1; //Lets the next state print its UI message
+				if(buffer == 'c') //If user pressed 'c'
+				{
+					GlobalVars::UI_state = 3; //Go to the "Commutate motors" state.
+				}
+
+				else
+				{
+					sprintf(str,"Invalid input. \r\n");
+					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
+					break;
+				}
 
 			}
 
-			//GlobalVars::UI_state = 1;
+			break;
+		}
+
+		case 3: //Commutating the motors
+		{
+			if(UIprint)
+			{
+			sprintf(str,"Commutating Motors. When commutation is complete, attach the motor arms and press 'c'\r\n");
+			CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+			//Turn message into torque command (v for velocity, c for current/torque)
+			sprintf(ODrivemessage, "w axis0.requested_state 7\nw axis1.requested_state 7\n");
+			ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //Want ODrive number 0? Device address?
+			//Transmit Message to ODrive over UART
+			HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage));
+			UIprint = 0;
+			}
+
+			//If user input was received
+			if (usb_Rx_flag)
+			{
+				UIprint = 1; //Lets the next state print its UI message
+				if(buffer == 'c') //If user pressed 'c'
+				{
+					GlobalVars::UI_state = 1; //Go to the "Main menu" state.
+				}
+
+				else
+				{
+					sprintf(str,"Invalid input. \r\n");
+					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
+					break;
+				}
+
+			}
+			break;
 		}
 
 	}
