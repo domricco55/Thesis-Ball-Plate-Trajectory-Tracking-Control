@@ -799,11 +799,12 @@ void UserInterface(void)
 			//Print UI
 			if (UIprint)
 			{
-				sprintf(str,"Main Menu. What would you like to do?\r\n"
+				sprintf(str,"Main Menu. What would you like to do? \r\n"
 							"1. Commutate the Motors \r\n"
-							"2. Conduct Plate Zeroing Procedure\r\n"
-							"3. Reset ODrive Faults\r\n"
+							"2. Conduct Plate Zeroing Procedure \r\n"
+							"3. Reset ODrive Faults \r\n"
 							"4. Go operational \r\n"
+							//"5. Display ODrive Errors \r\n"
 							"\n");
 				CDC_Transmit_FS((uint8_t *) str, strlen(str));
 
@@ -827,20 +828,37 @@ void UserInterface(void)
 
 				case '2': //User selected "Conduct Plate Zeroing Procedure"
 				{
-					GlobalVars::UI_state = 5; //Go to the state for zeroing the platform
+					GlobalVars::UI_state = 4; //Go to the state for zeroing the platform
+					break;
 				}
 
 				case '3': //User selected "Reset ODrive Faults"
 				{
 					GlobalVars::UI_state = 1; //Self transition
-					//RESET MOTOR FAULTS CODE GOES HERE
+
+					//=====Remove errors on each axis for endstop
+					sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n"); //Clear ODrive errors that could have occurred from endstop.
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					//Print confirmation message to UI
+					sprintf(str,"ODrive reset command sent. \r\n\n");
+					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+					break;
 				}
 
 				case '4': //User selected "Go operational"
 				{
 					GlobalVars::Operational = 1; //Set the operational flag so the MATLAB USB code can run
-					GlobalVars::UI_state = 6; //Go to the "Operational" state - Simulink model can now run
+					GlobalVars::UI_state = 5; //Go to the "Operational" state - Simulink model can now run
+					break;
 				}
+
+/*				case '5': //User selected "Display ODrive Errors"
+				{
+
+					break;
+				}*/
 
 				default:
 					sprintf(str,"Invalid input. \r\n\n");
@@ -848,7 +866,6 @@ void UserInterface(void)
 					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
 					break;
 
-					break;
 				}
 			}
 			break;
@@ -878,7 +895,6 @@ void UserInterface(void)
 					sprintf(str,"Invalid input. \r\n\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str));
 					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
-					break;
 				}
 
 			}
@@ -893,6 +909,13 @@ void UserInterface(void)
 			sprintf(str,"Commutating Motors. When commutation is complete, attach the motor arms and press 'c'."
 						"You will be redirected to the main menu. \r\n\n");
 			CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+			//=====Remove errors on each axis for endstop (Motors won't commutate otherwise)
+			sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n"); //Clear ODrive errors that could have occurred from endstop.
+			ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+			HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+			HAL_Delay(20); //Give time to process error reset
 
 			//ODrive message to put motors into commutaion/calibration mode. "requested_state" 7 is for commutation process.
 			sprintf(ODrivemessage, "w axis0.requested_state 7\nw axis1.requested_state 7\n");
@@ -911,6 +934,13 @@ void UserInterface(void)
 				if(buffer[0] == 'c') //If user pressed 'c'
 				{
 					GlobalVars::UI_state = 1; //Go to the "Main menu" state.
+
+					//=====Remove errors on each axis for endstop
+					//(In case user tripped end stop while placing motor arms)
+					sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n");
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
 				}
 
 				else
@@ -918,12 +948,20 @@ void UserInterface(void)
 					sprintf(str,"Invalid input. \r\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str));
 					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
-					break;
 				}
-
 			}
 			break;
 		}
+
+		case 4: //Plate zeroing procedure
+		{
+
+
+
+			break;
+		}
+
+
 
 	}
 

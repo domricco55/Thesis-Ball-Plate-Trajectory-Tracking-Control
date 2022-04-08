@@ -1,4 +1,4 @@
-15:47:43 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+16:31:08 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.cpp: In function 'void UserInterface()':
@@ -56,7 +56,7 @@ arm-none-eabi-size   F411CE_SILClass_Based.elf
 arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
 arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
    text	   data	    bss	    dec	    hex	filename
- 214196	   1176	  16332	 231704	  38918	F411CE_SILClass_Based.elf
+ 214436	   1176	  16332	 231944	  38a08	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
 Finished building: F411CE_SILClass_Based.bin
@@ -64,5 +64,5 @@ Finished building: F411CE_SILClass_Based.bin
 Finished building: F411CE_SILClass_Based.list
  
 
-15:47:46 Build Finished. 0 errors, 16 warnings. (took 2s.379ms)
+16:31:10 Build Finished. 0 errors, 16 warnings. (took 2s.332ms)
 

@@ -16,7 +16,7 @@ main.cpp:635:6:void HAL_GPIO_EXTI_Callback(uint16_t)	16	static
 main.cpp:645:6:void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef*)	16	static
 main.cpp:656:6:void CommunicationResponse(float, float, float, float, float, float, float, float)	272	static
 main.cpp:754:6:void UserInterface()	8	static
-main.cpp:939:6:void Error_Handler()	4	static,ignoring_inline_asm
-main.cpp:948:1:void __static_initialization_and_destruction_0(int, int)	24	static
-main.cpp:948:1:cpp)	8	static
-main.cpp:948:1:cpp)	8	static
+main.cpp:973:6:void Error_Handler()	4	static,ignoring_inline_asm
+main.cpp:982:1:void __static_initialization_and_destruction_0(int, int)	24	static
+main.cpp:982:1:cpp)	8	static
+main.cpp:982:1:cpp)	8	static
