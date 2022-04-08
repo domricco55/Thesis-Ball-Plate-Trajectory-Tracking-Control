@@ -760,7 +760,7 @@ void UserInterface(void)
 	static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
 	static char str[200] = {0}; //for messages to send through USB
 	static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
-	static uint8_t UIprint = 1; //Prints UI for section
+	static uint8_t UIprint = 1; //Flag to let the state know to print its USB message
 
 	//variables to return encoder position
 	static float axis0encpos = 0;
@@ -781,36 +781,44 @@ void UserInterface(void)
 	switch(GlobalVars::UI_state)
 	{
 
-		case 0 :
+		case 0 : //Wait for the user to press any key while in the serial terminal
 		{
-			/*
-			 * Display initial prompt. This state asks the user if they would like to
-			 * 	1) Go through motor commutation/calibration procedure
-			 * 	2) Go to zeroing procedure (WASD)
-			 * 	3) Do neither and move to main operational state (will display a reset ODrive prompt)
-			 * */
+			if(usb_flag)
+			{
+				usb_flag = 0;
+				//HAL_Delay(5);
+				GlobalVars::UI_state = 1;
 
+			}
+
+
+			break;
+		}
+
+		case 1: //Display the initial interface message. Jump to the state associated with the user input.
+		{
 			//Print UI
 			if (UIprint)
 			{
-				sprintf(str,"Welcome Ball Balancer! What would you like to do?\r\n1."
-						" Full Zero Run\r\n2. Bypass Zero Run\r\n");
+				sprintf(str,"Welcome Ball Balancer! What would you like to do?\r\n1. "
+						"Commutate/calibrate the motors Run\r\n2. "
+						"Bypass Zero Run\r\n");
 				CDC_Transmit_FS((uint8_t *) str, strlen(str));
 
-				HAL_Delay(5);
+				//HAL_Delay(5);
 
 				UIprint = 0;
 
 			}
 
-			GlobalVars::UI_state = 1;
+			if (usb_flag)
+			{
 
-			break;
-		}
 
-		case 1:
-		{
-			GlobalVars::UI_state = 0;
+
+			}
+
+			//GlobalVars::UI_state = 1;
 		}
 
 	}

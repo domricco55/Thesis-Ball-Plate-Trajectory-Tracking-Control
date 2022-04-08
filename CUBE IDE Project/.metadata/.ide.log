@@ -1,20 +1,7 @@
-2022-03-29 15:07:07,635 [INFO] Activator:177 - 
+2022-04-08 11:34:01,058 [INFO] Activator:177 - 
 
 
-2022-03-29 15:07:07,637 [INFO] Activator:178 - !SESSION log4j initialized
-2022-03-29 15:07:15,600 [ERROR] AnalyticsContext:980 - The ST intranet updater server is unknown: mcucrossselector.codex.cro.st.com
-2022-04-07 11:41:17,558 [INFO] Activator:177 - 
-
-
-2022-04-07 11:41:17,560 [INFO] Activator:178 - !SESSION log4j initialized
-2022-04-07 11:41:30,718 [ERROR] AnalyticsContext:980 - The ST intranet updater server is unknown: mcucrossselector.codex.cro.st.com
-2022-04-07 14:53:34,967 [INFO] Activator:177 - 
-
-
-2022-04-07 14:53:34,968 [INFO] Activator:178 - !SESSION log4j initialized
-2022-04-07 14:53:37,124 [ERROR] AnalyticsContext:980 - The ST intranet updater server is unknown: mcucrossselector.codex.cro.st.com
-2022-04-07 14:54:00,358 [INFO] Activator:177 - 
-
-
-2022-04-07 14:54:00,358 [INFO] Activator:178 - !SESSION log4j initialized
-2022-04-07 14:54:05,295 [ERROR] AnalyticsContext:980 - The ST intranet updater server is unknown: mcucrossselector.codex.cro.st.com
+2022-04-08 11:34:01,073 [INFO] Activator:178 - !SESSION log4j initialized
+2022-04-08 11:34:12,187 [ERROR] AnalyticsContext:980 - The ST intranet updater server is unknown: mcucrossselector.codex.cro.st.com
+2022-04-08 11:34:41,479 [INFO] RetryExec:97 - I/O exception (org.apache.http.NoHttpResponseException) caught when processing request to {s}->https://download.eclipse.org:443: The target server failed to respond
+2022-04-08 11:34:41,487 [INFO] RetryExec:113 - Retrying request to {s}->https://download.eclipse.org:443
