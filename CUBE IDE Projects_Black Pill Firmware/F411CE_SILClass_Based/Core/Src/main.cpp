@@ -754,15 +754,18 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 void UserInterface(void)
 {
 
-	//Variables accessible to all states of the UI:
-
+	//Variables accessible to all states of the UI task:
 	//Messages
 	static char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
 	static char str[200] = {0}; //for messages to send through USB
 	static char ODriveReceive[50] = {0}; //For receiving messages from O-Drive
 	static uint8_t UIprint = 1; //Flag to let the state know to print its USB message
 
-	//variables to return encoder position
+	//encoder setpoints for zeroing procedure
+	static float axis0encstpt = 0;
+	static float axis1encstpt = 0;
+
+	//encoder readings for zeroing procedure
 	static float axis0encpos = 0;
 	static float axis1encpos = 0;
 
@@ -785,7 +788,7 @@ void UserInterface(void)
 		{
 			if(usb_Rx_flag)
 			{
-				usb_Rx_flag = 0; //reset the usb message received flag
+				usb_Rx_flag = 0; //clear the usb message received flag
 				GlobalVars::UI_state = 1;
 
 			}
@@ -816,7 +819,7 @@ void UserInterface(void)
 			if (usb_Rx_flag)
 			{
 				UIprint = 1; //Lets the next state print its UI message
-				usb_Rx_flag = 0; //reset the usb message received flag
+				usb_Rx_flag = 0; //clear the usb message received flag
 				//Interpret the user input
 				switch(buffer[0])
 				{
@@ -828,6 +831,60 @@ void UserInterface(void)
 
 				case '2': //User selected "Conduct Plate Zeroing Procedure"
 				{
+
+					//Prepare the ODrive for the zeroing procedure
+
+					//=====Remove errors on each axis for endstop
+					sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n"); //Clear ODrive errors that could have occurred from endstop.
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					HAL_Delay(20); //Give time to process commands
+
+					//======Get encoder position for both axes, set the position (in turns) to variables
+
+					//Encoder Axis 0 position
+					sprintf(ODrivemessage, "f 0\n"); //request motor parameters from axis 0
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 50);
+
+					ptr = strtok(ODriveReceive, delim); //Initial cut, should isolate for first
+
+					axis0encpos = atof(ptr);
+					axis0encstpt = axis0encpos; //Setpoint will be the current position
+
+					HAL_Delay(5);
+
+					//Encoder Axis 1 position
+					sprintf(ODrivemessage, "f 1\n"); //request motor parameters from axis 0
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10);
+
+					ptr = strtok(ODriveReceive, delim); //Initial cut, should isolate for first
+
+					axis1encpos = atof(ptr);
+					axis1encstpt = axis1encpos; //Setpoint will be the current position
+
+					HAL_Delay(5);
+
+					//Send command to change position setpoint to existing position
+					sprintf(ODrivemessage, "q 0 %.4f\nq 1 %.4f\n", axis0encstpt, axis1encstpt); //request motor parameters from axis 0
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					HAL_Delay(5);
+
+					//Start closed-loop control
+					sprintf(ODrivemessage, "w axis0.requested_state 8\nw axis1.requested_state 8\n"); //request motor parameters from axis 0
+					ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+					HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+					HAL_Delay(5);
+
 					GlobalVars::UI_state = 4; //Go to the state for zeroing the platform
 					break;
 				}
@@ -844,6 +901,8 @@ void UserInterface(void)
 					//Print confirmation message to UI
 					sprintf(str,"ODrive reset command sent. \r\n\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+					HAL_Delay(5);
 					break;
 				}
 
@@ -863,7 +922,9 @@ void UserInterface(void)
 				default:
 					sprintf(str,"Invalid input. \r\n\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str));
-					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
+
+					HAL_Delay(5);
+					//UIprint = 0; //Was set true before switch case, sets false again if input was invalid
 					break;
 
 				}
@@ -884,7 +945,7 @@ void UserInterface(void)
 			if (usb_Rx_flag)
 			{
 				UIprint = 1; //Lets the next state print its UI message
-				usb_Rx_flag = 0; //reset the usb message received flag
+				usb_Rx_flag = 0; //clear the usb message received flag
 				if(buffer[0] == 'c') //If user pressed 'c'
 				{
 					GlobalVars::UI_state = 3; //Go to the "Commutate motors" state.
@@ -930,7 +991,7 @@ void UserInterface(void)
 			if (usb_Rx_flag)
 			{
 				UIprint = 1; //Lets the next state print its UI message
-				usb_Rx_flag = 0; //reset the usb message received flag
+				usb_Rx_flag = 0; //clear the usb message received flag
 				if(buffer[0] == 'c') //If user pressed 'c'
 				{
 					GlobalVars::UI_state = 1; //Go to the "Main menu" state.
@@ -945,7 +1006,7 @@ void UserInterface(void)
 
 				else
 				{
-					sprintf(str,"Invalid input. \r\n");
+					sprintf(str,"Invalid input. \r\n\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str));
 					UIprint = 0; //Was set true before switch case, sets false again if input was invalid
 				}
@@ -955,14 +1016,188 @@ void UserInterface(void)
 
 		case 4: //Plate zeroing procedure
 		{
+			if (UIprint == 1)
+			{
+				sprintf(str,"Platform is ready to zero. Use the WASD keys"
+							" to position the top plate and c to complete zeroing process.\r\n\n");
+				CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over USB
+				UIprint = 0;
+			}
+
+			//If user input was received
+			if (usb_Rx_flag)
+			{
+				usb_Rx_flag = 0; //clear the usb message received flag
+
+				//Interpret the user input (WASD zeroing)
+				switch(buffer[0])
+				{
+
+					case 'w':
+					{
+						//Tilt platform +y
+						sprintf(str,"Tilt platform +y\r\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis0encstpt -= 0.001; //Increment the motor setpoint
+
+						sprintf(ODrivemessage, "q 0 %.4f\n", axis0encstpt); //Send position control command
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5); //Give time for ODrive to implement the tilt command
+						break;
+					}
+
+					case 'a':
+					{
+						//Tilt platform -x
+						sprintf(str,"Tilt platform -x\r\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis1encstpt += 0.001; //Increment the motor setpoint
+
+						sprintf(ODrivemessage, "q 1 %.4f\n", axis1encstpt); //Send position control command
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5); //Give time for ODrive to implement the tilt command
+						break;
+					}
+
+					case 's':
+					{
+						//Tilt platform -y
+						sprintf(str,"Tilt platform -y\r\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis0encstpt += 0.001; //Increment the motor setpoint
+
+						sprintf(ODrivemessage, "q 0 %.4f\n", axis0encstpt); //Send position control command
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5); //Give time for ODrive to implement the tilt command
+						break;
+					}
+
+					case 'd':
+					{
+						//Tilt platform +x
+						sprintf(str,"Tilt platform +x\r\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+
+						axis1encstpt -= 0.001; //Increment the motor setpoint
+
+						sprintf(ODrivemessage, "q 1 %.4f\n", axis1encstpt); //Send position control command
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_Delay(5); //Give time for ODrive to implement the tilt command
+						break;
+					}
+
+					case 'c': //User is done zeroing
+					{
+						GlobalVars::UI_state = 1; //Go to the "main menu" state
+						UIprint = 1; //Reset UIprint so the main menu prompt will print
+
+						/*Code to run when zeroing is complete:
+						 * 	1) Save the torque offsets associated with the zeroing (uses torque constants from experiment)
+						 * 	2) Save the current encoder readings - these will be the zero offsets
+						 * 	3) Save the current IMU angle readings - these will be the zero offsets
+						 * 	4) Display the above information*/
+
+						//Get current torque output:
+
+						//Axis 0 Torque Measurement
+						sprintf(ODrivemessage, "r axis0.motor.current_control.Iq_measured\n"); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage),10); //Transmit Message over UART
+
+						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
+
+						axis0torqueout = atof(ODriveReceive)*axis0torqueconstant; //Calculate torque based off of experimental torque constant
+
+						HAL_Delay(10);
+
+						//Encoder Axis 0 position
+						sprintf(ODrivemessage, "f 0\n"); //request motor parameters from axis 0
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 50);
+
+						ptr = strtok(ODriveReceive, delim); //Initial cut, should isolate for first
+
+						axis0encpos = atof(ptr); //Double check this is correct due to motor axis change
+
+						HAL_Delay(5);
+
+						//Axis 1 Torque Measurement
+						sprintf(ODrivemessage, "r axis1.motor.current_control.Iq_measured\n"); //request motor parameters from axis 1
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage),10); //Transmit Message over UART
+
+						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
+
+						axis1torqueout = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
+
+						//Encoder Axis 1 position
+						sprintf(ODrivemessage, "f 1\n"); //request motor parameters from axis 1
+						ODrivemessage[strlen(ODrivemessage)+1] = '\0';
+						HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+
+						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10);
+
+						ptr = strtok(ODriveReceive, delim); //Initial cut, should isolate for first
+
+						axis1encpos = atof(ptr); //Double check this is correct due to motor axis change
+
+						//Process final information for user before starting program.
+						sprintf(str,"Platform is now ready to run. Important System Parameters:\r\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						sprintf(str,"IMUx: %.2f\r\nIMUy: %.2f\r\nAxis0EncoderPos: %.4f\r\nAxis0TorqueOutput: %.4f\r\n",
+								imu.EulerX, imu.EulerY, axis0encpos, axis0torqueout);
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						sprintf(str,"Axis1EncoderPos: %.4f\r\nAxis1TorqueOutput: %.4f\r\n",
+								axis1encpos, axis1torqueout);
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						sprintf(str,"Please close the serial terminal, wait for 5 seconds, and run the Simulink model.\r\n\n");
+						str[strlen(str)+1] = '\0';
+						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
+
+						HAL_Delay(5);
+
+						// Store encoder position to global variable for reset state
+						GlobalVars::enc_axis0zero = axis0encpos;
+						GlobalVars::enc_axis1zero = axis1encpos;
 
 
+						break;
+					}
 
+					default:
+						sprintf(str,"Invalid input, please select option through valid digits only.\r\n\n");
+						CDC_Transmit_FS((uint8_t *) str, strlen(str));
+						break;
+
+				}
+			}
 			break;
 		}
-
-
-
 	}
 
 
