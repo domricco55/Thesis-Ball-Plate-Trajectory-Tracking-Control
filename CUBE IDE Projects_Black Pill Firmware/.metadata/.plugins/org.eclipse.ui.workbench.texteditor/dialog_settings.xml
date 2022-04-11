@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="CommunicationResponse"/>
+		<item key="selection" value="axis1encstpt"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="true"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="axis1encpos"/>
+			<item value="axis0encpos"/>
+			<item value="atof"/>
+			<item value="reset the usb message received flag"/>
+			<item value="buffer"/>
+			<item value="usb_flag"/>
 			<item value="CommunicationResponse"/>
 			<item value="UXState"/>
 			<item value="extern bool"/>
 			<item value="__HAL_GPIO_EXTI_GENERATE_SWIT"/>
 			<item value="bool"/>
 			<item value="Buf"/>
-			<item value="buffer"/>
 			<item value="CDC_Receive_FS"/>
 			<item value="END_UI"/>
 			<item value="RunState"/>
-			<item value="GlobalVars::RunState"/>
-			<item value="TS"/>
-			<item value="GlobalVars"/>
-			<item value="UXstate"/>
-			<item value="waitflg"/>
 		</list>
 		<list key="replacehistory">
+			<item value="axis1encstpt"/>
+			<item value="axis0encstpt"/>
+			<item value="clear the usb message received flag"/>
+			<item value="buffer[0]"/>
+			<item value="usb_Rx_flag"/>
 			<item value="End_UI"/>
 			<item value="END_UI"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="1544"/>
-		<item key="DIALOG_Y_ORIGIN" value="205"/>
+		<item key="DIALOG_X_ORIGIN" value="1402"/>
+		<item key="DIALOG_Y_ORIGIN" value="213"/>
 		<item key="DIALOG_WIDTH" value="385"/>
 		<item key="DIALOG_HEIGHT" value="523"/>
 		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>

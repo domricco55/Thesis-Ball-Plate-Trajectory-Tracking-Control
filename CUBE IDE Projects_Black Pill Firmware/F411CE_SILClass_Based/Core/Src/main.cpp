@@ -110,13 +110,19 @@ namespace GlobalVars
 	uint8_t timeconsistency = 0; //A boolean that alternates 1 and 0 to verify 5 ms timing on the Simulink data collection end.
 	uint8_t Operational = 0; //Flag to let HAL_GPIO_EXTI_Callback know that it can run the MATLAB communication code
 
-	//System:
+	//Motors:
 	float m0tor = 0; //Motor command for axis 0 (torque)
+	float m0tor_offst = 0; //Motor command offset for axis 0 (torque)
 	float m1tor = 0; //Motor command for axis 1 (torque)
+	float m1tor_offst = 0; //Motor command offset for axis 1 (torque)
 
 	//Encoder Zero Position
 	float enc_axis0zero = 0; //The zero position of the encoder on axis 0
 	float enc_axis1zero = 0; //The zero position of the encoder on axis 1
+
+	//IMU Reading offsets
+	float IMUx_offset = 0; //The EulerX IMU reading offset
+	float IMUy_offset = 0; //The EulerY IMU reading offset
 
 	//State variables
 	uint8_t UI_state = 0; //User interface task's state variable
@@ -634,7 +640,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 //Called when USB buffer receives value from MATLAB script
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(GlobalVars::Operational) //If operational, interpret the MATLAB communication message
+	if(GlobalVars::Operational) //If operational send the sensor data over USB to computer running Simulink
 	{
 		CommunicationResponse(TS.xpos, TS.xvel, TS.ypos, TS.yvel, imu.EulerX, imu.AngularVelX, imu.EulerY, imu.AngularVelY);
 	}
@@ -656,98 +662,63 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelTS, float IMUx, float GyroX,
 						   float IMUy, float GyroY)
 {
+	//Incorporate the IMU offsets (want simulink to read 0 when the plate is in the position the user zerod to)
+	IMUx = IMUx + GlobalVariables::IMUx_offset;
+	IMUy = IMUy + GlobalVariables::IMUy_offset;
+
 	// For processing string
 	static char delim[] = " ";
 	char *ptr;
 
 	char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
 
-	if (buffer[0] == 'r') //Check if received reset command from host
+
+	//============USB SEND FIRST===============//
+
+	if (GlobalVars::timeconsistency == 1) //Verify that MATLAB model and STM32 have full parity (Check to ensure new messages are getting through)
 	{
+		GlobalVars::timeconsistency = 0;
+	} else {
+		GlobalVars::timeconsistency = 1;
+	}
+
+	//Create the message to send back to the Simulink model
+	sprintf(strUSB,"%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u \n",
+			xposTS, xvelTS, yposTS, yvelTS, IMUx, GyroX, IMUy,
+			GyroY, GlobalVars::timeconsistency);
+
+	strUSB[strlen(strUSB)+1] = '\0'; //ASCII NULL to terminate string
+
+	CDC_Transmit_FS((uint8_t *) strUSB, strlen(strUSB));
+
+
+
+	//============UART SEND============//
+	if (buffer[0] != '\0') //Double-Check if USB buffer has received message from Host PC
+	{
+
+		memcpy(message,buffer,sizeof(message)); //Copy buffer into message for string processing
 
 		memset(buffer, '\0', 64);  // clear the buffer for next message
 
-		//=====Remove errors on each axis for endstop
-		sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n"); //Clear ODrive errors that could have occurred from endstop.
-		ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //end string with null for strlen
-		HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+		//Now, process message:
 
-		HAL_Delay(10); //Give time to process commands
+		ptr = strtok(message, delim); //Initial cut, isolates first float of string
 
-		//=====Put each axis into position control mode
-		sprintf(ODrivemessage, "w axis0.controller.config.control_mode 3\naxis1.controller.config.control_mode 3\n"); //Set ODrive into position control
-		ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //end string with null for strlen
-		HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+		GlobalVars::m0tor = atof(ptr) + GlobalVariables::m0tor_offst; //Convert string of motor torque input to float for sprintf construction
 
-		HAL_Delay(10); //Give time to process commands
+		ptr = strtok(NULL,delim); //Iterate to next section of message
 
-		//Start closed-loop control
-		sprintf(ODrivemessage, "w axis0.requested_state 8\nw axis1.requested_state 8\n"); //set state of axis 0 and 1 to closed loop
-		ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //end string with null for strlen
-		HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+		GlobalVars::m1tor = atof(ptr) + GlobalVariables::m1tor_offst; //Save second space-separated part of string to double of torque value for processing
 
-		HAL_Delay(10); //Give time to process commands
+		//-------------Now, send message to O-Drive and confirmation to PC:-------------
 
-		//Set position to zeroed position
-		sprintf(ODrivemessage, "q 0 %.4f\nq 1 %.4f\n", GlobalVars::enc_axis0zero, GlobalVars::enc_axis1zero); //request motor parameters from axis 0
-		ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //end string with null for strlen
-		HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
+		//Turn message into torque command (v for velocity, c for current/torque, q for position)
+		sprintf(UARTstr, "c 0 %.4g\nc 1 %.4g\n", GlobalVars::m0tor, GlobalVars::m1tor);
 
-		CDC_Transmit_FS((uint8_t *) ODrivemessage, strlen(ODrivemessage));
+		UARTstr[strlen(UARTstr)+1] = '\0'; //truncate string
 
-		HAL_Delay(10); //Give time to process commands
-
-	}
-	else
-	{
-
-		//============USB SEND FIRST===============//
-
-		if (GlobalVars::timeconsistency == 1) //Verify that MATLAB model and STM32 have full parity (Check to ensure new messages are getting through)
-		{
-			GlobalVars::timeconsistency = 0;
-		} else {
-			GlobalVars::timeconsistency = 1;
-		}
-
-		//Create the message to send back to the Simulink model
-		sprintf(strUSB,"%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u \n",
-				xposTS, xvelTS, yposTS, yvelTS, IMUx, GyroX, IMUy,
-				GyroY, GlobalVars::timeconsistency);
-
-		strUSB[strlen(strUSB)+1] = '\0'; //ASCII NULL to terminate string
-
-		CDC_Transmit_FS((uint8_t *) strUSB, strlen(strUSB));
-
-		//============UART SEND============//
-
-		if (buffer[0] != '\0') //Double-Check if USB buffer has received message from Host PC
-		{
-
-			memcpy(message,buffer,sizeof(message)); //Copy buffer into message for string processing
-
-			memset(buffer, '\0', 64);  // clear the buffer for next message
-
-			//Now, process message:
-
-			ptr = strtok(message, delim); //Initial cut, isolates first float of string
-
-			GlobalVars::m0tor = atof(ptr); //Convert string of motor torque input to float for sprintf construction
-
-			ptr = strtok(NULL,delim); //Iterate to next section of message
-
-			GlobalVars::m1tor = atof(ptr); //Save second space-separated part of string to double of torque value for processing
-
-			//-------------Now, send message to O-Drive and confirmation to PC:-------------
-
-			//Turn message into torque command (v for velocity, c for current/torque, q for position)
-			sprintf(UARTstr, "c 0 %.4g\nc 1 %.4g\n", GlobalVars::m0tor, GlobalVars::m1tor);
-
-			UARTstr[strlen(UARTstr)+1] = '\0'; //truncate string
-
-			HAL_UART_Transmit_DMA(&huart1,(uint8_t *) UARTstr, strlen(UARTstr)); //Transmit Message over UART
-
-		}
+		HAL_UART_Transmit_DMA(&huart1,(uint8_t *) UARTstr, strlen(UARTstr)); //Transmit Message over UART
 	}
 }
 
@@ -768,10 +739,6 @@ void UserInterface(void)
 	//encoder readings for zeroing procedure
 	static float axis0encpos = 0;
 	static float axis1encpos = 0;
-
-	//variables to return torque output
-	static float axis0torqueout = 0;
-	static float axis1torqueout = 0;
 
 	static const float axis0torqueconstant = 0.365; // N-m/A
 	static const float axis1torqueconstant = 0.35; // N-m/A
@@ -825,7 +792,7 @@ void UserInterface(void)
 				{
 				case '1': //User selected "Commutate the Motors"
 				{
-					GlobalVars::UI_state = 2; //Go to state for displaying commutation prep prompt
+					GlobalVars::UI_state = 2; //Go to state for displaying motor calibration prep prompt
 					break;
 				}
 
@@ -967,18 +934,18 @@ void UserInterface(void)
 		{
 			if(UIprint)
 			{
-			sprintf(str,"Commutating Motors. When commutation is complete, attach the motor arms and press 'c'."
+			sprintf(str,"Commutating Motors. When motor calibration is complete, attach the motor arms and press 'c'."
 						"You will be redirected to the main menu. \r\n\n");
 			CDC_Transmit_FS((uint8_t *) str, strlen(str));
 
-			//=====Remove errors on each axis for endstop (Motors won't commutate otherwise)
+			//=====Remove errors on each axis for endstop (Motors won't calibrate otherwise)
 			sprintf(ODrivemessage, "w axis0.error 0\nw axis1.error 0\n"); //Clear ODrive errors that could have occurred from endstop.
 			ODrivemessage[strlen(ODrivemessage)+1] = '\0';
 			HAL_UART_Transmit_DMA(&huart1,(uint8_t *) ODrivemessage, strlen(ODrivemessage)); //Transmit Message over UART
 
 			HAL_Delay(20); //Give time to process error reset
 
-			//ODrive message to put motors into commutaion/calibration mode. "requested_state" 7 is for commutation process.
+			//ODrive message to put motors into commutaion/calibration mode. "requested_state" 7 is for calibration process.
 			sprintf(ODrivemessage, "w axis0.requested_state 7\nw axis1.requested_state 7\n");
 			ODrivemessage[strlen(ODrivemessage)+1] = '\0'; //Want ODrive number 0? Device address?
 
@@ -1141,7 +1108,7 @@ void UserInterface(void)
 
 						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
 
-						axis1torqueout = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
+						GlobalVariables::m0tor_offst = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
 
 						//Encoder Axis 1 position
 						sprintf(ODrivemessage, "f 1\n"); //request motor parameters from axis 1
@@ -1161,15 +1128,21 @@ void UserInterface(void)
 
 						HAL_Delay(5);
 
-						sprintf(str,"IMUx: %.2f\r\nIMUy: %.2f\r\nAxis0EncoderPos: %.4f\r\nAxis0TorqueOutput: %.4f\r\n",
-								imu.EulerX, imu.EulerY, axis0encpos, axis0torqueout);
+
+						//Read the IMU Euler angle offsets
+						GlobalVariables::IMUx_offset = imu.EulerX;
+						GlobalVariables::IMUy_offset = imu.EulerY;
+
+						//Print the offset values to the serial port
+						sprintf(str,"IMUx offset: %.2f\r\nIMUy offset: %.2f\r\nAxis0EncoderPos: %.4f\r\nAxis0TorqueOffset: %.4f\r\n",
+								GlobalVariables::IMUx_offset, GlobalVariables::IMUy_offse, axis0encpos, GlobalVariables::m0tor_offst);
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 
 						HAL_Delay(5);
 
-						sprintf(str,"Axis1EncoderPos: %.4f\r\nAxis1TorqueOutput: %.4f\r\n",
-								axis1encpos, axis1torqueout);
+						sprintf(str,"Axis1EncoderPos: %.4f\r\nAxis1TorqueOffset: %.4f\r\n",
+								axis1encpos, GlobalVariables::m1tor_offst);
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 
