@@ -663,8 +663,8 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 						   float IMUy, float GyroY)
 {
 	//Incorporate the IMU offsets (want simulink to read 0 when the plate is in the position the user zerod to)
-	IMUx = IMUx + GlobalVars::IMUx_offset;
-	IMUy = IMUy + GlobalVars::IMUy_offset;
+	IMUx = IMUx + GlobalVariables::IMUx_offset;
+	IMUy = IMUy + GlobalVariables::IMUy_offset;
 
 	// For processing string
 	static char delim[] = " ";
@@ -705,11 +705,11 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 
 		ptr = strtok(message, delim); //Initial cut, isolates first float of string
 
-		GlobalVars::m0tor = atof(ptr) + GlobalVars::m0tor_offst; //Convert string of motor torque input to float for sprintf construction
+		GlobalVars::m0tor = atof(ptr) + GlobalVariables::m0tor_offst; //Convert string of motor torque input to float for sprintf construction
 
 		ptr = strtok(NULL,delim); //Iterate to next section of message
 
-		GlobalVars::m1tor = atof(ptr) + GlobalVars::m1tor_offst; //Save second space-separated part of string to double of torque value for processing
+		GlobalVars::m1tor = atof(ptr) + GlobalVariables::m1tor_offst; //Save second space-separated part of string to double of torque value for processing
 
 		//-------------Now, send message to O-Drive and confirmation to PC:-------------
 
@@ -1084,7 +1084,7 @@ void UserInterface(void)
 
 						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
 
-						GlobalVars::m0tor_offst = atof(ODriveReceive)*axis0torqueconstant; //Calculate torque offset based off of experimental torque constant
+						axis0torqueout = atof(ODriveReceive)*axis0torqueconstant; //Calculate torque based off of experimental torque constant
 
 						HAL_Delay(10);
 
@@ -1108,7 +1108,7 @@ void UserInterface(void)
 
 						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
 
-						GlobalVars::m1tor_offst = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
+						GlobalVariables::m0tor_offst = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
 
 						//Encoder Axis 1 position
 						sprintf(ODrivemessage, "f 1\n"); //request motor parameters from axis 1
@@ -1122,7 +1122,7 @@ void UserInterface(void)
 						axis1encpos = atof(ptr); //Double check this is correct due to motor axis change
 
 						//Process final information for user before starting program.
-						sprintf(str,"Platform is now ready to go operational.\r\n");
+						sprintf(str,"Platform is now ready to run. Important System Parameters:\r\n");
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 
@@ -1130,25 +1130,25 @@ void UserInterface(void)
 
 
 						//Read the IMU Euler angle offsets
-						GlobalVars::IMUx_offset = imu.EulerX;
-						GlobalVars::IMUy_offset = imu.EulerY;
+						GlobalVariables::IMUx_offset = imu.EulerX;
+						GlobalVariables::IMUy_offset = imu.EulerY;
 
 						//Print the offset values to the serial port
 						sprintf(str,"IMUx offset: %.2f\r\nIMUy offset: %.2f\r\nAxis0EncoderPos: %.4f\r\nAxis0TorqueOffset: %.4f\r\n",
-								GlobalVars::IMUx_offset, GlobalVars::IMUy_offset, axis0encpos, GlobalVars::m0tor_offst);
+								GlobalVariables::IMUx_offset, GlobalVariables::IMUy_offse, axis0encpos, GlobalVariables::m0tor_offst);
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 
 						HAL_Delay(5);
 
 						sprintf(str,"Axis1EncoderPos: %.4f\r\nAxis1TorqueOffset: %.4f\r\n",
-								axis1encpos, GlobalVars::m1tor_offst);
+								axis1encpos, GlobalVariables::m1tor_offst);
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 
 						HAL_Delay(5);
 
-						sprintf(str,"Please select the 'go operational' option in the main menu, close the serial port, and run the Simulink model.\r\n\n");
+						sprintf(str,"Please close the serial terminal, wait for 5 seconds, and run the Simulink model.\r\n\n");
 						str[strlen(str)+1] = '\0';
 						CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over UART
 

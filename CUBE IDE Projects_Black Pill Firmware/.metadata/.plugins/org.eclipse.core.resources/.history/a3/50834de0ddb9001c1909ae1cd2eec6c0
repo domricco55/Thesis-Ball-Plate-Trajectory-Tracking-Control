@@ -1108,7 +1108,7 @@ void UserInterface(void)
 
 						HAL_UART_Receive(&huart1,(uint8_t *) ODriveReceive, 16, 10); //Receive message of current measurement
 
-						GlobalVars::m1tor_offst = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
+						GlobalVars::m0tor_offst = atof(ODriveReceive)*axis1torqueconstant; //Calculate torque based off of experimental torque constant
 
 						//Encoder Axis 1 position
 						sprintf(ODrivemessage, "f 1\n"); //request motor parameters from axis 1
