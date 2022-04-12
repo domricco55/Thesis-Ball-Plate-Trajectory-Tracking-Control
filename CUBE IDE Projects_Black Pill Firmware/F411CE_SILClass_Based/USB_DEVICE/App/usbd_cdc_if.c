@@ -276,6 +276,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 	memcpy(buffer, Buf, len);  // copy the data to the buffer
 	memset(Buf, '\0', len);   // clear the Buf also
 
+
 	usb_Rx_flag = 1; //Set the usb message received flag true
 
 	//From: https://www.openstm32.org/forumthread1447
