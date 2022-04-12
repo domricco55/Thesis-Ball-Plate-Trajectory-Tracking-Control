@@ -196,7 +196,7 @@ int main(void)
   imu.Initialization();
 
   //Initialize Touchscreen Class
-  TS.Initialization();
+  //TS.Initialization();
 
   /* USER CODE END 2 */
 
@@ -206,11 +206,11 @@ int main(void)
   {
 
 	  //Main code is solely used for waiting to process the touch panel data at the moment, can also place controller here as well
-	  if(TS.tsflg == 1)
+/*	  if(TS.tsflg == 1)
 	  {
 		  TS.ProcessPositionData(); //Process the position data
 		  TS.tsflg = 0; //Reset the flag for the next time the data has been collected for processing
-	  }
+	  }*/
 
 	  //Run User Interface Task
 	  UserInterface();
