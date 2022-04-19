@@ -542,7 +542,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         
         
 
-        function Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan)
+        function [] = Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan)
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
