@@ -264,22 +264,22 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Generate the setpoint vectors and store them in the
             %appropriate class properties. First order smoothing occurs in
             %here
-            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0);
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan);
 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
             SimIn = Simulink.SimulationInput(obj.sim_string);
 
             %Timespan
-            SimIn = SimIn.setVariable('tspan',num2str(tspan));
+            SimIn = SimIn.setVariable('tspan',tspan);
 
             %ICs
-            SimIn = SimIn.setVariable('x_0', num2str(x_0));
+            SimIn = SimIn.setVariable('x_0', x_0);
 
             %Gain matrix K1 - x direction
-            SimIn = SimIn.setVariable('K1', num2str(K1));
+            SimIn = SimIn.setVariable('K1', K1);
 
             %Gain matrix K2 - y direction
-            SimIn = SimIn.setVariable('K2', num2str(K2));
+            SimIn = SimIn.setVariable('K2', K2);
 
             %Saturation torque
             SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
@@ -542,7 +542,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         
         
 
-        function Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0)
+        function Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan)
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
