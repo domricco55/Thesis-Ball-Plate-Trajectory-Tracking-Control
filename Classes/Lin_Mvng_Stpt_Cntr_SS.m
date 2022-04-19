@@ -264,30 +264,25 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Generate the setpoint vectors and store them in the
             %appropriate class properties. First order smoothing occurs in
             %here
-            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau);
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0);
 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
             SimIn = Simulink.SimulationInput(obj.sim_string);
 
             %Timespan
-            tspan = Simulink.Parameter(tspan);
-            assignin('base', 'tspan', tspan)
+            SimIn = SimIn.setVariable('tspan',num2str(tspan));
 
             %ICs
-            x_0 = Simulink.Parameter(x_0);
-            assignin('base', 'x_0', x_0);  
+            SimIn = SimIn.setVariable('x_0', num2str(x_0));
 
             %Gain matrix K1 - x direction
-            K1 = Simulink.Parameter(K1);
-            assignin('base', 'K1', K1); %Create the simulink paramter in the base workspace   
+            SimIn = SimIn.setVariable('K1', num2str(K1));
 
             %Gain matrix K2 - y direction
-            K2 = Simulink.Parameter(K2);
-            assignin('base', 'K2', K2); %Create the simulink paramter in the base workspace  
+            SimIn = SimIn.setVariable('K2', num2str(K2));
 
             %Saturation torque
-            Tmax = Simulink.Parameter(obj.VDefs.Tmax);
-            assignin('base', 'Tmax', Tmax); %Create the simulink paramter in the base workspace             
+            SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
         
         %Load the sytem's Simulink Model
             load_system(obj.sim_string);
@@ -318,11 +313,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
         
         %Run the simulation    
-            obj.sim_response = sim(obj.sim_string);          
+            obj.sim_response = sim(SimIn);          
             
         end
 
-        function [] = Run_HIL_Test()
+        function [] = Run_HIL_Test(~)
 
         end
         
@@ -547,7 +542,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         
         
 
-        function Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau)
+        function Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0)
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
@@ -636,6 +631,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             end 
 
         end
+
+    end
 
 
 
