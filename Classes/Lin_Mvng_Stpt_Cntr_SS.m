@@ -258,7 +258,10 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %   the simulation start and stop time. x_0 is the initial
             %   condition vector. K1 and K2 are gain FSFB gain matrices. 
 
-            %Remove any dirac deltas from the derivatives of the setpoints
+            %Remove any dirac deltas from the derivatives of the setpoints. This function
+            %returns the setpoint derivatives with any deltas resulting from
+            %differentiation removed. Allows setpoints with jump discontinuities to be
+            %handed in to Run_Sim. OTHER ISSUES WITH SETPOINTS THAT ARE TOO JUMPY THOUGH
             [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
 
             %Generate the setpoint vectors and store them in the
@@ -284,16 +287,16 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Saturation torque
             SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
         
-        %Load the sytem's Simulink Model
+            %Load the sytem's Simulink Model
             load_system(obj.sim_string);
 
-        %Replace the definition of the "x_Setpoint_Function" MATLAB function block
-        %with a function generated from x_setpoint_symfun
+            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+            %with a function generated from x_setpoint_symfun
             sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/x_Setpoint_Function');
             matlabFunctionBlock(sim_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
 
-        %Replace the definition of the "y_Setpoint_Function" MATLAB function block
-        %with a function generated from y_setpoint_symfun
+            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+            %with a function generated from y_setpoint_symfun
             sim_path_string = strcat(obj.sim_string,'/Setpoint_Vectors/y_Setpoint_Function');
             matlabFunctionBlock(sim_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
 
@@ -414,9 +417,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax3 = subplot(4,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1))
                     xlabel('time [s]')
-                    ylabel('Tbeta [mNm]')
+                    ylabel('Tbeta [Nm]')
 
                     ax4 = subplot(4,1,4);
                     plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
@@ -442,9 +445,9 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     ax3 = subplot(3,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2))
                     xlabel('time [s]')
-                    ylabel('Tgamma [mNm]')
+                    ylabel('Tgamma [Nm]')
                     
                     linkaxes([ax1,ax2, ax3],'x');
                     set(gcf,'position',[0,0,1200,1200]);
@@ -615,7 +618,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
-                    T_gamma = subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)]);
+                    T_gamma = expand(simplify(subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)])));
                     obj.u_FF = [T_beta;T_gamma];
 
                     %Bring setpoints together into the setpoint vectors
