@@ -22,8 +22,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
         x_setpointVec
         y_setpointVec
 
-        %String for name of Simulink Model to use
-        sim_string
+        %Strings for Simulink models for a particular architecture
+        sim_string %String for the simulation Simulink file
+        HIL_string %String for the HIL Simulink file (hardware testing)
+        controller_string %String for the control architecture Simulink file (refernced model)
+        
 
         %Plant symfun or MATLAB Anonymous function
         plant
@@ -104,7 +107,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_Int';
+                    obj.sim_string = 'Simulink Models/Simulation/FSFB_Int_Sim';
+                    ob
                     
                     
                 case 'SS PID Controller'    
@@ -169,7 +173,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_PID';
+                    obj.sim_string = 'Simulink Models/Simulation/FSFB_PID_Sim';
 
                 case 'SS PID FF Controller'
 
@@ -237,8 +241,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_string = 'Linear_Moving_Setpoint_SS_w_FF';
-
+                    obj.sim_string = 'Simulink Models/Simulation/FSFB_w_FF_Simulation';
+                    
                                     
                 otherwise
                     
@@ -287,9 +291,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Saturation torque
             SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
         
-            %Load the plant model before the control system model so that an error message
-            %doesn
-            load_system('Plant')
+            %Load the referenced models before the main models so that an error message
+            %doesn't pop up the first time a control system is simulated. If referenced
+            %models haven't been loaded previously, for some reason, the model 
+            % reference blocks don't work
+            load_system('Simulink Models/Models to Reference/Plant')
+            load_system('Simulink Models/Models to Reference/
 
             %Load the sytem's Simulink Model
             load_system(obj.sim_string);
@@ -313,7 +320,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
         %Replace the definition of the "Plant_Function" MATLAB function block with a
         %function generated from obj.plant symbolic function
-            sim_path_string = 'Plant/Plant_Function';
+            sim_path_string = 'Simulink Models/Models to Reference/Plant/Plant_Function';
             %Generate a matlab function from the linearized plant model
             input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
             %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
@@ -594,7 +601,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Solve the linear ODE for beta_s(t)
                     beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
                     %Take only the particular solution 
-                    beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
+                    beta_s_sol(obj.VDefs.t) = simplify(subs(beta_s_sol, [C1 C2], [0 0]));
 
                     %Plot the particular solution
                     figure
