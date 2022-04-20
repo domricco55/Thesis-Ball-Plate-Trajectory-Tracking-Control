@@ -287,6 +287,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Saturation torque
             SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
         
+            %Load the plant model before the control system model so that an error message
+            %doesn't pop up the first time a control system is simulated. If plant hasn't
+            %been loaded previously, for some reason, the model reference block can't open
+            %and load 'Plant' itself the first time through
+            load_system('Plant')
+
             %Load the sytem's Simulink Model
             load_system(obj.sim_string);
 
@@ -590,7 +596,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Solve the linear ODE for beta_s(t)
                     beta_s_sol(obj.VDefs.t) = dsolve(ode_beta_s);
                     %Take only the particular solution 
-                    beta_s_sol(obj.VDefs.t) = subs(beta_s_sol, [C1 C2], [0 0]);
+                    beta_s_sol(obj.VDefs.t) = simplify(subs(beta_s_sol, [C1 C2], [0 0]));
 
                     %Plot the particular solution
                     figure
@@ -607,7 +613,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     %Solve the linear ODE for gamma_s(t)
                     gamma_s_sol(obj.VDefs.t) = simplify(dsolve(ode_gamma_s));
                     %Take only the particular solution 
-                    gamma_s_sol(obj.VDefs.t) = subs(gamma_s_sol, [C1 C2], [0 0]);
+                    gamma_s_sol(obj.VDefs.t) = simplify(subs(gamma_s_sol, [C1 C2], [0 0]));
                     
                     %Plot the particular solution
                     figure
