@@ -63,7 +63,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             switch type
                 
-                case 'SS Integral Controller'
+                case 'FSFB Integral Controller'
 
                     % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x
@@ -107,12 +107,12 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink Models/Simulation/FSFB_Int_Sim';
+                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_Int_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_Int_HIL';
                     obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_Int_Controller';
                     
                     
-                case 'SS PID Controller'    
+                case 'FSFB PID Controller'    
                     
                     % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x AND with x and x_dot replaced with error states
@@ -174,11 +174,11 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink Models/Simulation/FSFB_PID_Sim';
+                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_PID_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_PID_HIL';
                     obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_PID_Controller';
 
-                case 'SS PID FF Controller'
+                case 'FSFB FF Controller'
 
                     % X DIMENSION DERIVATIONS
                     %State vector augmented with integral of the error in x AND all states
@@ -244,13 +244,13 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink Models/Simulation/FSFB_FF_Sim';
+                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_FF_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_w_FF_HIL';
                     obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_FF_Controller';
                                     
                 otherwise
                     
-                    error('Not a valid moving setpoint controller type/dimension specification')
+                    error('Not a valid controller type')
                     
             end
             
@@ -277,6 +277,44 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %here
             obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan);
 
+            
+            %Load the objects controller Simulink file (referenced model within the
+            %simulation file)
+            load_system(obj.ctrl_file_string)
+
+%             %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+%             %with a function generated from x_setpoint_symfun
+%             block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/x_Setpoint_Function');
+%             matlabFunctionBlock(block_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
+% 
+%             %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+%             %with a function generated from y_setpoint_symfun
+%             block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/y_Setpoint_Function');
+%             matlabFunctionBlock(block_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
+% 
+%             %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
+%             if strcmp(obj.ctrl_type,'FSFB FF Controller')
+%       
+%                 block_path_string = strcat(obj.ctrl_file_string,'/Controller/u_FF');
+%                 matlabFunctionBlock(block_path_string, obj.u_FF,'FunctionName', 'u_FF')
+% 
+%             end 
+
+            %Load the Simulated_Plant model
+            load_system('Simulink Models/Models to Reference/Simulated_Plant')
+
+            %Replace the definition of the "Plant_Function" MATLAB function block with a
+            %function generated from obj.plant symbolic function
+            block_path_string = 'Simulink Models/Models to Reference/Simulated_Plant/Plant_Function';
+            %Generate a matlab function from the linearized plant model
+            input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
+            %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
+            matlabFunctionBlock(block_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
+        
+            %Load the Simulated_Plant referenced model to prevent an error when running
+            %the simulation file
+            load_system('Simulink Models/Models to Reference/Simulated_Plant')
+
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
             SimIn = Simulink.SimulationInput(obj.sim_file_string);
 
@@ -294,43 +332,8 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             %Saturation torque
             SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
-        
-            %Load the referenced models before the main models so that an error message
-            %doesn't pop up the first time a control system is simulated. If referenced
-            %models haven't been loaded previously, for some reason, the model 
-            % reference blocks don't work
-            load_system('Simulink Models/Models to Reference/Simulated_Plant')
-            load_system(obj.ctrl_file_string)
 
-            %Load the sytem's Simulink Model
-            load_system(obj.sim_file_string);
-
-            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
-            %with a function generated from x_setpoint_symfun
-            sim_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/x_Setpoint_Function');
-            matlabFunctionBlock(sim_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
-
-            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
-            %with a function generated from y_setpoint_symfun
-            sim_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/y_Setpoint_Function');
-            matlabFunctionBlock(sim_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
-
-            %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
-            if strcmp(obj.ctrl_type,'SS PID FF Controller')
-      
-                sim_path_string = strcat(obj.sim_file_string,'/Controller/u_FF');
-                matlabFunctionBlock(sim_path_string, obj.u_FF,'FunctionName', 'u_FF')
-            end 
-
-            %Replace the definition of the "Plant_Function" MATLAB function block with a
-            %function generated from obj.plant symbolic function
-            sim_path_string = 'Simulink Models/Models to Reference/Plant/Plant_Function';
-            %Generate a matlab function from the linearized plant model
-            input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
-            %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
-            matlabFunctionBlock(sim_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
-        
-            %Run the simulation    
+            %Run the configured simulation file
             obj.sim_response = sim(SimIn);          
             
         end
@@ -353,7 +356,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
 
             switch obj.ctrl_type
                 
-                case 'SS Integral Controller'
+                case 'FSFB Integral Controller'
                     
                     figure_obj_x = figure;
                     
@@ -420,7 +423,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('Position space of the ball in the plate frame')
                     axis 'equal'
                     
-                case 'SS PID Controller' 
+                case 'FSFB PID Controller' 
                     
                     figure_obj_x = figure;
                     
@@ -484,7 +487,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     title('Position space of the ball in the plate frame')
                     axis 'equal'
                      
-               case 'SS PID FF Controller'
+               case 'FSFB FF Controller'
 
                     figure_obj_x = figure;
                     
@@ -572,7 +575,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
-                case 'SS Integral Controller'
+                case 'FSFB Integral Controller'
 
                     %Smooth path to trajectory from the initial conditions
                     x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
@@ -583,7 +586,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.y_s_vec = y_s;
                    
 
-                case 'SS PID Controller' 
+                case 'FSFB PID Controller' 
 
 
 
@@ -597,7 +600,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
                     obj.x_s_vec = obj.x_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(1:2)*exp(-obj.VDefs.t/Tau);
                     obj.y_s_vec = obj.y_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(5:6)*exp(-obj.VDefs.t/Tau);
 
-                case 'SS PID FF Controller'
+                case 'FSFB FF Controller'
 
                     %Solve for the angular setpoints that are consistent with the x and y
                     %setpoints (in the linear dynamics)
