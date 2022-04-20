@@ -1411,3 +1411,36 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-04-12 15:06:28.850
 !MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2022-04-20 11:20:55.562 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2022-04-20 11:21:35.582
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2022-04-20 11:21:35.645
+!MESSAGE Log4j initialized with config file F:\Sourcetree Repos\Matlab Personal\Ball Plate Thesis\CUBE IDE Projects_Black Pill Firmware\.metadata\.log4j.xml
+
+!ENTRY org.eclipse.e4.ui.workbench 2 0 2022-04-20 11:21:38.902
+!MESSAGE Removing PartDescriptorImpl with the "org.eclipse.search.SearchResultView" id and the "Classic Search" label.It points to the non available "bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView" class. Bundle might have been uninstalled
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-04-20 11:21:41.963
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-04-20 11:21:45.138
+!MESSAGE Indexed 'F411CE_IMUTest' (69 sources, 177 headers) in 4.14 sec: 15,828 declarations; 90,444 references; 2 unresolved inclusions; 42 syntax errors; 149 unresolved names (0.14%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-04-20 11:21:48.038
+!MESSAGE Indexed 'F411CE_TouchScreenTestFilterNew' (72 sources, 207 headers) in 2.84 sec: 18,248 declarations; 113,326 references; 2 unresolved inclusions; 41 syntax errors; 149 unresolved names (0.11%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-04-20 11:21:50.929
+!MESSAGE Indexed 'F411CE_IMUCalibration' (76 sources, 207 headers) in 2.84 sec: 19,625 declarations; 137,467 references; 2 unresolved inclusions; 42 syntax errors; 149 unresolved names (0.095%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-04-20 11:21:56.676
+!MESSAGE Indexed 'F411CE_TouchPanelCalibration' (72 sources, 424 headers) in 5.5 sec: 33,953 declarations; 107,469 references; 2 unresolved inclusions; 42 syntax errors; 680 unresolved names (0.48%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-04-20 11:22:02.267
+!MESSAGE Indexed 'F411CE_SILClass_Based' (79 sources, 447 headers) in 5.54 sec: 43,314 declarations; 173,951 references; 2 unresolved inclusions; 42 syntax errors; 1,061 unresolved names (0.49%)

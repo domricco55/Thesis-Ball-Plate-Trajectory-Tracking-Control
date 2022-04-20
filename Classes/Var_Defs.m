@@ -244,7 +244,9 @@ classdef Var_Defs
         IB %[kg-m^2] Moment of inertia of the ball (xx, yy, and zz)
         g_num %[m/s^2] Gravity, imperial
         lp %[m] Horizontal distance from u-joint to push rod pivot (about half width of the plate)   
-        Tmax %[Nm] Saturation torque
+        Tmot = 0.6; %[Nm] Max torque for the motors
+        l_carm = 0.1134; % [m] Length of the motor mechanism crank arms
+        Tmax %[Nm] Saturation u-joint torque
     end
     
     properties 
@@ -644,7 +646,9 @@ classdef Var_Defs
             obj.IB = (2/5)*obj.mB*obj.rB^2;%[kg-m^2] Moment of inertia of the ball (xx, yy, and zz)
             obj.g_num = 9.81; %[m/s^2] Gravity, imperial
             obj.lp = 0.2499; %[m] Horizontal distance from u-joint to push rod pivot (about half width of the plate)
-            obj.Tmax = 1.5; %[Nm] Saturation Torque
+            obj.Tmot = 0.6; %%[Nm] Max torque for the motors
+            obj.l_carm = 0.1134; % [m] Length of the motor mechanism crank arms
+            obj.Tmax = obj.Tmot*obj.lp/obj.l_carm; %[Nm] Saturation u-joint torque
             
         end
         

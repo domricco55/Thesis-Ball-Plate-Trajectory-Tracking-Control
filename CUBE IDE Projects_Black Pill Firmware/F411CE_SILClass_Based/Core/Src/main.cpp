@@ -1177,7 +1177,9 @@ void UserInterface(void)
 					UIprint = 0;
 				}
 
-				//If user input was received and a 'stop' message was sent
+				/*If user input was received and a 'r' message was sent POTENTIAL SPOT FOR A BUG
+			    WHAT IF SIMULINK DATA HAD 'r' IN THE FIRST SPOT IN THE BUFFER? MAY NEED TO CHANGE THIS
+			    */
 				if (usb_Rx_flag && (buffer[0] == 'r'))
 				{
 
@@ -1188,14 +1190,15 @@ void UserInterface(void)
 
 					usb_Rx_flag = 0; //clear the usb message received flag
 					UIprint = 1; //Lets the main menu message print initially
-					GlobalVars::UI_state = 1; //Go back to the main menu state
+					GlobalVars::UI_state = 0; //Go back to the "wait for any key pressed" state
 					GlobalVars::Operational = 0;
 
 				}
 
+				//If a message was sent that was not 'r' in the first spot in the buffer
 				else if(usb_Rx_flag)
 				{
-					usb_Rx_flag = 0;
+					usb_Rx_flag = 0; //reset the flag only
 				}
 
 				break;
