@@ -1,4 +1,4 @@
-classdef Lin_Mvng_Stpt_Cntr_SS < handle
+classdef Lin_FSFB_Cntrl < handle
     %Lin_Mvng_Stpt_Cntr_SS  Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -45,7 +45,7 @@ classdef Lin_Mvng_Stpt_Cntr_SS < handle
     
     
     methods
-        function obj = Lin_Mvng_Stpt_Cntr_SS(Lnrzed_EOMs,plant_model, VDefs, type)
+        function obj = Lin_FSFB_Cntrl(Lnrzed_EOMs,plant_model, VDefs, type)
             %Lin_Mvng_Stpt_Cntr_SS Construct an instance of this class
             %   Detailed explanation goes here
             
