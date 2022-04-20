@@ -282,23 +282,23 @@ classdef Lin_FSFB_Cntrl < handle
             %simulation file)
             load_system(obj.ctrl_file_string)
 
-%             %Replace the definition of the "x_Setpoint_Function" MATLAB function block
-%             %with a function generated from x_setpoint_symfun
-%             block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/x_Setpoint_Function');
-%             matlabFunctionBlock(block_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
-% 
-%             %Replace the definition of the "y_Setpoint_Function" MATLAB function block
-%             %with a function generated from y_setpoint_symfun
-%             block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/y_Setpoint_Function');
-%             matlabFunctionBlock(block_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
-% 
-%             %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
-%             if strcmp(obj.ctrl_type,'FSFB FF Controller')
-%       
-%                 block_path_string = strcat(obj.ctrl_file_string,'/Controller/u_FF');
-%                 matlabFunctionBlock(block_path_string, obj.u_FF,'FunctionName', 'u_FF')
-% 
-%             end 
+            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+            %with a function generated from x_setpoint_symfun
+            block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/x_Setpoint_Function');
+            matlabFunctionBlock(block_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
+
+            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+            %with a function generated from y_setpoint_symfun
+            block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/y_Setpoint_Function');
+            matlabFunctionBlock(block_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
+
+            %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
+            if strcmp(obj.ctrl_type,'FSFB FF Controller')
+      
+                block_path_string = strcat(obj.ctrl_file_string,'/Controller/u_FF');
+                matlabFunctionBlock(block_path_string, obj.u_FF,'FunctionName', 'u_FF')
+
+            end 
 
             %Load the Simulated_Plant model
             load_system('Simulink Models/Models to Reference/Simulated_Plant')
