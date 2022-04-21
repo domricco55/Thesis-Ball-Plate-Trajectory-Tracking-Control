@@ -258,13 +258,15 @@ classdef Lin_FSFB_Cntrl < handle
         end
         
         
-        function [] = Run_Sim(obj,x_s,y_s, tspan, x_0, Tau, K1, K2)
+        function [] = Run_Sim(obj, x_s, y_s, tspan, x_0, Tau, K1, K2)
             %Run_Sim Run a simulation for the control system specified by
             %obj.ctrl_type. 
             %   x_s and y_s are simfuns specifying the desired trajectories
             %   in the plate frame ball position variables. tspan specifies
             %   the simulation start and stop time. x_0 is the initial
-            %   condition vector. K1 and K2 are gain FSFB gain matrices. 
+            %   condition vector. Tau is the time constant for the first 
+            %   order smoothing of the desired trajectory. K1 and K2 are 
+            %   gain FSFB gain matrices.
 
             %Remove any dirac deltas from the derivatives of the setpoints. This function
             %returns the setpoint derivatives with any deltas resulting from
@@ -311,9 +313,8 @@ classdef Lin_FSFB_Cntrl < handle
             %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
             matlabFunctionBlock(block_path_string, obj.plant, 'FunctionName', 'xdot','Vars',input_chars)
         
-            %Load the Simulated_Plant referenced model to prevent an error when running
-            %the simulation file
-            load_system('Simulink Models/Models to Reference/Simulated_Plant')
+            %Load the systems simulation model
+            %%load_system('Simulink Models/Models to Reference/Simulated_Plant')
             load_system(strcat('Simulink Models/Simulation/',obj.sim_file_string))
 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
@@ -339,14 +340,81 @@ classdef Lin_FSFB_Cntrl < handle
             
         end
 
-        function [] = Run_HIL_Test(~)
+        function [] = Run_HIL_Test(obj,x_s,y_s, tspan, x_0, Tau, K1, K2)
+            %Run_HIL_Test Run a Simulink Desktop Real-Time test on the
+            %ball-and-plate hardware.
+            %   x_s and y_s are simfuns specifying the desired trajectories
+            %   in the plate frame ball position variables. tspan specifies
+            %   the simulation start and stop time. x_0 is the initial
+            %   condition vector. For now, the IC vector will be assumed 
+            %   the zero vector. In the future, it would be ideal to have 
+            %   access to a sensor reading of the IC for the ball. 
+            %   Or perhaps, have a regulation controller run before the 
+            %   trajectory tracking controller to place the state vector 
+            %   at the origin. Tau is the time constant for the first 
+            %   order smoothing of the desired trajectory. K1 and K2 are 
+            %   gain FSFB gain matrices.
 
-            %Load the referenced models before the main models so that an error message
-            %doesn't pop up the first time a control system is simulated. If referenced
-            %models haven't been loaded previously, for some reason, the model 
-            % reference blocks don't work
-            load_system('Simulink Models/Models to Reference/Simulated_Plant')
-            load_system(obj.cntrl_type)
+            %Remove any dirac deltas from the derivatives of the setpoints. This function
+            %returns the setpoint derivatives with any deltas resulting from
+            %differentiation removed. Allows setpoints with jump discontinuities to be
+            %handed in to Run_Sim. OTHER ISSUES WITH SETPOINTS THAT ARE TOO JUMPY THOUGH
+            [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
+
+            %Generate the setpoint vectors and store them in the
+            %appropriate class properties. First order smoothing occurs in
+            %here
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan);
+
+            
+            %Load the objects controller Simulink file (referenced model within the
+            %simulation file)
+            load_system(strcat('Simulink Models/Models to Reference/',obj.ctrl_file_string))
+
+            %Replace the definition of the "x_Setpoint_Function" MATLAB function block
+            %with a function generated from x_setpoint_symfun
+            block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/x_Setpoint_Function');
+            matlabFunctionBlock(block_path_string, obj.x_s_vec,'FunctionName', 'x_s_vec')
+
+            %Replace the definition of the "y_Setpoint_Function" MATLAB function block
+            %with a function generated from y_setpoint_symfun
+            block_path_string = strcat(obj.ctrl_file_string,'/Setpoint_Vectors/y_Setpoint_Function');
+            matlabFunctionBlock(block_path_string, obj.y_s_vec,'FunctionName', 'y_s_vec')
+
+            %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
+            if strcmp(obj.ctrl_type,'FSFB FF Controller')
+      
+                block_path_string = strcat(obj.ctrl_file_string,'/u_FF');
+                matlabFunctionBlock(block_path_string, obj.u_FF,'FunctionName', 'u_FF')
+
+            end 
+
+            %Load the Simulated_Plant model
+            load_system('Simulink Models/Models to Reference/Hardware_Plant')
+        
+            %Load the HIL Test file
+            load_system(strcat('Simulink Models/Hardware Implementation/',obj.sim_file_string))
+
+            %Set the Simulink Parameters (Matrices, times, gains, etc.)
+            SimIn = Simulink.SimulationInput(obj.sim_file_string);
+
+            %Timespan
+            SimIn = SimIn.setVariable('tspan',tspan);
+
+            %ICs
+            SimIn = SimIn.setVariable('x_0', x_0);
+
+            %Gain matrix K1 - x direction
+            SimIn = SimIn.setVariable('K1', K1);
+
+            %Gain matrix K2 - y direction
+            SimIn = SimIn.setVariable('K2', K2);
+
+            %Saturation torque
+            SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
+
+            %Run the configured simulation file
+            obj.sim_response = sim(SimIn);
 
         end
         
