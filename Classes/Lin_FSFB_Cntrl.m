@@ -277,7 +277,7 @@ classdef Lin_FSFB_Cntrl < handle
             %Generate the setpoint vectors and store them in the
             %appropriate class properties. First order smoothing occurs in
             %here
-            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan);
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, x_0, tspan);
 
             
             %Load the objects controller Simulink file (referenced model within the
@@ -322,6 +322,9 @@ classdef Lin_FSFB_Cntrl < handle
 
             %Timespan
             SimIn = SimIn.setVariable('tspan',tspan);
+
+            %Setpoint smoothing time constant
+            SimIn = SimIn.setVariable('Tau',Tau);
 
             %ICs
             SimIn = SimIn.setVariable('x_0', x_0);
@@ -400,6 +403,9 @@ classdef Lin_FSFB_Cntrl < handle
 
             %Timespan
             SimIn = SimIn.setVariable('tspan',tspan);
+
+            %Setpoint smoothing time constant
+            SimIn = SimIn.setVariable('Tau',Tau);
 
             %ICs
             SimIn = SimIn.setVariable('x_0', x_0);
@@ -639,16 +645,12 @@ classdef Lin_FSFB_Cntrl < handle
         
         
 
-        function [] = Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan)
+        function [] = Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, x_0, tspan)
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
             switch obj.ctrl_type
                 case 'FSFB Integral Controller'
-
-                    %Smooth path to trajectory from the initial conditions
-                    x_s = x_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(1)*exp(-obj.VDefs.t/Tau);
-                    y_s = y_s*(1-exp(-obj.VDefs.t/Tau)) + x_0(5)*exp(-obj.VDefs.t/Tau);
 
                     %Setpoint vectors here are just the smoothed x and y setpoints
                     obj.x_s_vec = x_s;
@@ -665,9 +667,6 @@ classdef Lin_FSFB_Cntrl < handle
                     obj.x_s_vec = [x_s; d_x_s]; 
                     obj.y_s_vec = [y_s; d_y_s];
 
-                    %Smooth path to trajectory from the initial conditions
-                    obj.x_s_vec = obj.x_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(1:2)*exp(-obj.VDefs.t/Tau);
-                    obj.y_s_vec = obj.y_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(5:6)*exp(-obj.VDefs.t/Tau);
 
                 case 'FSFB FF Controller'
 
@@ -717,12 +716,7 @@ classdef Lin_FSFB_Cntrl < handle
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
-                    obj.y_s_vec = [y_s; d_y_s; gamma_s_sol; diff(gamma_s_sol)];
-                    
-                    %Apply a first order smoothing to both the position and angular
-                    %setpoints
-                    obj.x_s_vec = obj.x_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(1:4)*exp(-obj.VDefs.t/Tau);
-                    obj.y_s_vec = obj.y_s_vec*(1-exp(-obj.VDefs.t/Tau)) + x_0(5:8)*exp(-obj.VDefs.t/Tau);
+                    obj.y_s_vec = [y_s; d_y_s; gamma_s_sol; diff(gamma_s_sol)];                  
 
 
             end 
