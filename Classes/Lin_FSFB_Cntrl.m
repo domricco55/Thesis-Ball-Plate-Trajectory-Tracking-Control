@@ -41,6 +41,21 @@ classdef Lin_FSFB_Cntrl < handle
         %torque symfun may or may not be generated
         u_FF
 
+        %SimIn object
+        %Saves the Simulink.SimulationInput object associated with the 
+        %latest run of the controller simulation
+        SimIn
+
+        %HIL control parameters Struct:
+        %since I can't use the Simulink.SimulationInput
+        %object method for assigning variables in a Simulink Desktop
+        %Real-Time environment, I need to use "assignin" instead. So to
+        %have the control parameters associated with 
+        HIL_cntrl_params
+
+        %Might as well have a struct for the simulation as well
+        Sim_cntrl_params
+
     end
     
     
@@ -245,7 +260,7 @@ classdef Lin_FSFB_Cntrl < handle
 
                     %Set the name of the simulink model to use
                     obj.sim_file_string = 'FSFB_FF_Sim';
-                    %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_w_FF_HIL';
+                    obj.HIL_file_string = 'FSFB_FF_HIL';
                     obj.ctrl_file_string = 'FSFB_FF_Controller';
                                     
                 otherwise
@@ -268,6 +283,14 @@ classdef Lin_FSFB_Cntrl < handle
             %   order smoothing of the desired trajectory. K1 and K2 are 
             %   gain FSFB gain matrices.
 
+            %Fill the control parameters struct for the Simulation run
+            obj.Sim_cntrl_params.x_s = x_s;
+            obj.Sim_cntrl_params.y_s = y_s;
+            obj.Sim_cntrl_params.tspan = tspan;
+            obj.Sim_cntrl_params.Tau = Tau;
+            obj.Sim_cntrl_params.K1 = K1;
+            obj.Sim_cntrl_params.K2 = K2;
+
             %Remove any dirac deltas from the derivatives of the setpoints. This function
             %returns the setpoint derivatives with any deltas resulting from
             %differentiation removed. Allows setpoints with jump discontinuities to be
@@ -275,9 +298,8 @@ classdef Lin_FSFB_Cntrl < handle
             [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
 
             %Generate the setpoint vectors and store them in the
-            %appropriate class properties. First order smoothing occurs in
-            %here
-            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, x_0, tspan);
+            %appropriate class properties.
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, tspan);
 
             
             %Load the objects controller Simulink file (referenced model within the
@@ -318,32 +340,32 @@ classdef Lin_FSFB_Cntrl < handle
             load_system(strcat('Simulink Models/Simulation/',obj.sim_file_string))
 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
-            SimIn = Simulink.SimulationInput(obj.sim_file_string);
+            obj.SimIn = Simulink.SimulationInput(obj.sim_file_string);
 
             %Timespan
-            SimIn = SimIn.setVariable('tspan',tspan);
+            obj.SimIn = obj.SimIn.setVariable('tspan',tspan);
 
             %Setpoint smoothing time constant
-            SimIn = SimIn.setVariable('Tau',Tau);
+            obj.SimIn = obj.SimIn.setVariable('Tau',Tau);
 
             %ICs
-            SimIn = SimIn.setVariable('x_0', x_0);
+            obj.SimIn = obj.SimIn.setVariable('x_0', x_0);
 
             %Gain matrix K1 - x direction
-            SimIn = SimIn.setVariable('K1', K1);
+            obj.SimIn = obj.SimIn.setVariable('K1', K1);
 
             %Gain matrix K2 - y direction
-            SimIn = SimIn.setVariable('K2', K2);
+            obj.SimIn = obj.SimIn.setVariable('K2', K2);
 
             %Saturation torque
-            SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
+            obj.SimIn = obj.SimIn.setVariable('Tmax',obj.VDefs.Tmax);
 
             %Run the configured simulation file
-            obj.sim_response = sim(SimIn);          
+            obj.sim_response = sim(obj.SimIn);          
             
         end
 
-        function [] = Run_HIL_Test(obj,x_s,y_s, tspan, x_0, Tau, K1, K2)
+        function [] = Run_HIL_Test(obj,x_s,y_s, tspan, Tau, K1, K2)
             %Run_HIL_Test Run a Simulink Desktop Real-Time test on the
             %ball-and-plate hardware.
             %   x_s and y_s are simfuns specifying the desired trajectories
@@ -358,6 +380,14 @@ classdef Lin_FSFB_Cntrl < handle
             %   order smoothing of the desired trajectory. K1 and K2 are 
             %   gain FSFB gain matrices.
 
+            %Fill the control parameters struct for the HIL run
+            obj.HIL_cntrl_params.x_s = x_s;
+            obj.HIL_cntrl_params.y_s = y_s;
+            obj.HIL_cntrl_params.tspan = tspan;
+            obj.HIL_cntrl_params.Tau = Tau;
+            obj.HIL_cntrl_params.K1 = K1;
+            obj.HIL_cntrl_params.K2 = K2;
+
             %Remove any dirac deltas from the derivatives of the setpoints. This function
             %returns the setpoint derivatives with any deltas resulting from
             %differentiation removed. Allows setpoints with jump discontinuities to be
@@ -365,9 +395,8 @@ classdef Lin_FSFB_Cntrl < handle
             [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
 
             %Generate the setpoint vectors and store them in the
-            %appropriate class properties. First order smoothing occurs in
-            %here
-            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, Tau, x_0, tspan);
+            %appropriate class properties.
+            obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, tspan);
 
             
             %Load the objects controller Simulink file (referenced model within the
@@ -396,31 +425,26 @@ classdef Lin_FSFB_Cntrl < handle
             load_system('Simulink Models/Models to Reference/Hardware_Plant')
         
             %Load the HIL Test file
-            load_system(strcat('Simulink Models/Hardware Implementation/',obj.sim_file_string))
-
-            %Set the Simulink Parameters (Matrices, times, gains, etc.)
-            SimIn = Simulink.SimulationInput(obj.sim_file_string);
+            load_system(strcat('Simulink Models/Hardware Implementation/',obj.HIL_file_string))
 
             %Timespan
-            SimIn = SimIn.setVariable('tspan',tspan);
+            assignin('base', "tspan",obj.HIL_cntrl_params.tspan)
 
             %Setpoint smoothing time constant
-            SimIn = SimIn.setVariable('Tau',Tau);
-
-            %ICs
-            SimIn = SimIn.setVariable('x_0', x_0);
+            assignin('base', "Tau",obj.HIL_cntrl_params.Tau)
 
             %Gain matrix K1 - x direction
-            SimIn = SimIn.setVariable('K1', K1);
+            assignin('base', "K1",obj.HIL_cntrl_params.K1)
 
             %Gain matrix K2 - y direction
-            SimIn = SimIn.setVariable('K2', K2);
+            assignin('base', "K2",obj.HIL_cntrl_params.K2)
 
             %Saturation torque
-            SimIn = SimIn.setVariable('Tmax',obj.VDefs.Tmax);
+            assignin('base', "Tmax",obj.VDefs.Tmax)
 
-            %Run the configured simulation file
-            obj.sim_response = sim(SimIn);
+            %Run the HIL test
+            set_param(obj.HIL_file_string, 'SimulationCommand', 'start')
+
 
         end
         
@@ -584,9 +608,9 @@ classdef Lin_FSFB_Cntrl < handle
 
 
                     ax3 = subplot(4,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.u(:,1)*1000)
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,1))
                     xlabel('time [s]')
-                    ylabel('Tbeta [mNm]')
+                    ylabel('Tbeta [Nm]')
 
                     ax4 = subplot(4,1,4);
                     plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
@@ -616,9 +640,9 @@ classdef Lin_FSFB_Cntrl < handle
                     legend('gamma', 'gamma_s')
 
                     ax3 = subplot(4,1,3);
-                    plot(obj.sim_response.tout,obj.sim_response.u(:,2)*1000)
+                    plot(obj.sim_response.tout,obj.sim_response.u(:,2))
                     xlabel('time [s]')
-                    ylabel('Tgamma [mNm]')
+                    ylabel('Tgamma [Nm]')
                     
                     ax4 = subplot(4,1,4);
                     plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)))
@@ -645,7 +669,7 @@ classdef Lin_FSFB_Cntrl < handle
         
         
 
-        function [] = Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, x_0, tspan)
+        function [] = Gen_Setpoints (obj, x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, tspan)
 
             %Depending on the control architecture, generate x_s_vec, y_s_vec, and u_FF
             %from x_setpoint_symfun and y_setpoint_symfun
