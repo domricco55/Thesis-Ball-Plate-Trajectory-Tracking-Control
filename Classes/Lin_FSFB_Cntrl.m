@@ -107,9 +107,9 @@ classdef Lin_FSFB_Cntrl < handle
 
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_Int_Sim';
+                    obj.sim_file_string = 'FSFB_Int_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_Int_HIL';
-                    obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_Int_Controller';
+                    obj.ctrl_file_string = 'FSFB_Int_Controller';
                     
                     
                 case 'FSFB PID Controller'    
@@ -174,9 +174,9 @@ classdef Lin_FSFB_Cntrl < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_PID_Sim';
+                    obj.sim_file_string = 'FSFB_PID_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_PID_HIL';
-                    obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_PID_Controller';
+                    obj.ctrl_file_string = 'FSFB_PID_Controller';
 
                 case 'FSFB FF Controller'
 
@@ -244,9 +244,9 @@ classdef Lin_FSFB_Cntrl < handle
                     
 
                     %Set the name of the simulink model to use
-                    obj.sim_file_string = 'Simulink_Models/Simulation/FSFB_FF_Sim';
+                    obj.sim_file_string = 'FSFB_FF_Sim';
                     %%obj.HIL_file_string = 'Simulink Models/Hardware Implementation/FSFB_w_FF_HIL';
-                    obj.ctrl_file_string = 'Simulink Models/Models to Reference/FSFB_FF_Controller';
+                    obj.ctrl_file_string = 'FSFB_FF_Controller';
                                     
                 otherwise
                     
@@ -280,7 +280,7 @@ classdef Lin_FSFB_Cntrl < handle
             
             %Load the objects controller Simulink file (referenced model within the
             %simulation file)
-            load_system(obj.ctrl_file_string)
+            load_system(strcat('Simulink Models/Models to Reference/',obj.ctrl_file_string))
 
             %Replace the definition of the "x_Setpoint_Function" MATLAB function block
             %with a function generated from x_setpoint_symfun
@@ -295,7 +295,7 @@ classdef Lin_FSFB_Cntrl < handle
             %If a feed-forward controller, replace the definition of the "u_FF" MATLAB function block       
             if strcmp(obj.ctrl_type,'FSFB FF Controller')
       
-                block_path_string = strcat(obj.ctrl_file_string,'/Controller/u_FF');
+                block_path_string = strcat(obj.ctrl_file_string,'/u_FF');
                 matlabFunctionBlock(block_path_string, obj.u_FF,'FunctionName', 'u_FF')
 
             end 
@@ -305,7 +305,7 @@ classdef Lin_FSFB_Cntrl < handle
 
             %Replace the definition of the "Plant_Function" MATLAB function block with a
             %function generated from obj.plant symbolic function
-            block_path_string = 'Simulink Models/Models to Reference/Simulated_Plant/Plant_Function';
+            block_path_string = 'Simulated_Plant/Plant_Function';
             %Generate a matlab function from the linearized plant model
             input_chars = {'x', 'x_dot', 'beta', 'beta_dot','y', 'y_dot', 'gamma', 'gamma_dot', 'T_beta', 'T_gamma' };
             %output_chars = {'x_dot', 'x_ddot', 'beta_dot', 'beta_ddot','y_dot', 'y_ddot', 'gamma_dot', 'gamma_ddot' };
@@ -314,6 +314,7 @@ classdef Lin_FSFB_Cntrl < handle
             %Load the Simulated_Plant referenced model to prevent an error when running
             %the simulation file
             load_system('Simulink Models/Models to Reference/Simulated_Plant')
+            load_system(strcat('Simulink Models/Simulation/',obj.sim_file_string))
 
             %Set the Simulink Parameters (Matrices, times, gains, etc.)
             SimIn = Simulink.SimulationInput(obj.sim_file_string);
