@@ -442,8 +442,9 @@ classdef Lin_FSFB_Cntrl < handle
             %Saturation torque
             assignin('base', "Tmax",obj.VDefs.Tmax)
 
-            %Run the HIL test
-            set_param(obj.HIL_file_string, 'SimulationCommand', 'start')
+            %Run the HIL test (don't know if there's another way to
+            %programmatically run this)
+            %%set_param(obj.HIL_file_string, 'SimulationCommand', 'start')
 
 
         end
@@ -736,7 +737,7 @@ classdef Lin_FSFB_Cntrl < handle
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
                     T_gamma = expand(simplify(subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)])));
-                    obj.u_FF = [T_beta;T_gamma];
+                    obj.u_FF(obj.VDefs.t) = [T_beta + 0*obj.VDefs.t;T_gamma + 0*obj.VDefs.t];
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
