@@ -398,7 +398,9 @@ classdef Lin_FSFB_Cntrl < handle
             %appropriate class properties.
             obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, tspan);
 
-            
+            %Set up the Kalman filter
+            obj.Gen_KF_Data;
+
             %Load the objects controller Simulink file (referenced model within the
             %simulation file)
             load_system(strcat('Simulink Models/Models to Reference/',obj.ctrl_file_string))
@@ -441,6 +443,20 @@ classdef Lin_FSFB_Cntrl < handle
 
             %Saturation torque
             assignin('base', "Tmax",obj.VDefs.Tmax)
+
+            %Loop closure time
+            assignin('base', "Ts",0.0001)
+
+            %%For Kalman filter
+            
+            %A matrix
+            assignin('base', "A",obj.sys_mats.A)
+
+            %B matrix
+            assignin('base', "B",obj.sys_mats.B)
+
+            %H matrix
+            assignin('base', "H",obj.sys_mats.H)
 
             %Run the HIL test (don't know if there's another way to
             %programmatically run this)
@@ -746,6 +762,31 @@ classdef Lin_FSFB_Cntrl < handle
 
             end 
 
+        end
+
+
+        function [] = Gen_KF_Data(obj)
+            
+            %Observation matrix (extracts measured values from state
+            %vector)
+            obj.sys_mats.H = zeros(6,8);
+            obj.sys_mats.H(1,1) = 1; %Ball x position is measured (Touch Screen)
+            obj.sys_mats.H(2,3) = 1; %beta is measured (IMU) 
+            obj.sys_mats.H(3,4) = 1; %beta_dot is measured (IMU)
+            obj.sys_mats.H(4,5) = 1; %Ball y position is measured (Touch Screen)
+            obj.sys_mats.H(5,7) = 1; %gamma is measured (IMU) 
+            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU)
+            
+            %I want one Kalman filter for everything, so use the full A and
+            %B matrices for the controller - combine decoupled systems
+            obj.sys_mats.A = [double(obj.sys_mats.A1a)   zeros(size(obj.sys_mats.A1a));
+                              zeros(size(obj.sys_mats.A2a))  double(obj.sys_mats.A2a)];
+
+            obj.sys_mats.B = [double(obj.sys_mats.B1a)   zeros(size(obj.sys_mats.B1a));
+                              zeros(size(obj.sys_mats.B2a))  double(obj.sys_mats.B2a)];
+
+            
+            
         end
 
     end
