@@ -442,6 +442,9 @@ classdef Lin_FSFB_Cntrl < handle
             %Saturation torque
             assignin('base', "Tmax",obj.VDefs.Tmax)
 
+            %Loop closure time
+            assignin('base', "Ts",0.0001)
+
             %Run the HIL test (don't know if there's another way to
             %programmatically run this)
             %%set_param(obj.HIL_file_string, 'SimulationCommand', 'start')
@@ -737,7 +740,7 @@ classdef Lin_FSFB_Cntrl < handle
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
                     T_gamma = expand(simplify(subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)])));
-                    obj.u_FF(VDefs.t) = [T_beta;T_gamma];
+                    obj.u_FF = [T_beta + 0*obj.VDefs.t;T_gamma + 0*obj.VDefs.t];
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
@@ -745,6 +748,27 @@ classdef Lin_FSFB_Cntrl < handle
 
 
             end 
+
+        end
+
+        function [] = Gen_KF_Data(obj)
+            
+            %Observation matrix (extracts measured values from state
+            %vector)
+            obj.sys_mats.H = zeros(6,8);
+            obj.sys_mats.H(1,1) = 1; %Ball x position is measured (Touch Screen)
+            obj.sys_mats.H(2,3) = 1; %beta is measured (IMU) 
+            obj.sys_mats.H(3,4) = 1; %beta_dot is measured (IMU)
+            obj.sys_mats.H(4,5) = 1; %Ball y position is measured (Touch Screen)
+            obj.sys_mats.H(5,7) = 1; %gamma is measured (IMU) 
+            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU)
+            
+            %I want one Kalman filter for everything, so use the full A
+            %matrix for the controller - combine decoupled systems
+            obj.sys_mats.A = [obj.sys_mats.A1   zeros(size(obj.sys_mats.A1));
+                              zeros(size(obj.sys_mats.A2))  obj.sys_mats.A2];
+
+            
 
         end
 
