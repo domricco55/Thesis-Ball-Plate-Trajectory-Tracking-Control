@@ -365,7 +365,7 @@ classdef Lin_FSFB_Cntrl < handle
             
         end
 
-        function [] = Run_HIL_Test(obj,x_s,y_s, tspan, Tau, K1, K2)
+        function [] = Run_HIL_Test(obj,x_s,y_s, tspan, Tau, K1, K2, Q_KF, R_KF)
             %Run_HIL_Test Run a Simulink Desktop Real-Time test on the
             %ball-and-plate hardware.
             %   x_s and y_s are simfuns specifying the desired trajectories
@@ -387,6 +387,8 @@ classdef Lin_FSFB_Cntrl < handle
             obj.HIL_cntrl_params.Tau = Tau;
             obj.HIL_cntrl_params.K1 = K1;
             obj.HIL_cntrl_params.K2 = K2;
+            obj.HIL_cntrl_params.Q_KF = Q_KF;
+            obj.HIL_cntrl_params.Q_KF = R_KF;
 
             %Remove any dirac deltas from the derivatives of the setpoints. This function
             %returns the setpoint derivatives with any deltas resulting from
@@ -445,15 +447,17 @@ classdef Lin_FSFB_Cntrl < handle
             assignin('base', "Tmax",obj.VDefs.Tmax)
 
             %Loop closure time
-            assignin('base', "Ts",0.0001)
+            assignin('base', "Ts",0.005) %0.005 is the frequency Scott says the system can handle
 
             %%For Kalman filter
-            
+            assignin('base', "Q_KF",Q_KF) %Process noise covariance matrix
+            assignin('base', "R_KF",R_KF) %Measurement noise covariance martix
+
             %A matrix
-            assignin('base', "A",obj.sys_mats.A)
+            assignin('base', "A",double(obj.Lnrzed_EOMs.A))
 
             %B matrix
-            assignin('base', "B",obj.sys_mats.B)
+            assignin('base', "B",double(obj.Lnrzed_EOMs.B))
 
             %H matrix
             assignin('base', "H",obj.sys_mats.H)
@@ -753,7 +757,7 @@ classdef Lin_FSFB_Cntrl < handle
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
                     T_gamma = expand(simplify(subs(rhs(T_gamma_eqn), [obj.VDefs.y, gamma_s, diff(gamma_s,2)], [y_s gamma_s_sol diff(gamma_s_sol,2)])));
-                    obj.u_FF(obj.VDefs.t) = [T_beta + 0*obj.VDefs.t;T_gamma + 0*obj.VDefs.t];
+                    obj.u_FF = [T_beta + 0*obj.VDefs.t;T_gamma + 0*obj.VDefs.t];
 
                     %Bring setpoints together into the setpoint vectors
                     obj.x_s_vec = [x_s; d_x_s; beta_s_sol; diff(beta_s_sol)];
@@ -775,17 +779,7 @@ classdef Lin_FSFB_Cntrl < handle
             obj.sys_mats.H(3,4) = 1; %beta_dot is measured (IMU)
             obj.sys_mats.H(4,5) = 1; %Ball y position is measured (Touch Screen)
             obj.sys_mats.H(5,7) = 1; %gamma is measured (IMU) 
-            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU)
-            
-            %I want one Kalman filter for everything, so use the full A and
-            %B matrices for the controller - combine decoupled systems
-            obj.sys_mats.A = [double(obj.sys_mats.A1a)   zeros(size(obj.sys_mats.A1a));
-                              zeros(size(obj.sys_mats.A2a))  double(obj.sys_mats.A2a)];
-
-            obj.sys_mats.B = [double(obj.sys_mats.B1a)   zeros(size(obj.sys_mats.B1a));
-                              zeros(size(obj.sys_mats.B2a))  double(obj.sys_mats.B2a)];
-
-            
+            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU)        
             
         end
 

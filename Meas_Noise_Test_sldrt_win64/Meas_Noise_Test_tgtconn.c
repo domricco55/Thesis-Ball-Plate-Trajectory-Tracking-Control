@@ -7,9 +7,9 @@
  *
  * Code generation for model "Meas_Noise_Test".
  *
- * Model version              : 5.39
+ * Model version              : 5.46
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Mon Apr 25 15:10:00 2022
+ * C source code generated on : Tue Apr 26 12:13:44 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

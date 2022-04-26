@@ -7,9 +7,9 @@
  *
  * Code generation for model "Meas_Noise_Test".
  *
- * Model version              : 5.39
+ * Model version              : 5.46
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Mon Apr 25 15:10:00 2022
+ * C source code generated on : Tue Apr 26 12:13:44 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -62,17 +62,6 @@ RT_MODEL_Meas_Noise_Test_T *const Meas_Noise_Test_M = &Meas_Noise_Test_M_;
 /* Model output function */
 void Meas_Noise_Test_output(void)
 {
-  real_T rtb_Product1;
-  real_T rtb_Sum;
-  real_T rtb_Sum_m;
-  real_T rtb_d;
-  real_T rtb_d_b;
-  real_T rtb_p;
-  real_T rtb_p_b;
-  real_T rtb_q;
-  real_T rtb_q_a;
-  real_T rtb_r;
-  real_T rtb_r_g;
   real_T rtb_yvelTS;
   int32_T rtb_xposTS;
 
@@ -111,7 +100,7 @@ void Meas_Noise_Test_output(void)
   sscanf(&Meas_Noise_Test_B.StreamInput_o1[0], "%d", &rtb_xposTS);
 
   /* Gain: '<S2>/Gain' */
-  Meas_Noise_Test_B.bx = (real_T)Meas_Noise_Test_P.Gain_Gain_e *
+  Meas_Noise_Test_B.bx = (real_T)Meas_Noise_Test_P.Gain_Gain *
     9.0949470177292824E-13 * (real_T)rtb_xposTS;
 
   /* ScanString: '<S2>/String to Double4' */
@@ -135,11 +124,11 @@ void Meas_Noise_Test_output(void)
     Meas_Noise_Test_B.GyroX;
 
   /* ScanString: '<S2>/String to Double2' */
-  rtb_Sum_m = 0.0;
-  sscanf(&Meas_Noise_Test_B.StreamInput_o5[0], "%lf", &rtb_Sum_m);
+  rtb_yvelTS = 0.0;
+  sscanf(&Meas_Noise_Test_B.StreamInput_o5[0], "%lf", &rtb_yvelTS);
 
   /* Gain: '<S2>/Gain2' */
-  Meas_Noise_Test_B.by = Meas_Noise_Test_P.Gain2_Gain * rtb_Sum_m;
+  Meas_Noise_Test_B.by = Meas_Noise_Test_P.Gain2_Gain * rtb_yvelTS;
 
   /* ScanString: '<S2>/String to Double6' */
   Meas_Noise_Test_B.IMUy = 0.0;
@@ -161,104 +150,13 @@ void Meas_Noise_Test_output(void)
   Meas_Noise_Test_B.Gain1_c = Meas_Noise_Test_P.Gain1_Gain_dd *
     Meas_Noise_Test_B.GyroY;
 
-  /* SignalConversion generated from: '<Root>/x actual1' */
+  /* SignalConversion generated from: '<Root>/To Workspace' */
   Meas_Noise_Test_B.MeasuredOutput[0] = Meas_Noise_Test_B.bx;
   Meas_Noise_Test_B.MeasuredOutput[1] = Meas_Noise_Test_B.Gain1;
   Meas_Noise_Test_B.MeasuredOutput[2] = Meas_Noise_Test_B.Gain1_i;
   Meas_Noise_Test_B.MeasuredOutput[3] = Meas_Noise_Test_B.by;
   Meas_Noise_Test_B.MeasuredOutput[4] = Meas_Noise_Test_B.Gain1_o;
   Meas_Noise_Test_B.MeasuredOutput[5] = Meas_Noise_Test_B.Gain1_c;
-
-  /* SampleTimeMath: '<S7>/TSamp'
-   *
-   * About '<S7>/TSamp':
-   *  y = u * K where K = 1 / ( w * Ts )
-   */
-  Meas_Noise_Test_B.TSamp = Meas_Noise_Test_B.bx * Meas_Noise_Test_P.TSamp_WtEt;
-
-  /* Sum: '<S7>/Diff' incorporates:
-   *  UnitDelay: '<S7>/UD'
-   */
-  Meas_Noise_Test_B.Diff = Meas_Noise_Test_B.TSamp -
-    Meas_Noise_Test_DW.UD_DSTATE;
-
-  /* ToAsyncQueueBlock generated from: '<S2>/Discrete Derivative' */
-  {
-    {
-      double time = Meas_Noise_Test_M->Timing.t[0];
-      void *pData = (void *)&Meas_Noise_Test_B.Diff;
-      int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3618890570U, time, pData, size);
-    }
-  }
-
-  /* Sum: '<S9>/Sum' incorporates:
-   *  UnitDelay: '<S9>/Unit Delay1'
-   */
-  rtb_Sum_m = Meas_Noise_Test_B.Diff + Meas_Noise_Test_DW.UnitDelay1_DSTATE;
-
-  /* Gain: '<S9>/tau' incorporates:
-   *  Constant: '<S2>/Constant'
-   */
-  rtb_p = Meas_Noise_Test_P.tau_Gain * Meas_Noise_Test_P.Constant_Value_n;
-
-  /* Product: '<S11>/Product2' */
-  rtb_q = rtb_p * rtb_p;
-
-  /* Sum: '<S11>/Add' incorporates:
-   *  Constant: '<S11>/Constant'
-   */
-  rtb_r = rtb_q + Meas_Noise_Test_P.Constant_Value_j;
-
-  /* Gain: '<S11>/Gain' */
-  rtb_p *= Meas_Noise_Test_P.Gain_Gain;
-
-  /* Sum: '<S11>/Add1' */
-  rtb_d = rtb_r + rtb_p;
-
-  /* Product: '<S9>/Product1' incorporates:
-   *  Product: '<S11>/Product3'
-   */
-  rtb_Product1 = rtb_q / rtb_d * rtb_Sum_m;
-
-  /* Sum: '<S10>/Sum' incorporates:
-   *  UnitDelay: '<S10>/Unit Delay1'
-   */
-  rtb_Sum = rtb_Product1 + Meas_Noise_Test_DW.UnitDelay1_DSTATE_l;
-
-  /* Gain: '<S10>/tau' incorporates:
-   *  Constant: '<S2>/Constant'
-   */
-  rtb_p_b = Meas_Noise_Test_P.tau_Gain_p * Meas_Noise_Test_P.Constant_Value_n;
-
-  /* Product: '<S12>/Product2' */
-  rtb_q_a = rtb_p_b * rtb_p_b;
-
-  /* Sum: '<S12>/Add' incorporates:
-   *  Constant: '<S12>/Constant'
-   */
-  rtb_r_g = rtb_q_a + Meas_Noise_Test_P.Constant_Value_i;
-
-  /* Gain: '<S12>/Gain' */
-  rtb_p_b *= Meas_Noise_Test_P.Gain_Gain_b;
-
-  /* Sum: '<S12>/Add1' */
-  rtb_d_b = rtb_r_g + rtb_p_b;
-
-  /* Product: '<S10>/Product1' incorporates:
-   *  Product: '<S12>/Product3'
-   */
-  Meas_Noise_Test_B.Product1 = rtb_q_a / rtb_d_b * rtb_Sum;
-
-  /* ToAsyncQueueBlock generated from: '<S2>/Discrete Varying Lowpass' */
-  {
-    {
-      double time = Meas_Noise_Test_M->Timing.t[0];
-      void *pData = (void *)&Meas_Noise_Test_B.Product1;
-      int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3281038974U, time, pData, size);
-    }
-  }
 
   /* ScanString: '<S2>/String to Double1' */
   rtb_yvelTS = 0.0;
@@ -273,7 +171,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.bx_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1724034819U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1902225879U, time, pData, size);
     }
   }
 
@@ -283,7 +181,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.by;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(71344963U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1220606827U, time, pData, size);
     }
   }
 
@@ -300,7 +198,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.by_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2862808503U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(2049979188U, time, pData, size);
     }
   }
 
@@ -310,7 +208,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.bx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(4043868324U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(2588074390U, time, pData, size);
     }
   }
 
@@ -320,7 +218,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.IMUx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3796146685U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(2500779819U, time, pData, size);
     }
   }
 
@@ -330,7 +228,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.GyroX;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3014744630U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(2344077722U, time, pData, size);
     }
   }
 
@@ -340,7 +238,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.IMUy;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2544910573U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3536845101U, time, pData, size);
     }
   }
 
@@ -350,7 +248,7 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.GyroY;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(4006663951U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1330161428U, time, pData, size);
     }
   }
 
@@ -367,51 +265,9 @@ void Meas_Noise_Test_output(void)
       double time = Meas_Noise_Test_M->Timing.t[0];
       void *pData = (void *)&Meas_Noise_Test_B.TimingParity;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2723614207U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1245043909U, time, pData, size);
     }
   }
-
-  /* Sum: '<S9>/Sum1' incorporates:
-   *  Constant: '<S11>/Constant1'
-   *  Gain: '<S9>/Gain1'
-   *  Product: '<S11>/Product4'
-   *  Product: '<S9>/Product5'
-   *  Sum: '<S11>/Add2'
-   *  Sum: '<S9>/Sum2'
-   *  UnitDelay: '<S9>/Unit Delay2'
-   */
-  Meas_Noise_Test_B.Sum1 = ((Meas_Noise_Test_P.Constant1_Value - rtb_q) / rtb_d *
-    rtb_Sum_m + Meas_Noise_Test_B.Diff) * Meas_Noise_Test_P.Gain1_Gain_n +
-    Meas_Noise_Test_DW.UnitDelay2_DSTATE;
-
-  /* Sum: '<S9>/Sum3' incorporates:
-   *  Product: '<S11>/Product5'
-   *  Product: '<S9>/Product2'
-   *  Sum: '<S11>/Add3'
-   */
-  Meas_Noise_Test_B.Sum3 = Meas_Noise_Test_B.Diff - 1.0 / rtb_d * (rtb_r - rtb_p)
-    * rtb_Sum_m;
-
-  /* Sum: '<S10>/Sum1' incorporates:
-   *  Constant: '<S12>/Constant1'
-   *  Gain: '<S10>/Gain1'
-   *  Product: '<S10>/Product5'
-   *  Product: '<S12>/Product4'
-   *  Sum: '<S10>/Sum2'
-   *  Sum: '<S12>/Add2'
-   *  UnitDelay: '<S10>/Unit Delay2'
-   */
-  Meas_Noise_Test_B.Sum1_m = ((Meas_Noise_Test_P.Constant1_Value_n - rtb_q_a) /
-    rtb_d_b * rtb_Sum + rtb_Product1) * Meas_Noise_Test_P.Gain1_Gain_j +
-    Meas_Noise_Test_DW.UnitDelay2_DSTATE_p;
-
-  /* Sum: '<S10>/Sum3' incorporates:
-   *  Product: '<S10>/Product2'
-   *  Product: '<S12>/Product5'
-   *  Sum: '<S12>/Add3'
-   */
-  Meas_Noise_Test_B.Sum3_j = rtb_Product1 - 1.0 / rtb_d_b * (rtb_r_g - rtb_p_b) *
-    rtb_Sum;
 }
 
 /* Model update function */
@@ -429,21 +285,6 @@ void Meas_Noise_Test_update(void)
                      Meas_Noise_Test_P.Constant_Value[1]);
     RTBIO_DriverIO(0, STREAMOUTPUT, IOWRITE, n, NULL, (double*) outstring, NULL);
   }
-
-  /* Update for UnitDelay: '<S7>/UD' */
-  Meas_Noise_Test_DW.UD_DSTATE = Meas_Noise_Test_B.TSamp;
-
-  /* Update for UnitDelay: '<S9>/Unit Delay1' */
-  Meas_Noise_Test_DW.UnitDelay1_DSTATE = Meas_Noise_Test_B.Sum1;
-
-  /* Update for UnitDelay: '<S10>/Unit Delay1' */
-  Meas_Noise_Test_DW.UnitDelay1_DSTATE_l = Meas_Noise_Test_B.Sum1_m;
-
-  /* Update for UnitDelay: '<S9>/Unit Delay2' */
-  Meas_Noise_Test_DW.UnitDelay2_DSTATE = Meas_Noise_Test_B.Sum3;
-
-  /* Update for UnitDelay: '<S10>/Unit Delay2' */
-  Meas_Noise_Test_DW.UnitDelay2_DSTATE_p = Meas_Noise_Test_B.Sum3_j;
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -472,26 +313,6 @@ void Meas_Noise_Test_initialize(void)
 
   /* S-Function Block: <S1>/Stream Output */
   /* no initial value should be set */
-
-  /* InitializeConditions for UnitDelay: '<S7>/UD' */
-  Meas_Noise_Test_DW.UD_DSTATE =
-    Meas_Noise_Test_P.DiscreteDerivative_ICPrevScaledInput;
-
-  /* InitializeConditions for UnitDelay: '<S9>/Unit Delay1' */
-  Meas_Noise_Test_DW.UnitDelay1_DSTATE =
-    Meas_Noise_Test_P.UnitDelay1_InitialCondition;
-
-  /* InitializeConditions for UnitDelay: '<S10>/Unit Delay1' */
-  Meas_Noise_Test_DW.UnitDelay1_DSTATE_l =
-    Meas_Noise_Test_P.UnitDelay1_InitialCondition_n;
-
-  /* InitializeConditions for UnitDelay: '<S9>/Unit Delay2' */
-  Meas_Noise_Test_DW.UnitDelay2_DSTATE =
-    Meas_Noise_Test_P.UnitDelay2_InitialCondition;
-
-  /* InitializeConditions for UnitDelay: '<S10>/Unit Delay2' */
-  Meas_Noise_Test_DW.UnitDelay2_DSTATE_p =
-    Meas_Noise_Test_P.UnitDelay2_InitialCondition_n;
 }
 
 /* Model terminate function */
@@ -585,10 +406,10 @@ RT_MODEL_Meas_Noise_Test_T *Meas_Noise_Test(void)
   Meas_Noise_Test_M->Timing.stepSize0 = 0.005;
 
   /* External mode info */
-  Meas_Noise_Test_M->Sizes.checksums[0] = (1600017397U);
-  Meas_Noise_Test_M->Sizes.checksums[1] = (1475453995U);
-  Meas_Noise_Test_M->Sizes.checksums[2] = (2992063876U);
-  Meas_Noise_Test_M->Sizes.checksums[3] = (594787750U);
+  Meas_Noise_Test_M->Sizes.checksums[0] = (3249472711U);
+  Meas_Noise_Test_M->Sizes.checksums[1] = (2862565719U);
+  Meas_Noise_Test_M->Sizes.checksums[2] = (387383676U);
+  Meas_Noise_Test_M->Sizes.checksums[3] = (1221103974U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;
@@ -645,9 +466,9 @@ RT_MODEL_Meas_Noise_Test_T *Meas_Noise_Test(void)
   Meas_Noise_Test_M->Sizes.numU = (0); /* Number of model inputs */
   Meas_Noise_Test_M->Sizes.sysDirFeedThru = (0);/* The model is not direct feedthrough */
   Meas_Noise_Test_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  Meas_Noise_Test_M->Sizes.numBlocks = (81);/* Number of blocks */
-  Meas_Noise_Test_M->Sizes.numBlockIO = (30);/* Number of block outputs */
-  Meas_Noise_Test_M->Sizes.numBlockPrms = (31);/* Sum of parameter "widths" */
+  Meas_Noise_Test_M->Sizes.numBlocks = (32);/* Number of blocks */
+  Meas_Noise_Test_M->Sizes.numBlockIO = (23);/* Number of block outputs */
+  Meas_Noise_Test_M->Sizes.numBlockPrms = (14);/* Sum of parameter "widths" */
   return Meas_Noise_Test_M;
 }
 

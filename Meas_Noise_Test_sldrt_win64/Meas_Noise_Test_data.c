@@ -7,9 +7,9 @@
  *
  * Code generation for model "Meas_Noise_Test".
  *
- * Model version              : 5.39
+ * Model version              : 5.46
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Mon Apr 25 15:10:00 2022
+ * C source code generated on : Tue Apr 26 12:13:44 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,11 +22,6 @@
 
 /* Block parameters (default storage) */
 P_Meas_Noise_Test_T Meas_Noise_Test_P = {
-  /* Mask Parameter: DiscreteDerivative_ICPrevScaledInput
-   * Referenced by: '<S7>/UD'
-   */
-  0.0,
-
   /* Mask Parameter: StreamOutput_MaxMissedTicks
    * Referenced by: '<S1>/Stream Output'
    */
@@ -77,56 +72,6 @@ P_Meas_Noise_Test_T Meas_Noise_Test_P = {
    */
   0.017453292519943295,
 
-  /* Computed Parameter: TSamp_WtEt
-   * Referenced by: '<S7>/TSamp'
-   */
-  200.0,
-
-  /* Expression: 0
-   * Referenced by: '<S9>/Unit Delay1'
-   */
-  0.0,
-
-  /* Expression: 1/0.005
-   * Referenced by: '<S2>/Constant'
-   */
-  200.0,
-
-  /* Expression: tau
-   * Referenced by: '<S9>/tau'
-   */
-  0.0025,
-
-  /* Expression: 1
-   * Referenced by: '<S11>/Constant'
-   */
-  1.0,
-
-  /* Expression: 2*zeta
-   * Referenced by: '<S11>/Gain'
-   */
-  0.76536686473017956,
-
-  /* Expression: 0
-   * Referenced by: '<S10>/Unit Delay1'
-   */
-  0.0,
-
-  /* Expression: tau
-   * Referenced by: '<S10>/tau'
-   */
-  0.0025,
-
-  /* Expression: 1
-   * Referenced by: '<S12>/Constant'
-   */
-  1.0,
-
-  /* Expression: 2*zeta
-   * Referenced by: '<S12>/Gain'
-   */
-  1.8477590650225735,
-
   /* Expression: 1/1000
    * Referenced by: '<S2>/Gain1'
    */
@@ -137,37 +82,7 @@ P_Meas_Noise_Test_T Meas_Noise_Test_P = {
    */
   0.001,
 
-  /* Expression: 1
-   * Referenced by: '<S11>/Constant1'
-   */
-  1.0,
-
-  /* Expression: 2
-   * Referenced by: '<S9>/Gain1'
-   */
-  2.0,
-
-  /* Expression: 0
-   * Referenced by: '<S9>/Unit Delay2'
-   */
-  0.0,
-
-  /* Expression: 1
-   * Referenced by: '<S12>/Constant1'
-   */
-  1.0,
-
-  /* Expression: 2
-   * Referenced by: '<S10>/Gain1'
-   */
-  2.0,
-
-  /* Expression: 0
-   * Referenced by: '<S10>/Unit Delay2'
-   */
-  0.0,
-
-  /* Computed Parameter: Gain_Gain_e
+  /* Computed Parameter: Gain_Gain
    * Referenced by: '<S2>/Gain'
    */
   1099511628

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Meas_Noise_Test".
  *
- * Model version              : 5.39
+ * Model version              : 5.46
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Mon Apr 25 15:10:00 2022
+ * C source code generated on : Tue Apr 26 12:13:44 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -871,38 +871,22 @@ typedef struct {
   real_T GyroY;                        /* '<S2>/String to Double7' */
   real_T Gain1_c;                      /* '<S6>/Gain1' */
   real_T MeasuredOutput[6];
-  real_T TSamp;                        /* '<S7>/TSamp' */
-  real_T Diff;                         /* '<S7>/Diff' */
-  real_T Product1;                     /* '<S10>/Product1' */
   real_T bx_dot;                       /* '<S2>/Gain1' */
   real_T by_dot;                       /* '<S2>/Gain3' */
   real_T TimingParity;                 /* '<S2>/String to Double8' */
-  real_T Sum1;                         /* '<S9>/Sum1' */
-  real_T Sum3;                         /* '<S9>/Sum3' */
-  real_T Sum1_m;                       /* '<S10>/Sum1' */
-  real_T Sum3_j;                       /* '<S10>/Sum3' */
 } B_Meas_Noise_Test_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
-  real_T UD_DSTATE;                    /* '<S7>/UD' */
-  real_T UnitDelay1_DSTATE;            /* '<S9>/Unit Delay1' */
-  real_T UnitDelay1_DSTATE_l;          /* '<S10>/Unit Delay1' */
-  real_T UnitDelay2_DSTATE;            /* '<S9>/Unit Delay2' */
-  real_T UnitDelay2_DSTATE_p;          /* '<S10>/Unit Delay2' */
   void *StreamOutput_PWORK[2];         /* '<S1>/Stream Output' */
   void *StreamInput_PWORK[2];          /* '<S2>/Stream Input' */
   struct {
     void *LoggedData;
-  } xactual1_PWORK;                    /* '<Root>/x actual1' */
+  } Scope_PWORK;                       /* '<Root>/Scope' */
 
   struct {
-    void *AQHandles;
-  } TAQSigLogging_InsertedFor_DiscreteDerivative_at_outport_0_PWORK;/* synthesized block */
-
-  struct {
-    void *AQHandles;
-  } TAQSigLogging_InsertedFor_DiscreteVaryingLowpass_at_outport_0_PWORK;/* synthesized block */
+    void *LoggedData;
+  } ToWorkspace_PWORK;                 /* '<Root>/To Workspace' */
 
   struct {
     void *AQHandles;
@@ -951,10 +935,6 @@ typedef struct {
 
 /* Parameters (default storage) */
 struct P_Meas_Noise_Test_T_ {
-  real_T DiscreteDerivative_ICPrevScaledInput;
-                         /* Mask Parameter: DiscreteDerivative_ICPrevScaledInput
-                          * Referenced by: '<S7>/UD'
-                          */
   real_T StreamOutput_MaxMissedTicks;
                                   /* Mask Parameter: StreamOutput_MaxMissedTicks
                                    * Referenced by: '<S1>/Stream Output'
@@ -989,61 +969,13 @@ struct P_Meas_Noise_Test_T_ {
   real_T Gain1_Gain_dd;                /* Expression: pi/180
                                         * Referenced by: '<S6>/Gain1'
                                         */
-  real_T TSamp_WtEt;                   /* Computed Parameter: TSamp_WtEt
-                                        * Referenced by: '<S7>/TSamp'
-                                        */
-  real_T UnitDelay1_InitialCondition;  /* Expression: 0
-                                        * Referenced by: '<S9>/Unit Delay1'
-                                        */
-  real_T Constant_Value_n;             /* Expression: 1/0.005
-                                        * Referenced by: '<S2>/Constant'
-                                        */
-  real_T tau_Gain;                     /* Expression: tau
-                                        * Referenced by: '<S9>/tau'
-                                        */
-  real_T Constant_Value_j;             /* Expression: 1
-                                        * Referenced by: '<S11>/Constant'
-                                        */
-  real_T Gain_Gain;                    /* Expression: 2*zeta
-                                        * Referenced by: '<S11>/Gain'
-                                        */
-  real_T UnitDelay1_InitialCondition_n;/* Expression: 0
-                                        * Referenced by: '<S10>/Unit Delay1'
-                                        */
-  real_T tau_Gain_p;                   /* Expression: tau
-                                        * Referenced by: '<S10>/tau'
-                                        */
-  real_T Constant_Value_i;             /* Expression: 1
-                                        * Referenced by: '<S12>/Constant'
-                                        */
-  real_T Gain_Gain_b;                  /* Expression: 2*zeta
-                                        * Referenced by: '<S12>/Gain'
-                                        */
   real_T Gain1_Gain_o;                 /* Expression: 1/1000
                                         * Referenced by: '<S2>/Gain1'
                                         */
   real_T Gain3_Gain;                   /* Expression: 1/1000
                                         * Referenced by: '<S2>/Gain3'
                                         */
-  real_T Constant1_Value;              /* Expression: 1
-                                        * Referenced by: '<S11>/Constant1'
-                                        */
-  real_T Gain1_Gain_n;                 /* Expression: 2
-                                        * Referenced by: '<S9>/Gain1'
-                                        */
-  real_T UnitDelay2_InitialCondition;  /* Expression: 0
-                                        * Referenced by: '<S9>/Unit Delay2'
-                                        */
-  real_T Constant1_Value_n;            /* Expression: 1
-                                        * Referenced by: '<S12>/Constant1'
-                                        */
-  real_T Gain1_Gain_j;                 /* Expression: 2
-                                        * Referenced by: '<S10>/Gain1'
-                                        */
-  real_T UnitDelay2_InitialCondition_n;/* Expression: 0
-                                        * Referenced by: '<S10>/Unit Delay2'
-                                        */
-  int32_T Gain_Gain_e;                 /* Computed Parameter: Gain_Gain_e
+  int32_T Gain_Gain;                   /* Computed Parameter: Gain_Gain
                                         * Referenced by: '<S2>/Gain'
                                         */
 };
@@ -1196,11 +1128,5 @@ extern RT_MODEL_Meas_Noise_Test_T *const Meas_Noise_Test_M;
  * '<S4>'   : 'Meas_Noise_Test/SystemParameterReceive/Degrees to Radians1'
  * '<S5>'   : 'Meas_Noise_Test/SystemParameterReceive/Degrees to Radians2'
  * '<S6>'   : 'Meas_Noise_Test/SystemParameterReceive/Degrees to Radians3'
- * '<S7>'   : 'Meas_Noise_Test/SystemParameterReceive/Discrete Derivative'
- * '<S8>'   : 'Meas_Noise_Test/SystemParameterReceive/Discrete Varying Lowpass'
- * '<S9>'   : 'Meas_Noise_Test/SystemParameterReceive/Discrete Varying Lowpass/SOS1'
- * '<S10>'  : 'Meas_Noise_Test/SystemParameterReceive/Discrete Varying Lowpass/SOS2'
- * '<S11>'  : 'Meas_Noise_Test/SystemParameterReceive/Discrete Varying Lowpass/SOS1/Arithmetic'
- * '<S12>'  : 'Meas_Noise_Test/SystemParameterReceive/Discrete Varying Lowpass/SOS2/Arithmetic'
  */
 #endif                                 /* RTW_HEADER_Meas_Noise_Test_h_ */

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Meas_Noise_Test".
  *
- * Model version              : 5.39
+ * Model version              : 5.46
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Mon Apr 25 15:10:00 2022
+ * C source code generated on : Tue Apr 26 12:13:44 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -98,26 +98,23 @@ static DataTypeTransition rtBTransitions[] = {
 
   { (char_T *)(&Meas_Noise_Test_B.StreamInput_o9[0]), 18, 0, 256 },
 
-  { (char_T *)(&Meas_Noise_Test_B.bx), 0, 0, 26 }
+  { (char_T *)(&Meas_Noise_Test_B.bx), 0, 0, 19 }
   ,
 
-  { (char_T *)(&Meas_Noise_Test_DW.UD_DSTATE), 0, 0, 5 },
-
-  { (char_T *)(&Meas_Noise_Test_DW.StreamOutput_PWORK[0]), 11, 0, 16 }
+  { (char_T *)(&Meas_Noise_Test_DW.StreamOutput_PWORK[0]), 11, 0, 15 }
 };
 
 /* data type transition table for block I/O structure */
 static DataTypeTransitionTable rtBTransTable = {
-  12U,
+  11U,
   rtBTransitions
 };
 
 /* data type transitions for Parameters structure */
 static DataTypeTransition rtPTransitions[] = {
-  { (char_T *)(&Meas_Noise_Test_P.DiscreteDerivative_ICPrevScaledInput), 0, 0,
-    30 },
+  { (char_T *)(&Meas_Noise_Test_P.StreamOutput_MaxMissedTicks), 0, 0, 13 },
 
-  { (char_T *)(&Meas_Noise_Test_P.Gain_Gain_e), 19, 0, 1 }
+  { (char_T *)(&Meas_Noise_Test_P.Gain_Gain), 19, 0, 1 }
 };
 
 /* data type transition table for Parameters structure */
