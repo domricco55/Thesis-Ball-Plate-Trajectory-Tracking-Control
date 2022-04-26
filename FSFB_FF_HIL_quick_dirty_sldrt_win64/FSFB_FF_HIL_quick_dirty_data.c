@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.70
+ * Model version              : 5.76
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 13:08:38 2022
+ * C source code generated on : Tue Apr 26 13:54:49 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -86,11 +86,6 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.5,
 
-  /* Variable: Ts
-   * Referenced by: '<Root>/Step'
-   */
-  0.005,
-
   /* Mask Parameter: DiscreteDerivative_ICPrevScaledInput
    * Referenced by: '<S20>/UD'
    */
@@ -119,17 +114,12 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   /* Expression: initCond
    * Referenced by: '<S3>/ '
    */
-  0.0,
-
-  /* Expression: [0;0]
-   * Referenced by: '<S5>/Constant'
-   */
-  { 0.0, 0.0 },
-
-  /* Expression: zeros(8,1)
-   * Referenced by: '<S11>/Unit Delay1'
-   */
   { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+
+  /* Expression: 1/1000
+   * Referenced by: '<S13>/Gain1'
+   */
+  0.001,
 
   /* Expression: pi/180
    * Referenced by: '<S16>/Gain1'
@@ -146,6 +136,11 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.001,
 
+  /* Expression: 1/1000
+   * Referenced by: '<S13>/Gain3'
+   */
+  0.001,
+
   /* Expression: pi/180
    * Referenced by: '<S18>/Gain1'
    */
@@ -156,14 +151,10 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.017453292519943295,
 
-  /* Expression: zeros(8,8)
-   * Referenced by: '<S14>/Unit Delay'
+  /* Expression: 0
+   * Referenced by: '<Root>/Step'
    */
-  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0 },
+  0.0,
 
   /* Expression: 0
    * Referenced by: '<Root>/Step'
@@ -175,16 +166,6 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   1.0,
 
-  /* Expression: 1/1000
-   * Referenced by: '<S13>/Gain1'
-   */
-  0.001,
-
-  /* Expression: 1/1000
-   * Referenced by: '<S13>/Gain3'
-   */
-  0.001,
-
   /* Computed Parameter: DiscreteTimeIntegrator_gainval
    * Referenced by: '<S1>/Discrete-Time Integrator'
    */
@@ -195,6 +176,11 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.0,
 
+  /* Expression: zeros(8,1)
+   * Referenced by: '<S11>/Unit Delay1'
+   */
+  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+
   /* Computed Parameter: DiscreteTimeIntegrator_gainval_p
    * Referenced by: '<S2>/Discrete-Time Integrator'
    */
@@ -204,6 +190,30 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    * Referenced by: '<S2>/Discrete-Time Integrator'
    */
   0.0,
+
+  /* Expression: -1*VDefs.l_carm/VDefs.lp
+   * Referenced by: '<S5>/Gear Ratio Assumption'
+   */
+  -0.453781512605042,
+
+  /* Expression: 0.75
+   * Referenced by: '<S5>/Saturation1'
+   */
+  0.75,
+
+  /* Expression: -.75
+   * Referenced by: '<S5>/Saturation1'
+   */
+  -0.75,
+
+  /* Expression: zeros(8,8)
+   * Referenced by: '<S14>/Unit Delay'
+   */
+  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0 },
 
   /* Computed Parameter: TSamp_WtEt
    * Referenced by: '<S20>/TSamp'
@@ -284,21 +294,6 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    * Referenced by: '<S23>/Unit Delay2'
    */
   0.0,
-
-  /* Expression: -1*VDefs.l_carm/VDefs.lp
-   * Referenced by: '<S5>/Gear Ratio Assumption'
-   */
-  -0.453781512605042,
-
-  /* Expression: 0.75
-   * Referenced by: '<S5>/Saturation1'
-   */
-  0.75,
-
-  /* Expression: -.75
-   * Referenced by: '<S5>/Saturation1'
-   */
-  -0.75,
 
   /* Computed Parameter: Gain_Gain_a
    * Referenced by: '<S13>/Gain'
