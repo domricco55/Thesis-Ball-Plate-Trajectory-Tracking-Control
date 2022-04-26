@@ -389,6 +389,7 @@ classdef Lin_FSFB_Cntrl < handle
             obj.HIL_cntrl_params.K2 = K2;
             obj.HIL_cntrl_params.Q_KF = Q_KF;
             obj.HIL_cntrl_params.Q_KF = R_KF;
+            obj.HIL_cntrl_params.Ts = 0.005; %0.005 is the frequency Scott says the system can handle
 
             %Remove any dirac deltas from the derivatives of the setpoints. This function
             %returns the setpoint derivatives with any deltas resulting from
@@ -447,17 +448,17 @@ classdef Lin_FSFB_Cntrl < handle
             assignin('base', "Tmax",obj.VDefs.Tmax)
 
             %Loop closure time
-            assignin('base', "Ts",0.005) %0.005 is the frequency Scott says the system can handle
-
+            assignin('base', "Ts",obj.HIL_cntrl_params.Ts) 
+            
             %%For Kalman filter
             assignin('base', "Q_KF",Q_KF) %Process noise covariance matrix
             assignin('base', "R_KF",R_KF) %Measurement noise covariance martix
 
             %A matrix
-            assignin('base', "A",double(obj.Lnrzed_EOMs.A))
+            assignin('base', "A",double(obj.sys_mats.A_dscrt))
 
             %B matrix
-            assignin('base', "B",double(obj.Lnrzed_EOMs.B))
+            assignin('base', "B",double(obj.sys_mats.B_dscrt))
 
             %H matrix
             assignin('base', "H",obj.sys_mats.H)
@@ -779,7 +780,13 @@ classdef Lin_FSFB_Cntrl < handle
             obj.sys_mats.H(3,4) = 1; %beta_dot is measured (IMU)
             obj.sys_mats.H(4,5) = 1; %Ball y position is measured (Touch Screen)
             obj.sys_mats.H(5,7) = 1; %gamma is measured (IMU) 
-            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU)        
+            obj.sys_mats.H(6,8) = 1; %gamma_dot is measured (IMU) 
+            
+            A = double(obj.Lnrzed_EOMs.A);
+            B = double(obj.Lnrzed_EOMs.B);
+            discreteSys = ss(A,B, eye(8),zeros(8,2),obj.HIL_cntrl_params.Ts);
+            obj.sys_mats.A_dscrt = discreteSys.A;
+            obj.sys_mats.B_dscrt = discreteSys.B;
             
         end
 
