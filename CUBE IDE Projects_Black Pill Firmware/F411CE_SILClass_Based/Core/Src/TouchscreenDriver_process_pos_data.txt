@@ -1,0 +1,152 @@
+void TouchscreenDriver::ProcessPositionData(void)
+{
+	//Initialization of necessary functions/structs
+	void mergeSort(uint16_t arr[], uint16_t l, uint16_t r);
+	uint16_t xposADCcontact[ADC_BUF_LEN] = {0};
+	uint16_t yposADCcontact[ADC_BUF_LEN] = {0};
+	uint16_t sizecontact = 0;
+	uint16_t sizemidpt = 0;
+	float absxvel = 0;
+	float absyvel = 0;
+	float diffx = 0;
+	float diffy = 0;
+	float xposcurrent = 0;
+	float yposcurrent = 0;
+	float tempaccelx = 0;
+	float tempaccely = 0;
+
+	//Filter incoming ADC signal for points of no-contact
+	for(i = 0; i<ADC_BUF_LEN; i++)
+	{
+		if(xposADC[i] < 750 || yposADC[i] < 750)
+		{
+			//Do nothing
+		}
+		else
+		{
+			xposADCcontact[sizecontact] = xposADC[sizecontact];
+			yposADCcontact[sizecontact] = yposADC[sizecontact];
+			sizecontact++;
+		}
+	}
+
+	if(sizecontact >= round(ADC_BUF_LEN*.75)) //Check for a minimum amount of contact points (75%)
+	{
+		sizemidpt = round(sizecontact*(.5)); //Find midpoint of array size
+
+		//Sort the filtered list using merge sort
+		mergeSort(xposADCcontact, 0, sizecontact);
+		mergeSort(yposADCcontact, 0, sizecontact);
+
+		//Average inner values (can change to increase/decrease
+		xposADCReading = (xposADCcontact[sizemidpt-1]+xposADCcontact[sizemidpt]+xposADCcontact[sizemidpt-2])/((uint16_t)3);
+		yposADCReading = (yposADCcontact[sizemidpt-1]+yposADCcontact[sizemidpt]+yposADCcontact[sizemidpt-2])/((uint16_t)3);
+
+		//Convert ADC values to position values
+		xposcurrent = xposADCReading*xslope+(xbias);
+		yposcurrent = yposADCReading*yslope+(ybias);
+
+		//Check for difference between current and previous position
+		currtime = __HAL_TIM_GET_COUNTER(htimvel);
+
+		delT = ((float)currtime-(float)prevtime); //Delta time between previous points
+
+		//If Delta T overflows, increase current time by register amount
+		if (delT<0)
+		{
+			currtime = currtime+65535; //account for timer overflow/reset
+		}
+
+		delT = (currtime-prevtime)/(float)1000000; //Timer counter ticks are relative to microseconds, so need to convert to seconds.
+
+		//add previous velocity for use as comparison/saving?
+		tempxvel = (xposcurrent-xpos)/(delT); //in mm/s
+		tempyvel = (yposcurrent-ypos)/(delT); //units of mm/s
+
+		//Look at the acceleration between points
+//		tempaccelx = abs(tempxvel/(delT));
+//		tempaccely = abs(tempyvel/(delT));
+
+
+		absxvel = abs(tempxvel);
+		absyvel = abs(tempyvel);
+
+		//Check if velocity is within reasonable magnitude:
+		if(absxvel <= 800 && absyvel <= 800) //If velocity is below 800 mm/s (found through energy conservation)
+		{
+			n = 0; //Reset data points
+			xpos = xposcurrent;
+			ypos = yposcurrent;
+//
+//			//Try looking at acceleration to smooth velocity
+//			if(tempaccelx < 20000 && tempaccely < 20000)
+//			{
+			xvel = tempxvel; //Set velocity in the x and y directions to the temp velocity
+			yvel = tempyvel;
+//			}
+
+			prevtime = currtime; //set previous time as the new time
+		}
+		else //Check for rapid changes in position
+		{
+			if (n == 0) //if at reset, place the original xpos and ypos in the zero position of the prevpos array
+			{
+				prevxpos[0] = xpos;
+				prevypos[0] = ypos;
+				n++;
+			}
+
+			//save current x and y pos
+			prevxpos[n] = xposcurrent;
+			prevypos[n] = yposcurrent;
+			n++;
+
+			if (n >= 3) //if 2 samples are saved in a row:
+			{
+				//Get difference in xposition and y position between points
+				diffx = abs(abs(prevxpos[1]) - abs(prevxpos[2]));
+				diffy = abs(abs(prevypos[1]) - abs(prevypos[2]));
+
+				if (diffx <= 5 && diffy <= 5) //If points are within 5 mm apart, save over xpos and ypos
+				{
+					//Rewrite new xpos and ypos values
+					xpos = (prevxpos[0]+prevxpos[1])/(float)2;
+					ypos = (prevypos[0]+prevypos[1])/(float)2;
+
+					tempxvel = (xpos-prevxpos[0])/(delT); //in mm/s
+					tempyvel = (ypos-prevypos[0])/(delT); //units of mm/s
+
+//					tempaccelx = abs(tempxvel/(delT));
+//					tempaccely = abs(tempyvel/(delT));
+//
+//					//Set previous time to this time stamp
+//					if(tempaccelx < 20000 && tempaccely < 20000)
+//					{
+					xvel = tempxvel;
+					yvel = tempyvel;
+//					}
+
+					prevtime = currtime;
+				}
+
+				n = 0;
+
+			}
+		}
+	}
+	else
+	{
+		//Nothing?
+//		xpos = prevxpos[0];
+//		ypos = prevypos[0];
+	}
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_SET);
+
+	//End with starting DMA for now:
+	HAL_ADC_Start_DMA(hadc, (uint32_t*)xposADC, ADC_BUF_LEN);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,GPIO_PIN_RESET);
+}

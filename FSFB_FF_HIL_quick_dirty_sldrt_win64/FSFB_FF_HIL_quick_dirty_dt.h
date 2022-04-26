@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.91
+ * Model version              : 5.107
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 14:49:59 2022
+ * C source code generated on : Tue Apr 26 15:37:36 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -102,7 +102,7 @@ static DataTypeTransition rtBTransitions[] = {
   ,
 
   { (char_T *)(&FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE), 0, 0,
-    75 },
+    74 },
 
   { (char_T *)(&FSFB_FF_HIL_quick_dirty_DW.Scope_PWORK.LoggedData), 11, 0, 39 },
 
@@ -117,14 +117,17 @@ static DataTypeTransitionTable rtBTransTable = {
 
 /* data type transitions for Parameters structure */
 static DataTypeTransition rtPTransitions[] = {
-  { (char_T *)(&FSFB_FF_HIL_quick_dirty_P.A[0]), 0, 0, 347 },
+  { (char_T *)(&FSFB_FF_HIL_quick_dirty_P.A[0]), 0, 0, 349 },
 
-  { (char_T *)(&FSFB_FF_HIL_quick_dirty_P.Gain_Gain_an), 19, 0, 1 }
+  { (char_T *)(&FSFB_FF_HIL_quick_dirty_P.Gain_Gain_an), 19, 0, 1 },
+
+  { (char_T *)(&FSFB_FF_HIL_quick_dirty_P.ManualSwitch_CurrentSetting), 3, 0, 1
+  }
 };
 
 /* data type transition table for Parameters structure */
 static DataTypeTransitionTable rtPTransTable = {
-  2U,
+  3U,
   rtPTransitions
 };
 

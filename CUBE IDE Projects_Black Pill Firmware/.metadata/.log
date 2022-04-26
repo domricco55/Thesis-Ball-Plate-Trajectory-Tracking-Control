@@ -1477,3 +1477,18 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY org.eclipse.cdt.core 1 0 2022-04-25 14:47:22.190
 !MESSAGE Indexed 'F411CE_SILClass_Based' (79 sources, 455 headers) in 11.4 sec: 41,892 declarations; 171,005 references; 2 unresolved inclusions; 43 syntax errors; 680 unresolved names (0.32%)
+!SESSION 2022-04-26 15:50:10.857 -----------------------------------------------
+eclipse.buildId=Version 1.8.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2022-04-26 15:50:16.671
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2022-04-26 15:50:16.740
+!MESSAGE Log4j initialized with config file C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-04-26 15:50:23.788
+!MESSAGE Started RMI Server, listening on port 41337

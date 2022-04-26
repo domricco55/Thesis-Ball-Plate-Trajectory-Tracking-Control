@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.91
+ * Model version              : 5.107
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 14:49:59 2022
+ * C source code generated on : Tue Apr 26 15:37:36 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -52,14 +52,14 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   /* Variable: K1
    * Referenced by: '<S1>/Gain1'
    */
-  { -0.0048666666666530422, -34.935050774929856, -44.935289971785593,
-    -77.181698169865768, -9.4162973031819863 },
+  { -0.015389751279415529, -233.0754131630666, -170.77395793754869,
+    -243.84905214136845, -28.598828232351483 },
 
   /* Variable: K2
    * Referenced by: '<S2>/Gain1'
    */
-  { 0.0048666666666502267, 34.935050774826728, 44.935289971739891,
-    -77.181698169822241, -9.41629730317691 },
+  { 0.015389751279396959, 233.07541316278287, 170.77395793743707,
+    -243.84905214127272, -28.59882823234048 },
 
   /* Variable: Q_KF
    * Referenced by: '<S18>/Constant1'
@@ -87,14 +87,11 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   0.5,
 
   /* Variable: Ts
-   * Referenced by: '<Root>/Step'
+   * Referenced by:
+   *   '<Root>/Step'
+   *   '<Root>/Step1'
    */
   0.005,
-
-  /* Mask Parameter: DiscreteDerivative_ICPrevScaledInput
-   * Referenced by: '<S24>/UD'
-   */
-  0.0,
 
   /* Mask Parameter: StreamInput_MaxMissedTicks
    * Referenced by: '<S17>/Stream Input'
@@ -191,6 +188,36 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.0,
 
+  /* Expression: 0
+   * Referenced by: '<Root>/Step1'
+   */
+  0.0,
+
+  /* Expression: 1
+   * Referenced by: '<Root>/Step1'
+   */
+  1.0,
+
+  /* Expression: [0;0]
+   * Referenced by: '<Root>/Constant'
+   */
+  { 0.0, 0.0 },
+
+  /* Expression: -1*VDefs.l_carm/VDefs.lp
+   * Referenced by: '<S5>/Gear Ratio Assumption'
+   */
+  -0.453781512605042,
+
+  /* Expression: 0.5
+   * Referenced by: '<S5>/Saturation1'
+   */
+  0.5,
+
+  /* Expression: -.5
+   * Referenced by: '<S5>/Saturation1'
+   */
+  -0.5,
+
   /* Expression: zeros(8,1)
    * Referenced by: '<S11>/Unit Delay1'
    */
@@ -216,21 +243,6 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   57.295779513082323,
 
-  /* Expression: -1*VDefs.l_carm/VDefs.lp
-   * Referenced by: '<S5>/Gear Ratio Assumption'
-   */
-  -0.453781512605042,
-
-  /* Expression: 0.75
-   * Referenced by: '<S5>/Saturation1'
-   */
-  0.75,
-
-  /* Expression: -.75
-   * Referenced by: '<S5>/Saturation1'
-   */
-  -0.75,
-
   /* Expression: zeros(8,8)
    * Referenced by: '<S18>/Unit Delay'
    */
@@ -240,13 +252,13 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0 },
 
-  /* Computed Parameter: TSamp_WtEt
-   * Referenced by: '<S24>/TSamp'
-   */
-  200.0,
-
   /* Computed Parameter: Gain_Gain_an
    * Referenced by: '<S17>/Gain'
    */
-  1099511628
+  1099511628,
+
+  /* Computed Parameter: ManualSwitch_CurrentSetting
+   * Referenced by: '<Root>/Manual Switch'
+   */
+  0U
 };

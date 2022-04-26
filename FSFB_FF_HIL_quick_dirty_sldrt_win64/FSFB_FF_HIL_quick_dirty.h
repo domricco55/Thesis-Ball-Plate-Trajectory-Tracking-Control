@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.91
+ * Model version              : 5.107
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 14:49:59 2022
+ * C source code generated on : Tue Apr 26 15:37:36 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -887,18 +887,17 @@ typedef struct {
   real_T e_vec[4];                     /* '<S1>/Sum' */
   real_T integratederror_d;            /* '<S2>/Discrete-Time Integrator' */
   real_T ey_vec[4];                    /* '<S2>/Sum' */
-  real_T u_des[2];                     /* '<Root>/Sum' */
+  real_T Product[2];                   /* '<Root>/Product' */
+  real_T ManualSwitch[2];              /* '<Root>/Manual Switch' */
+  real_T Torque_Sat[2];                /* '<S5>/Saturation1' */
   real_T x_filtered[8];                /* '<S11>/Unit Delay1' */
   real_T Gain;                         /* '<S13>/Gain' */
   real_T Gain_d;                       /* '<S14>/Gain' */
   real_T Gain_o;                       /* '<S15>/Gain' */
   real_T Gain_g;                       /* '<S12>/Gain' */
-  real_T Torque_Sat[2];                /* '<S5>/Saturation1' */
   real_T Gain5[8];                     /* '<S11>/Gain5' */
   real_T UnitDelay[64];                /* '<S18>/Unit Delay' */
   real_T aposteriori[8];               /* '<S11>/Sum5' */
-  real_T TSamp;                        /* '<S24>/TSamp' */
-  real_T Diff;                         /* '<S24>/Diff' */
   real_T TimingParity;                 /* '<S17>/String to Double8' */
   real_T out1[2];                      /* '<Root>/u_FF' */
   real_T P_k[64];                      /* '<S18>/MATLAB Function' */
@@ -913,7 +912,6 @@ typedef struct {
   real_T DiscreteTimeIntegrator_DSTATE_b;/* '<S2>/Discrete-Time Integrator' */
   real_T UnitDelay1_DSTATE[8];         /* '<S11>/Unit Delay1' */
   real_T UnitDelay_DSTATE[64];         /* '<S18>/Unit Delay' */
-  real_T UD_DSTATE;                    /* '<S24>/UD' */
   struct {
     void *LoggedData;
   } Scope_PWORK;                       /* '<Root>/Scope' */
@@ -971,6 +969,10 @@ typedef struct {
     void *LoggedData;
   } y_s_PWORK;                         /* '<S4>/y_s' */
 
+  struct {
+    void *LoggedData;
+  } Scope_PWORK_n;                     /* '<S5>/Scope' */
+
   void *StreamOutput_PWORK[2];         /* '<S16>/Stream Output' */
   struct {
     void *AQHandles;
@@ -1011,10 +1013,6 @@ typedef struct {
   struct {
     void *AQHandles;
   } TAQSigLogging_InsertedFor_Saturation1_at_outport_0_PWORK;/* synthesized block */
-
-  struct {
-    void *AQHandles;
-  } TAQSigLogging_InsertedFor_DiscreteDerivative_at_outport_0_PWORK;/* synthesized block */
 
   struct {
     void *AQHandles;
@@ -1103,12 +1101,10 @@ struct P_FSFB_FF_HIL_quick_dirty_T_ {
                                         *   '<S4>/y dim stpt smoothing'
                                         */
   real_T Ts;                           /* Variable: Ts
-                                        * Referenced by: '<Root>/Step'
+                                        * Referenced by:
+                                        *   '<Root>/Step'
+                                        *   '<Root>/Step1'
                                         */
-  real_T DiscreteDerivative_ICPrevScaledInput;
-                         /* Mask Parameter: DiscreteDerivative_ICPrevScaledInput
-                          * Referenced by: '<S24>/UD'
-                          */
   real_T StreamInput_MaxMissedTicks;
                                    /* Mask Parameter: StreamInput_MaxMissedTicks
                                     * Referenced by: '<S17>/Stream Input'
@@ -1172,6 +1168,24 @@ struct P_FSFB_FF_HIL_quick_dirty_T_ {
   real_T DiscreteTimeIntegrator_IC_l;  /* Expression: 0
                                         * Referenced by: '<S2>/Discrete-Time Integrator'
                                         */
+  real_T Step1_Y0;                     /* Expression: 0
+                                        * Referenced by: '<Root>/Step1'
+                                        */
+  real_T Step1_YFinal;                 /* Expression: 1
+                                        * Referenced by: '<Root>/Step1'
+                                        */
+  real_T Constant_Value_h[2];          /* Expression: [0;0]
+                                        * Referenced by: '<Root>/Constant'
+                                        */
+  real_T GearRatioAssumption_Gain;     /* Expression: -1*VDefs.l_carm/VDefs.lp
+                                        * Referenced by: '<S5>/Gear Ratio Assumption'
+                                        */
+  real_T Saturation1_UpperSat;         /* Expression: 0.5
+                                        * Referenced by: '<S5>/Saturation1'
+                                        */
+  real_T Saturation1_LowerSat;         /* Expression: -.5
+                                        * Referenced by: '<S5>/Saturation1'
+                                        */
   real_T UnitDelay1_InitialCondition[8];/* Expression: zeros(8,1)
                                          * Referenced by: '<S11>/Unit Delay1'
                                          */
@@ -1187,24 +1201,16 @@ struct P_FSFB_FF_HIL_quick_dirty_T_ {
   real_T Gain_Gain_o;                  /* Expression: 180/pi
                                         * Referenced by: '<S12>/Gain'
                                         */
-  real_T GearRatioAssumption_Gain;     /* Expression: -1*VDefs.l_carm/VDefs.lp
-                                        * Referenced by: '<S5>/Gear Ratio Assumption'
-                                        */
-  real_T Saturation1_UpperSat;         /* Expression: 0.75
-                                        * Referenced by: '<S5>/Saturation1'
-                                        */
-  real_T Saturation1_LowerSat;         /* Expression: -.75
-                                        * Referenced by: '<S5>/Saturation1'
-                                        */
   real_T UnitDelay_InitialCondition[64];/* Expression: zeros(8,8)
                                          * Referenced by: '<S18>/Unit Delay'
                                          */
-  real_T TSamp_WtEt;                   /* Computed Parameter: TSamp_WtEt
-                                        * Referenced by: '<S24>/TSamp'
-                                        */
   int32_T Gain_Gain_an;                /* Computed Parameter: Gain_Gain_an
                                         * Referenced by: '<S17>/Gain'
                                         */
+  uint8_T ManualSwitch_CurrentSetting;
+                              /* Computed Parameter: ManualSwitch_CurrentSetting
+                               * Referenced by: '<Root>/Manual Switch'
+                               */
 };
 
 /* Real-time Model Data Structure */
@@ -1378,6 +1384,5 @@ extern RT_MODEL_FSFB_FF_HIL_quick_dirty_T *const FSFB_FF_HIL_quick_dirty_M;
  * '<S21>'  : 'FSFB_FF_HIL_quick_dirty/Subsystem/SystemParameterReceive/Degrees to Radians1'
  * '<S22>'  : 'FSFB_FF_HIL_quick_dirty/Subsystem/SystemParameterReceive/Degrees to Radians2'
  * '<S23>'  : 'FSFB_FF_HIL_quick_dirty/Subsystem/SystemParameterReceive/Degrees to Radians3'
- * '<S24>'  : 'FSFB_FF_HIL_quick_dirty/Subsystem/SystemParameterReceive/Discrete Derivative'
  */
 #endif                               /* RTW_HEADER_FSFB_FF_HIL_quick_dirty_h_ */
