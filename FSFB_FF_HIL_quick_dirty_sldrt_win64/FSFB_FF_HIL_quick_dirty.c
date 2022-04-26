@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.76
+ * Model version              : 5.91
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 13:54:49 2022
+ * C source code generated on : Tue Apr 26 14:49:59 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -83,9 +83,10 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   real_T tmp_2[6];
   real_T tmp[5];
   real_T tmp_0[5];
-  real_T rtb_Sum_d;
   real_T rtb_TbetaK2xa2;
-  real_T rtb_q;
+  real_T rtb_yvelTS;
+  real_T smoothed_x_tmp;
+  real_T smoothed_x_tmp_0;
   int32_T c_ix;
   int32_T ijA;
   int32_T ix;
@@ -104,8 +105,8 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   FSFB_FF_HIL_quick_dirty_B.out1[0] = 0.0;
   FSFB_FF_HIL_quick_dirty_B.out1[1] = 0.0;
 
-  /* S-Function (sldrtsi): '<S13>/Stream Input' */
-  /* S-Function Block: <S13>/Stream Input */
+  /* S-Function (sldrtsi): '<S17>/Stream Input' */
+  /* S-Function Block: <S17>/Stream Input */
   {
     char indata[2321U];
     int status;
@@ -127,85 +128,85 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     }
   }
 
-  /* ScanString: '<S13>/String to Double' */
+  /* ScanString: '<S17>/String to Double' */
   rtb_xposTS = 0;
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o1[0], "%d", &rtb_xposTS);
 
-  /* Gain: '<S13>/Gain' */
-  FSFB_FF_HIL_quick_dirty_B.bx = (real_T)FSFB_FF_HIL_quick_dirty_P.Gain_Gain_a *
+  /* Gain: '<S17>/Gain' */
+  FSFB_FF_HIL_quick_dirty_B.bx = (real_T)FSFB_FF_HIL_quick_dirty_P.Gain_Gain_an *
     9.0949470177292824E-13 * (real_T)rtb_xposTS;
 
-  /* ScanString: '<S13>/String to Double1' */
-  rtb_Sum_d = 0.0;
-  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o2[0], "%lf", &rtb_Sum_d);
+  /* ScanString: '<S17>/String to Double1' */
+  rtb_yvelTS = 0.0;
+  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o2[0], "%lf", &rtb_yvelTS);
 
-  /* Gain: '<S13>/Gain1' */
+  /* Gain: '<S17>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.bx_dot = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain *
-    rtb_Sum_d;
+    rtb_yvelTS;
 
-  /* ScanString: '<S13>/String to Double4' */
+  /* ScanString: '<S17>/String to Double4' */
   FSFB_FF_HIL_quick_dirty_B.IMUx = 0.0;
 
-  /* ScanString: '<S13>/String to Double4' */
+  /* ScanString: '<S17>/String to Double4' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o3[0], "%lf",
          &FSFB_FF_HIL_quick_dirty_B.IMUx);
 
-  /* Gain: '<S16>/Gain1' */
+  /* Gain: '<S20>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1 = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_g *
     FSFB_FF_HIL_quick_dirty_B.IMUx;
 
-  /* ScanString: '<S13>/String to Double5' */
+  /* ScanString: '<S17>/String to Double5' */
   FSFB_FF_HIL_quick_dirty_B.GyroX = 0.0;
 
-  /* ScanString: '<S13>/String to Double5' */
+  /* ScanString: '<S17>/String to Double5' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o4[0], "%lf",
          &FSFB_FF_HIL_quick_dirty_B.GyroX);
 
-  /* Gain: '<S17>/Gain1' */
+  /* Gain: '<S21>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_k = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_n *
     FSFB_FF_HIL_quick_dirty_B.GyroX;
 
-  /* ScanString: '<S13>/String to Double2' */
-  rtb_Sum_d = 0.0;
-  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o5[0], "%lf", &rtb_Sum_d);
+  /* ScanString: '<S17>/String to Double2' */
+  rtb_yvelTS = 0.0;
+  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o5[0], "%lf", &rtb_yvelTS);
 
-  /* Gain: '<S13>/Gain2' */
+  /* Gain: '<S17>/Gain2' */
   FSFB_FF_HIL_quick_dirty_B.by = FSFB_FF_HIL_quick_dirty_P.Gain2_Gain *
-    rtb_Sum_d;
+    rtb_yvelTS;
 
-  /* ScanString: '<S13>/String to Double3' */
-  rtb_Sum_d = 0.0;
-  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o6[0], "%lf", &rtb_Sum_d);
+  /* ScanString: '<S17>/String to Double3' */
+  rtb_yvelTS = 0.0;
+  sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o6[0], "%lf", &rtb_yvelTS);
 
-  /* Gain: '<S13>/Gain3' */
+  /* Gain: '<S17>/Gain3' */
   FSFB_FF_HIL_quick_dirty_B.by_dot = FSFB_FF_HIL_quick_dirty_P.Gain3_Gain *
-    rtb_Sum_d;
+    rtb_yvelTS;
 
-  /* ScanString: '<S13>/String to Double6' */
+  /* ScanString: '<S17>/String to Double6' */
   FSFB_FF_HIL_quick_dirty_B.IMUy = 0.0;
 
-  /* ScanString: '<S13>/String to Double6' */
+  /* ScanString: '<S17>/String to Double6' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o7[0], "%lf",
          &FSFB_FF_HIL_quick_dirty_B.IMUy);
 
-  /* Gain: '<S18>/Gain1' */
+  /* Gain: '<S22>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_l = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_b *
     FSFB_FF_HIL_quick_dirty_B.IMUy;
 
-  /* ScanString: '<S13>/String to Double7' */
+  /* ScanString: '<S17>/String to Double7' */
   FSFB_FF_HIL_quick_dirty_B.GyroY = 0.0;
 
-  /* ScanString: '<S13>/String to Double7' */
+  /* ScanString: '<S17>/String to Double7' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o8[0], "%lf",
          &FSFB_FF_HIL_quick_dirty_B.GyroY);
 
-  /* Gain: '<S19>/Gain1' */
+  /* Gain: '<S23>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_n = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_k *
     FSFB_FF_HIL_quick_dirty_B.GyroY;
 
   /* Step: '<Root>/Step' */
-  if (FSFB_FF_HIL_quick_dirty_M->Timing.t[0] <
-      FSFB_FF_HIL_quick_dirty_P.Step_Time) {
+  if (FSFB_FF_HIL_quick_dirty_M->Timing.t[0] < 2.0 *
+      FSFB_FF_HIL_quick_dirty_P.Ts) {
     /* Step: '<Root>/Step' */
     FSFB_FF_HIL_quick_dirty_B.Step = FSFB_FF_HIL_quick_dirty_P.Step_Y0;
   } else {
@@ -249,135 +250,81 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   FSFB_FF_HIL_quick_dirty_B.integratederror =
     FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE;
 
-  /* UnitDelay: '<S11>/Unit Delay1' */
-  memcpy(&FSFB_FF_HIL_quick_dirty_B.x_filtered[0],
-         &FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE[0], sizeof(real_T) << 3U);
-
   /* MATLAB Function: '<S4>/x dim stpt smoothing' incorporates:
    *  Clock: '<S4>/Clock1'
+   *  Constant: '<S4>/Constant'
+   *  MATLAB Function: '<S4>/x_Setpoint_Function'
    *  MATLAB Function: '<S4>/y dim stpt smoothing'
+   *  SignalConversion generated from: '<S7>/ SFunction '
    */
   rtb_TbetaK2xa2 = exp(-FSFB_FF_HIL_quick_dirty_M->Timing.t[0] /
                        FSFB_FF_HIL_quick_dirty_P.Tau);
+  smoothed_x_tmp = (1.0 - rtb_TbetaK2xa2) * 0.0;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[0] = FSFB_FF_HIL_quick_dirty_B.In[0] *
+    rtb_TbetaK2xa2 + smoothed_x_tmp;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] = FSFB_FF_HIL_quick_dirty_B.In[2] *
+    rtb_TbetaK2xa2 + smoothed_x_tmp;
+  smoothed_x_tmp_0 = FSFB_FF_HIL_quick_dirty_P.Constant_Value * rtb_TbetaK2xa2 +
+    smoothed_x_tmp;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] = smoothed_x_tmp_0;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[3] = smoothed_x_tmp_0;
+
+  /* Sum: '<S1>/Sum' */
+  FSFB_FF_HIL_quick_dirty_B.e_vec[0] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[0] -
+    FSFB_FF_HIL_quick_dirty_B.bx;
+  FSFB_FF_HIL_quick_dirty_B.e_vec[1] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] -
+    FSFB_FF_HIL_quick_dirty_B.bx_dot;
+  FSFB_FF_HIL_quick_dirty_B.e_vec[2] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] -
+    FSFB_FF_HIL_quick_dirty_B.Gain1;
+  FSFB_FF_HIL_quick_dirty_B.e_vec[3] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[3] -
+    FSFB_FF_HIL_quick_dirty_B.Gain1_k;
 
   /* Gain: '<S1>/Gain1' incorporates:
    *  SignalConversion generated from: '<S1>/Gain1'
    */
   tmp[0] = FSFB_FF_HIL_quick_dirty_B.integratederror;
-
-  /* MATLAB Function: '<S4>/x dim stpt smoothing' incorporates:
-   *  MATLAB Function: '<S4>/x_Setpoint_Function'
-   *  MATLAB Function: '<S4>/y dim stpt smoothing'
-   */
-  rtb_q = (1.0 - rtb_TbetaK2xa2) * 0.0;
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[0] = FSFB_FF_HIL_quick_dirty_B.In[0] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S1>/Sum' */
-  FSFB_FF_HIL_quick_dirty_B.e_vec[0] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[0] -
-    FSFB_FF_HIL_quick_dirty_B.x_filtered[0];
-
-  /* Gain: '<S1>/Gain1' incorporates:
-   *  SignalConversion generated from: '<S1>/Gain1'
-   */
   tmp[1] = FSFB_FF_HIL_quick_dirty_B.e_vec[0];
-
-  /* MATLAB Function: '<S4>/x dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] = FSFB_FF_HIL_quick_dirty_B.In[1] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S1>/Sum' */
-  FSFB_FF_HIL_quick_dirty_B.e_vec[1] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] -
-    FSFB_FF_HIL_quick_dirty_B.x_filtered[1];
-
-  /* Gain: '<S1>/Gain1' incorporates:
-   *  SignalConversion generated from: '<S1>/Gain1'
-   */
   tmp[2] = FSFB_FF_HIL_quick_dirty_B.e_vec[1];
-
-  /* MATLAB Function: '<S4>/x dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] = FSFB_FF_HIL_quick_dirty_B.In[2] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S1>/Sum' */
-  FSFB_FF_HIL_quick_dirty_B.e_vec[2] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] -
-    FSFB_FF_HIL_quick_dirty_B.x_filtered[2];
-
-  /* Gain: '<S1>/Gain1' incorporates:
-   *  SignalConversion generated from: '<S1>/Gain1'
-   */
   tmp[3] = FSFB_FF_HIL_quick_dirty_B.e_vec[2];
-
-  /* MATLAB Function: '<S4>/x dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[3] = FSFB_FF_HIL_quick_dirty_B.In[3] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S1>/Sum' */
-  FSFB_FF_HIL_quick_dirty_B.e_vec[3] = FSFB_FF_HIL_quick_dirty_B.smoothed_x[3] -
-    FSFB_FF_HIL_quick_dirty_B.x_filtered[3];
-
-  /* Gain: '<S1>/Gain1' incorporates:
-   *  SignalConversion generated from: '<S1>/Gain1'
-   */
   tmp[4] = FSFB_FF_HIL_quick_dirty_B.e_vec[3];
-  rtb_Sum_d = 0.0;
+  rtb_yvelTS = 0.0;
 
   /* DiscreteIntegrator: '<S2>/Discrete-Time Integrator' */
   FSFB_FF_HIL_quick_dirty_B.integratederror_d =
     FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE_b;
 
-  /* SignalConversion generated from: '<S2>/Gain1' */
-  tmp_0[0] = FSFB_FF_HIL_quick_dirty_B.integratederror_d;
-
-  /* MATLAB Function: '<S4>/y dim stpt smoothing' */
+  /* MATLAB Function: '<S4>/y dim stpt smoothing' incorporates:
+   *  SignalConversion generated from: '<S9>/ SFunction '
+   */
   FSFB_FF_HIL_quick_dirty_B.smoothed_y[0] = FSFB_FF_HIL_quick_dirty_B.In[4] *
-    rtb_TbetaK2xa2 + rtb_q;
+    rtb_TbetaK2xa2 + smoothed_x_tmp;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_y[1] = smoothed_x_tmp_0;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_y[2] = FSFB_FF_HIL_quick_dirty_B.In[6] *
+    rtb_TbetaK2xa2 + smoothed_x_tmp;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_y[3] = smoothed_x_tmp_0;
 
   /* Sum: '<S2>/Sum' */
   FSFB_FF_HIL_quick_dirty_B.ey_vec[0] = FSFB_FF_HIL_quick_dirty_B.smoothed_y[0]
-    - FSFB_FF_HIL_quick_dirty_B.x_filtered[4];
-
-  /* SignalConversion generated from: '<S2>/Gain1' */
-  tmp_0[1] = FSFB_FF_HIL_quick_dirty_B.ey_vec[0];
-
-  /* MATLAB Function: '<S4>/y dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_y[1] = FSFB_FF_HIL_quick_dirty_B.In[5] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S2>/Sum' */
+    - FSFB_FF_HIL_quick_dirty_B.by;
   FSFB_FF_HIL_quick_dirty_B.ey_vec[1] = FSFB_FF_HIL_quick_dirty_B.smoothed_y[1]
-    - FSFB_FF_HIL_quick_dirty_B.x_filtered[5];
-
-  /* SignalConversion generated from: '<S2>/Gain1' */
-  tmp_0[2] = FSFB_FF_HIL_quick_dirty_B.ey_vec[1];
-
-  /* MATLAB Function: '<S4>/y dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_y[2] = FSFB_FF_HIL_quick_dirty_B.In[6] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S2>/Sum' */
+    - FSFB_FF_HIL_quick_dirty_B.by_dot;
   FSFB_FF_HIL_quick_dirty_B.ey_vec[2] = FSFB_FF_HIL_quick_dirty_B.smoothed_y[2]
-    - FSFB_FF_HIL_quick_dirty_B.x_filtered[6];
-
-  /* SignalConversion generated from: '<S2>/Gain1' */
-  tmp_0[3] = FSFB_FF_HIL_quick_dirty_B.ey_vec[2];
-
-  /* MATLAB Function: '<S4>/y dim stpt smoothing' */
-  FSFB_FF_HIL_quick_dirty_B.smoothed_y[3] = FSFB_FF_HIL_quick_dirty_B.In[7] *
-    rtb_TbetaK2xa2 + rtb_q;
-
-  /* Sum: '<S2>/Sum' */
+    - FSFB_FF_HIL_quick_dirty_B.Gain1_l;
   FSFB_FF_HIL_quick_dirty_B.ey_vec[3] = FSFB_FF_HIL_quick_dirty_B.smoothed_y[3]
-    - FSFB_FF_HIL_quick_dirty_B.x_filtered[7];
+    - FSFB_FF_HIL_quick_dirty_B.Gain1_n;
 
   /* SignalConversion generated from: '<S2>/Gain1' */
+  tmp_0[0] = FSFB_FF_HIL_quick_dirty_B.integratederror_d;
+  tmp_0[1] = FSFB_FF_HIL_quick_dirty_B.ey_vec[0];
+  tmp_0[2] = FSFB_FF_HIL_quick_dirty_B.ey_vec[1];
+  tmp_0[3] = FSFB_FF_HIL_quick_dirty_B.ey_vec[2];
   tmp_0[4] = FSFB_FF_HIL_quick_dirty_B.ey_vec[3];
 
   /* Gain: '<S2>/Gain1' */
   rtb_TbetaK2xa2 = 0.0;
   for (rtb_xposTS = 0; rtb_xposTS < 5; rtb_xposTS++) {
     /* Gain: '<S1>/Gain1' */
-    rtb_Sum_d += -FSFB_FF_HIL_quick_dirty_P.K1[rtb_xposTS] * tmp[rtb_xposTS];
+    rtb_yvelTS += -FSFB_FF_HIL_quick_dirty_P.K1[rtb_xposTS] * tmp[rtb_xposTS];
 
     /* Gain: '<S2>/Gain1' */
     rtb_TbetaK2xa2 += -FSFB_FF_HIL_quick_dirty_P.K2[rtb_xposTS] *
@@ -388,15 +335,59 @@ void FSFB_FF_HIL_quick_dirty_output(void)
    *  Gain: '<S1>/Gain1'
    *  Gain: '<S2>/Gain1'
    */
-  FSFB_FF_HIL_quick_dirty_B.u_des[0] = rtb_Sum_d +
+  FSFB_FF_HIL_quick_dirty_B.u_des[0] = rtb_yvelTS +
     FSFB_FF_HIL_quick_dirty_B.out1[0];
   FSFB_FF_HIL_quick_dirty_B.u_des[1] = rtb_TbetaK2xa2 +
     FSFB_FF_HIL_quick_dirty_B.out1[1];
 
-  /* S-Function (sldrtso): '<S12>/Stream Output' */
-  /* S-Function Block: <S12>/Stream Output */
+  /* S-Function (sldrtso): '<S16>/Stream Output' */
+  /* S-Function Block: <S16>/Stream Output */
 
   /* no code required */
+
+  /* UnitDelay: '<S11>/Unit Delay1' */
+  memcpy(&FSFB_FF_HIL_quick_dirty_B.x_filtered[0],
+         &FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE[0], sizeof(real_T) << 3U);
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Demux' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.x_filtered[0];
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(2105492794U, time, pData, size);
+    }
+  }
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Demux' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.x_filtered[1];
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(701209432U, time, pData, size);
+    }
+  }
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Demux' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.x_filtered[4];
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(1948885790U, time, pData, size);
+    }
+  }
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Demux' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.x_filtered[5];
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(3677314980U, time, pData, size);
+    }
+  }
 
   /* ToAsyncQueueBlock generated from: '<S5>/Kalman Filter' */
   {
@@ -404,44 +395,100 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.x_filtered[0];
       int32_T size = 8*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1117719704U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3169173045U, time, pData, size);
+    }
+  }
+
+  /* Gain: '<S13>/Gain' */
+  FSFB_FF_HIL_quick_dirty_B.Gain = FSFB_FF_HIL_quick_dirty_P.Gain_Gain *
+    FSFB_FF_HIL_quick_dirty_B.x_filtered[3];
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Radians to Degrees1' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Gain;
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(2971320055U, time, pData, size);
+    }
+  }
+
+  /* Gain: '<S14>/Gain' */
+  FSFB_FF_HIL_quick_dirty_B.Gain_d = FSFB_FF_HIL_quick_dirty_P.Gain_Gain_a *
+    FSFB_FF_HIL_quick_dirty_B.x_filtered[6];
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Radians to Degrees2' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Gain_d;
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(2178999176U, time, pData, size);
+    }
+  }
+
+  /* Gain: '<S15>/Gain' */
+  FSFB_FF_HIL_quick_dirty_B.Gain_o = FSFB_FF_HIL_quick_dirty_P.Gain_Gain_e *
+    FSFB_FF_HIL_quick_dirty_B.x_filtered[7];
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Radians to Degrees3' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Gain_o;
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(543296497U, time, pData, size);
+    }
+  }
+
+  /* Gain: '<S12>/Gain' */
+  FSFB_FF_HIL_quick_dirty_B.Gain_g = FSFB_FF_HIL_quick_dirty_P.Gain_Gain_o *
+    FSFB_FF_HIL_quick_dirty_B.x_filtered[2];
+
+  /* ToAsyncQueueBlock generated from: '<S5>/Radians to Degrees' */
+  {
+    {
+      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Gain_g;
+      int32_T size = 1*sizeof(real_T);
+      sendToAsyncQueueTgtAppSvc(4085824169U, time, pData, size);
     }
   }
 
   /* Gain: '<S5>/Gear Ratio Assumption' */
-  rtb_Sum_d = FSFB_FF_HIL_quick_dirty_P.GearRatioAssumption_Gain *
+  rtb_yvelTS = FSFB_FF_HIL_quick_dirty_P.GearRatioAssumption_Gain *
     FSFB_FF_HIL_quick_dirty_B.u_des[0];
 
   /* Saturate: '<S5>/Saturation1' */
-  if (rtb_Sum_d > FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat) {
+  if (rtb_yvelTS > FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat) {
     /* Saturate: '<S5>/Saturation1' */
     FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0] =
       FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat;
-  } else if (rtb_Sum_d < FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat) {
+  } else if (rtb_yvelTS < FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat) {
     /* Saturate: '<S5>/Saturation1' */
     FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0] =
       FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat;
   } else {
     /* Saturate: '<S5>/Saturation1' */
-    FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0] = rtb_Sum_d;
+    FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0] = rtb_yvelTS;
   }
 
   /* Gain: '<S5>/Gear Ratio Assumption' */
-  rtb_Sum_d = FSFB_FF_HIL_quick_dirty_P.GearRatioAssumption_Gain *
+  rtb_yvelTS = FSFB_FF_HIL_quick_dirty_P.GearRatioAssumption_Gain *
     FSFB_FF_HIL_quick_dirty_B.u_des[1];
 
   /* Saturate: '<S5>/Saturation1' */
-  if (rtb_Sum_d > FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat) {
+  if (rtb_yvelTS > FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat) {
     /* Saturate: '<S5>/Saturation1' */
     FSFB_FF_HIL_quick_dirty_B.Torque_Sat[1] =
       FSFB_FF_HIL_quick_dirty_P.Saturation1_UpperSat;
-  } else if (rtb_Sum_d < FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat) {
+  } else if (rtb_yvelTS < FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat) {
     /* Saturate: '<S5>/Saturation1' */
     FSFB_FF_HIL_quick_dirty_B.Torque_Sat[1] =
       FSFB_FF_HIL_quick_dirty_P.Saturation1_LowerSat;
   } else {
     /* Saturate: '<S5>/Saturation1' */
-    FSFB_FF_HIL_quick_dirty_B.Torque_Sat[1] = rtb_Sum_d;
+    FSFB_FF_HIL_quick_dirty_B.Torque_Sat[1] = rtb_yvelTS;
   }
 
   /* ToAsyncQueueBlock generated from: '<S5>/Saturation1' */
@@ -450,7 +497,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0];
       int32_T size = 2*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(176729688U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3242429719U, time, pData, size);
     }
   }
 
@@ -495,16 +542,16 @@ void FSFB_FF_HIL_quick_dirty_output(void)
 
   /* End of Gain: '<S11>/Gain4' */
 
-  /* UnitDelay: '<S14>/Unit Delay' */
+  /* UnitDelay: '<S18>/Unit Delay' */
   memcpy(&FSFB_FF_HIL_quick_dirty_B.UnitDelay[0],
          &FSFB_FF_HIL_quick_dirty_DW.UnitDelay_DSTATE[0], sizeof(real_T) << 6U);
 
-  /* MATLAB Function: '<S14>/MATLAB Function' incorporates:
-   *  Constant: '<S14>/Constant'
-   *  Constant: '<S14>/Constant1'
-   *  Constant: '<S14>/Constant2'
-   *  Constant: '<S14>/Constant3'
-   *  UnitDelay: '<S14>/Unit Delay'
+  /* MATLAB Function: '<S18>/MATLAB Function' incorporates:
+   *  Constant: '<S18>/Constant'
+   *  Constant: '<S18>/Constant1'
+   *  Constant: '<S18>/Constant2'
+   *  Constant: '<S18>/Constant3'
+   *  UnitDelay: '<S18>/Unit Delay'
    */
   for (rtb_xposTS = 0; rtb_xposTS < 8; rtb_xposTS++) {
     memset(&b_I_0[rtb_xposTS << 3], 0, sizeof(real_T) << 3U);
@@ -522,15 +569,15 @@ void FSFB_FF_HIL_quick_dirty_output(void)
 
   for (rtb_xposTS = 0; rtb_xposTS < 8; rtb_xposTS++) {
     for (jj = 0; jj < 8; jj++) {
-      rtb_Sum_d = 0.0;
+      rtb_yvelTS = 0.0;
       for (kBcol = 0; kBcol < 8; kBcol++) {
         iy = kBcol << 3;
-        rtb_Sum_d += b_I_0[iy + rtb_xposTS] * FSFB_FF_HIL_quick_dirty_P.A[iy +
+        rtb_yvelTS += b_I_0[iy + rtb_xposTS] * FSFB_FF_HIL_quick_dirty_P.A[iy +
           jj];
       }
 
       kBcol = (jj << 3) + rtb_xposTS;
-      P_k_m[kBcol] = FSFB_FF_HIL_quick_dirty_P.Q_KF[kBcol] + rtb_Sum_d;
+      P_k_m[kBcol] = FSFB_FF_HIL_quick_dirty_P.Q_KF[kBcol] + rtb_yvelTS;
     }
   }
 
@@ -571,13 +618,13 @@ void FSFB_FF_HIL_quick_dirty_output(void)
 
   for (rtb_xposTS = 0; rtb_xposTS < 6; rtb_xposTS++) {
     for (jj = 0; jj < 6; jj++) {
-      rtb_Sum_d = 0.0;
+      rtb_yvelTS = 0.0;
       for (kBcol = 0; kBcol < 8; kBcol++) {
-        rtb_Sum_d += tmp_1[6 * kBcol + rtb_xposTS] * X_tmp[(jj << 3) + kBcol];
+        rtb_yvelTS += tmp_1[6 * kBcol + rtb_xposTS] * X_tmp[(jj << 3) + kBcol];
       }
 
       iy = 6 * jj + rtb_xposTS;
-      A[iy] = FSFB_FF_HIL_quick_dirty_P.R_KF[iy] + rtb_Sum_d;
+      A[iy] = FSFB_FF_HIL_quick_dirty_P.R_KF[iy] + rtb_yvelTS;
     }
 
     ipiv[rtb_xposTS] = (int8_T)(rtb_xposTS + 1);
@@ -587,13 +634,13 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     jj = rtb_xposTS * 7;
     iy = 0;
     ix = jj;
-    rtb_Sum_d = fabs(A[jj]);
+    rtb_yvelTS = fabs(A[jj]);
     for (kBcol = 2; kBcol <= 6 - rtb_xposTS; kBcol++) {
       ix++;
       rtb_TbetaK2xa2 = fabs(A[ix]);
-      if (rtb_TbetaK2xa2 > rtb_Sum_d) {
+      if (rtb_TbetaK2xa2 > rtb_yvelTS) {
         iy = kBcol - 1;
-        rtb_Sum_d = rtb_TbetaK2xa2;
+        rtb_yvelTS = rtb_TbetaK2xa2;
       }
     }
 
@@ -603,10 +650,10 @@ void FSFB_FF_HIL_quick_dirty_output(void)
         ipiv[rtb_xposTS] = (int8_T)(ix + 1);
         for (kBcol = 0; kBcol < 6; kBcol++) {
           c_ix = kBcol * 6 + rtb_xposTS;
-          rtb_Sum_d = A[c_ix];
+          rtb_yvelTS = A[c_ix];
           iy = kBcol * 6 + ix;
           A[c_ix] = A[iy];
-          A[iy] = rtb_Sum_d;
+          A[iy] = rtb_yvelTS;
         }
       }
 
@@ -621,12 +668,12 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     for (kBcol = 0; kBcol <= 4 - rtb_xposTS; kBcol++) {
       if (A[ix] != 0.0) {
         int32_T c;
-        rtb_Sum_d = -A[ix];
+        rtb_yvelTS = -A[ix];
         c_ix = jj + 1;
         ijA = iy + 7;
         c = (iy - rtb_xposTS) + 12;
         while (ijA + 1 <= c) {
-          A[ijA] += A[c_ix] * rtb_Sum_d;
+          A[ijA] += A[c_ix] * rtb_yvelTS;
           c_ix++;
           ijA++;
         }
@@ -650,10 +697,10 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       }
     }
 
-    rtb_Sum_d = 1.0 / A[rtb_xposTS + iy];
+    rtb_yvelTS = 1.0 / A[rtb_xposTS + iy];
     for (iy = 0; iy <= 6; iy += 2) {
       tmp_4 = _mm_loadu_pd(&X[iy + jj]);
-      _mm_storeu_pd(&X[iy + jj], _mm_mul_pd(tmp_4, _mm_set1_pd(rtb_Sum_d)));
+      _mm_storeu_pd(&X[iy + jj], _mm_mul_pd(tmp_4, _mm_set1_pd(rtb_yvelTS)));
     }
   }
 
@@ -676,10 +723,10 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     ipiv_0 = ipiv[rtb_xposTS];
     if (rtb_xposTS + 1 != ipiv_0) {
       for (iy = 0; iy < 8; iy++) {
-        rtb_Sum_d = X[(rtb_xposTS << 3) + iy];
+        rtb_yvelTS = X[(rtb_xposTS << 3) + iy];
         ijA = ((ipiv_0 - 1) << 3) + iy;
         X[iy + (rtb_xposTS << 3)] = X[ijA];
-        X[ijA] = rtb_Sum_d;
+        X[ijA] = rtb_yvelTS;
       }
     }
   }
@@ -691,14 +738,14 @@ void FSFB_FF_HIL_quick_dirty_output(void)
 
   for (rtb_xposTS = 0; rtb_xposTS < 8; rtb_xposTS++) {
     for (jj = 0; jj < 8; jj++) {
-      rtb_Sum_d = 0.0;
+      rtb_yvelTS = 0.0;
       for (kBcol = 0; kBcol < 6; kBcol++) {
-        rtb_Sum_d += X[(kBcol << 3) + rtb_xposTS] * FSFB_FF_HIL_quick_dirty_P.H
-          [6 * jj + kBcol];
+        rtb_yvelTS += X[(kBcol << 3) + rtb_xposTS] *
+          FSFB_FF_HIL_quick_dirty_P.H[6 * jj + kBcol];
       }
 
       kBcol = (jj << 3) + rtb_xposTS;
-      b_I_0[kBcol] = (real_T)b_I[kBcol] - rtb_Sum_d;
+      b_I_0[kBcol] = (real_T)b_I[kBcol] - rtb_yvelTS;
       FSFB_FF_HIL_quick_dirty_B.P_k[jj + (rtb_xposTS << 3)] = 0.0;
     }
   }
@@ -711,7 +758,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   tmp_2[4] = FSFB_FF_HIL_quick_dirty_B.Gain1_l - rtb_Gain4[4];
   tmp_2[5] = FSFB_FF_HIL_quick_dirty_B.Gain1_n - rtb_Gain4[5];
   for (rtb_xposTS = 0; rtb_xposTS < 8; rtb_xposTS++) {
-    /* MATLAB Function: '<S14>/MATLAB Function' */
+    /* MATLAB Function: '<S18>/MATLAB Function' */
     for (jj = 0; jj < 8; jj++) {
       for (kBcol = 0; kBcol <= 6; kBcol += 2) {
         tmp_4 = _mm_loadu_pd(&b_I_0[(jj << 3) + kBcol]);
@@ -724,263 +771,139 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     }
 
     /* Sum: '<S11>/Sum5' incorporates:
-     *  MATLAB Function: '<S14>/MATLAB Function'
+     *  MATLAB Function: '<S18>/MATLAB Function'
      */
-    rtb_Sum_d = 0.0;
+    rtb_yvelTS = 0.0;
     for (jj = 0; jj < 6; jj++) {
-      rtb_Sum_d += X[(jj << 3) + rtb_xposTS] * tmp_2[jj];
+      rtb_yvelTS += X[(jj << 3) + rtb_xposTS] * tmp_2[jj];
     }
 
     FSFB_FF_HIL_quick_dirty_B.aposteriori[rtb_xposTS] = rtb_apriori[rtb_xposTS]
-      + rtb_Sum_d;
+      + rtb_yvelTS;
 
     /* End of Sum: '<S11>/Sum5' */
   }
 
-  real_T rtb_Product1;
-  real_T rtb_Sum;
-  real_T rtb_d;
-  real_T rtb_d_d;
-  real_T rtb_p_c;
-  real_T rtb_q_l;
-  real_T rtb_r;
-  real_T rtb_r_o;
-
-  /* SampleTimeMath: '<S20>/TSamp'
+  /* SampleTimeMath: '<S24>/TSamp'
    *
-   * About '<S20>/TSamp':
+   * About '<S24>/TSamp':
    *  y = u * K where K = 1 / ( w * Ts )
    */
   FSFB_FF_HIL_quick_dirty_B.TSamp = FSFB_FF_HIL_quick_dirty_B.bx *
     FSFB_FF_HIL_quick_dirty_P.TSamp_WtEt;
 
-  /* Sum: '<S20>/Diff' incorporates:
-   *  UnitDelay: '<S20>/UD'
+  /* Sum: '<S24>/Diff' incorporates:
+   *  UnitDelay: '<S24>/UD'
    */
   FSFB_FF_HIL_quick_dirty_B.Diff = FSFB_FF_HIL_quick_dirty_B.TSamp -
     FSFB_FF_HIL_quick_dirty_DW.UD_DSTATE;
 
-  /* ToAsyncQueueBlock generated from: '<S13>/Discrete Derivative' */
+  /* ToAsyncQueueBlock generated from: '<S17>/Discrete Derivative' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Diff;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(4108215610U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1700540225U, time, pData, size);
     }
   }
 
-  /* Sum: '<S22>/Sum' incorporates:
-   *  UnitDelay: '<S22>/Unit Delay1'
-   */
-  rtb_Sum_d = FSFB_FF_HIL_quick_dirty_B.Diff +
-    FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_n;
-
-  /* Gain: '<S22>/tau' incorporates:
-   *  Constant: '<S13>/Constant'
-   */
-  rtb_TbetaK2xa2 = FSFB_FF_HIL_quick_dirty_P.tau_Gain *
-    FSFB_FF_HIL_quick_dirty_P.Constant_Value;
-
-  /* Product: '<S24>/Product2' */
-  rtb_q = rtb_TbetaK2xa2 * rtb_TbetaK2xa2;
-
-  /* Sum: '<S24>/Add' incorporates:
-   *  Constant: '<S24>/Constant'
-   */
-  rtb_r = rtb_q + FSFB_FF_HIL_quick_dirty_P.Constant_Value_a;
-
-  /* Gain: '<S24>/Gain' */
-  rtb_TbetaK2xa2 *= FSFB_FF_HIL_quick_dirty_P.Gain_Gain;
-
-  /* Sum: '<S24>/Add1' */
-  rtb_d = rtb_r + rtb_TbetaK2xa2;
-
-  /* Product: '<S22>/Product1' incorporates:
-   *  Product: '<S24>/Product3'
-   */
-  rtb_Product1 = rtb_q / rtb_d * rtb_Sum_d;
-
-  /* Sum: '<S23>/Sum' incorporates:
-   *  UnitDelay: '<S23>/Unit Delay1'
-   */
-  rtb_Sum = rtb_Product1 + FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_j;
-
-  /* Gain: '<S23>/tau' incorporates:
-   *  Constant: '<S13>/Constant'
-   */
-  rtb_p_c = FSFB_FF_HIL_quick_dirty_P.tau_Gain_h *
-    FSFB_FF_HIL_quick_dirty_P.Constant_Value;
-
-  /* Product: '<S25>/Product2' */
-  rtb_q_l = rtb_p_c * rtb_p_c;
-
-  /* Sum: '<S25>/Add' incorporates:
-   *  Constant: '<S25>/Constant'
-   */
-  rtb_r_o = rtb_q_l + FSFB_FF_HIL_quick_dirty_P.Constant_Value_f;
-
-  /* Gain: '<S25>/Gain' */
-  rtb_p_c *= FSFB_FF_HIL_quick_dirty_P.Gain_Gain_g;
-
-  /* Sum: '<S25>/Add1' */
-  rtb_d_d = rtb_r_o + rtb_p_c;
-
-  /* Product: '<S23>/Product1' incorporates:
-   *  Product: '<S25>/Product3'
-   */
-  FSFB_FF_HIL_quick_dirty_B.Product1 = rtb_q_l / rtb_d_d * rtb_Sum;
-
-  /* ToAsyncQueueBlock generated from: '<S13>/Discrete Varying Lowpass' */
-  {
-    {
-      double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
-      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Product1;
-      int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1063777280U, time, pData, size);
-    }
-  }
-
-  /* ToAsyncQueueBlock generated from: '<S13>/Gain1' */
+  /* ToAsyncQueueBlock generated from: '<S17>/Gain1' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.bx_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(337100068U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1645782486U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/Gain2' */
+  /* ToAsyncQueueBlock generated from: '<S17>/Gain2' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.by;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1593950799U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3590725786U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/Gain3' */
+  /* ToAsyncQueueBlock generated from: '<S17>/Gain3' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.by_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(942635685U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1504159057U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/Gain' */
+  /* ToAsyncQueueBlock generated from: '<S17>/Gain' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.bx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1014337966U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(341457053U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/String to Double4' */
+  /* ToAsyncQueueBlock generated from: '<S17>/String to Double4' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3021887912U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(759046179U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/String to Double5' */
+  /* ToAsyncQueueBlock generated from: '<S17>/String to Double5' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroX;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(255210886U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(311192948U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/String to Double6' */
+  /* ToAsyncQueueBlock generated from: '<S17>/String to Double6' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUy;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1374961690U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(547982137U, time, pData, size);
     }
   }
 
-  /* ToAsyncQueueBlock generated from: '<S13>/String to Double7' */
+  /* ToAsyncQueueBlock generated from: '<S17>/String to Double7' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroY;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2483983811U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3279553084U, time, pData, size);
     }
   }
 
-  /* ScanString: '<S13>/String to Double8' */
+  /* ScanString: '<S17>/String to Double8' */
   FSFB_FF_HIL_quick_dirty_B.TimingParity = 0.0;
 
-  /* ScanString: '<S13>/String to Double8' */
+  /* ScanString: '<S17>/String to Double8' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o9[0], "%lf",
          &FSFB_FF_HIL_quick_dirty_B.TimingParity);
 
-  /* ToAsyncQueueBlock generated from: '<S13>/String to Double8' */
+  /* ToAsyncQueueBlock generated from: '<S17>/String to Double8' */
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.TimingParity;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3079037042U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3027973999U, time, pData, size);
     }
   }
-
-  /* Sum: '<S22>/Sum1' incorporates:
-   *  Constant: '<S24>/Constant1'
-   *  Gain: '<S22>/Gain1'
-   *  Product: '<S22>/Product5'
-   *  Product: '<S24>/Product4'
-   *  Sum: '<S22>/Sum2'
-   *  Sum: '<S24>/Add2'
-   *  UnitDelay: '<S22>/Unit Delay2'
-   */
-  FSFB_FF_HIL_quick_dirty_B.Sum1 = ((FSFB_FF_HIL_quick_dirty_P.Constant1_Value -
-    rtb_q) / rtb_d * rtb_Sum_d + FSFB_FF_HIL_quick_dirty_B.Diff) *
-    FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_bv +
-    FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE;
-
-  /* Sum: '<S22>/Sum3' incorporates:
-   *  Product: '<S22>/Product2'
-   *  Product: '<S24>/Product5'
-   *  Sum: '<S24>/Add3'
-   */
-  FSFB_FF_HIL_quick_dirty_B.Sum3 = FSFB_FF_HIL_quick_dirty_B.Diff - 1.0 / rtb_d *
-    (rtb_r - rtb_TbetaK2xa2) * rtb_Sum_d;
-
-  /* Sum: '<S23>/Sum1' incorporates:
-   *  Constant: '<S25>/Constant1'
-   *  Gain: '<S23>/Gain1'
-   *  Product: '<S23>/Product5'
-   *  Product: '<S25>/Product4'
-   *  Sum: '<S23>/Sum2'
-   *  Sum: '<S25>/Add2'
-   *  UnitDelay: '<S23>/Unit Delay2'
-   */
-  FSFB_FF_HIL_quick_dirty_B.Sum1_b =
-    ((FSFB_FF_HIL_quick_dirty_P.Constant1_Value_d - rtb_q_l) / rtb_d_d * rtb_Sum
-     + rtb_Product1) * FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_f +
-    FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE_h;
-
-  /* Sum: '<S23>/Sum3' incorporates:
-   *  Product: '<S23>/Product2'
-   *  Product: '<S25>/Product5'
-   *  Sum: '<S25>/Add3'
-   */
-  FSFB_FF_HIL_quick_dirty_B.Sum3_b = rtb_Product1 - 1.0 / rtb_d_d * (rtb_r_o -
-    rtb_p_c) * rtb_Sum;
 }
 
 /* Model update function */
@@ -991,18 +914,14 @@ void FSFB_FF_HIL_quick_dirty_update(void)
     FSFB_FF_HIL_quick_dirty_P.DiscreteTimeIntegrator_gainval *
     FSFB_FF_HIL_quick_dirty_B.e_vec[0];
 
-  /* Update for UnitDelay: '<S11>/Unit Delay1' */
-  memcpy(&FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE[0],
-         &FSFB_FF_HIL_quick_dirty_B.aposteriori[0], sizeof(real_T) << 3U);
-
   /* Update for DiscreteIntegrator: '<S2>/Discrete-Time Integrator' */
   FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE_b +=
     FSFB_FF_HIL_quick_dirty_P.DiscreteTimeIntegrator_gainval_p *
     FSFB_FF_HIL_quick_dirty_B.ey_vec[0];
 
-  /* Update for S-Function (sldrtso): '<S12>/Stream Output' */
+  /* Update for S-Function (sldrtso): '<S16>/Stream Output' */
 
-  /* S-Function Block: <S12>/Stream Output */
+  /* S-Function Block: <S16>/Stream Output */
   {
     char_T outstring[650U];
     int n = snprintf(outstring, 650U, "%g %g\n", (real_T)
@@ -1011,27 +930,16 @@ void FSFB_FF_HIL_quick_dirty_update(void)
     RTBIO_DriverIO(0, STREAMOUTPUT, IOWRITE, n, NULL, (double*) outstring, NULL);
   }
 
-  /* Update for UnitDelay: '<S14>/Unit Delay' */
+  /* Update for UnitDelay: '<S11>/Unit Delay1' */
+  memcpy(&FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE[0],
+         &FSFB_FF_HIL_quick_dirty_B.aposteriori[0], sizeof(real_T) << 3U);
+
+  /* Update for UnitDelay: '<S18>/Unit Delay' */
   memcpy(&FSFB_FF_HIL_quick_dirty_DW.UnitDelay_DSTATE[0],
          &FSFB_FF_HIL_quick_dirty_B.P_k[0], sizeof(real_T) << 6U);
 
-  /* Update for UnitDelay: '<S20>/UD' */
+  /* Update for UnitDelay: '<S24>/UD' */
   FSFB_FF_HIL_quick_dirty_DW.UD_DSTATE = FSFB_FF_HIL_quick_dirty_B.TSamp;
-
-  /* Update for UnitDelay: '<S22>/Unit Delay1' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_n =
-    FSFB_FF_HIL_quick_dirty_B.Sum1;
-
-  /* Update for UnitDelay: '<S23>/Unit Delay1' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_j =
-    FSFB_FF_HIL_quick_dirty_B.Sum1_b;
-
-  /* Update for UnitDelay: '<S22>/Unit Delay2' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE = FSFB_FF_HIL_quick_dirty_B.Sum3;
-
-  /* Update for UnitDelay: '<S23>/Unit Delay2' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE_h =
-    FSFB_FF_HIL_quick_dirty_B.Sum3_b;
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -1077,9 +985,9 @@ void FSFB_FF_HIL_quick_dirty_update(void)
 /* Model initialize function */
 void FSFB_FF_HIL_quick_dirty_initialize(void)
 {
-  /* Start for S-Function (sldrtso): '<S12>/Stream Output' */
+  /* Start for S-Function (sldrtso): '<S16>/Stream Output' */
 
-  /* S-Function Block: <S12>/Stream Output */
+  /* S-Function Block: <S16>/Stream Output */
   /* no initial value should be set */
   FSFB_FF_HIL_quick_dirty_PrevZCX.SampleandHold_Trig_ZCE = UNINITIALIZED_ZCSIG;
 
@@ -1087,39 +995,23 @@ void FSFB_FF_HIL_quick_dirty_initialize(void)
   FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE =
     FSFB_FF_HIL_quick_dirty_P.DiscreteTimeIntegrator_IC;
 
+  /* InitializeConditions for DiscreteIntegrator: '<S2>/Discrete-Time Integrator' */
+  FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE_b =
+    FSFB_FF_HIL_quick_dirty_P.DiscreteTimeIntegrator_IC_l;
+
   /* InitializeConditions for UnitDelay: '<S11>/Unit Delay1' */
   memcpy(&FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE[0],
          &FSFB_FF_HIL_quick_dirty_P.UnitDelay1_InitialCondition[0], sizeof
          (real_T) << 3U);
 
-  /* InitializeConditions for DiscreteIntegrator: '<S2>/Discrete-Time Integrator' */
-  FSFB_FF_HIL_quick_dirty_DW.DiscreteTimeIntegrator_DSTATE_b =
-    FSFB_FF_HIL_quick_dirty_P.DiscreteTimeIntegrator_IC_l;
-
-  /* InitializeConditions for UnitDelay: '<S14>/Unit Delay' */
+  /* InitializeConditions for UnitDelay: '<S18>/Unit Delay' */
   memcpy(&FSFB_FF_HIL_quick_dirty_DW.UnitDelay_DSTATE[0],
          &FSFB_FF_HIL_quick_dirty_P.UnitDelay_InitialCondition[0], sizeof(real_T)
          << 6U);
 
-  /* InitializeConditions for UnitDelay: '<S20>/UD' */
+  /* InitializeConditions for UnitDelay: '<S24>/UD' */
   FSFB_FF_HIL_quick_dirty_DW.UD_DSTATE =
     FSFB_FF_HIL_quick_dirty_P.DiscreteDerivative_ICPrevScaledInput;
-
-  /* InitializeConditions for UnitDelay: '<S22>/Unit Delay1' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_n =
-    FSFB_FF_HIL_quick_dirty_P.UnitDelay1_InitialCondition_g;
-
-  /* InitializeConditions for UnitDelay: '<S23>/Unit Delay1' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay1_DSTATE_j =
-    FSFB_FF_HIL_quick_dirty_P.UnitDelay1_InitialCondition_l;
-
-  /* InitializeConditions for UnitDelay: '<S22>/Unit Delay2' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE =
-    FSFB_FF_HIL_quick_dirty_P.UnitDelay2_InitialCondition;
-
-  /* InitializeConditions for UnitDelay: '<S23>/Unit Delay2' */
-  FSFB_FF_HIL_quick_dirty_DW.UnitDelay2_DSTATE_h =
-    FSFB_FF_HIL_quick_dirty_P.UnitDelay2_InitialCondition_p;
 
   /* SystemInitialize for Triggered SubSystem: '<Root>/Sample and Hold' */
   /* SystemInitialize for SignalConversion generated from: '<S3>/In' incorporates:
@@ -1134,7 +1026,7 @@ void FSFB_FF_HIL_quick_dirty_initialize(void)
 /* Model terminate function */
 void FSFB_FF_HIL_quick_dirty_terminate(void)
 {
-  /* Terminate for S-Function (sldrtso): '<S12>/Stream Output' */
+  /* Terminate for S-Function (sldrtso): '<S16>/Stream Output' */
 
   /* no final value should be set */
 }
@@ -1243,10 +1135,10 @@ RT_MODEL_FSFB_FF_HIL_quick_dirty_T *FSFB_FF_HIL_quick_dirty(void)
   FSFB_FF_HIL_quick_dirty_M->Timing.stepSize1 = 0.005;
 
   /* External mode info */
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[0] = (572516581U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[1] = (3075342302U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[2] = (3550202672U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[3] = (2433281044U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[0] = (3850755549U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[1] = (567014355U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[2] = (3922741818U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[3] = (3601679317U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;
@@ -1315,9 +1207,9 @@ RT_MODEL_FSFB_FF_HIL_quick_dirty_T *FSFB_FF_HIL_quick_dirty(void)
   FSFB_FF_HIL_quick_dirty_M->Sizes.numU = (0);/* Number of model inputs */
   FSFB_FF_HIL_quick_dirty_M->Sizes.sysDirFeedThru = (0);/* The model is not direct feedthrough */
   FSFB_FF_HIL_quick_dirty_M->Sizes.numSampTimes = (2);/* Number of sample times */
-  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlocks = (138);/* Number of blocks */
-  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlockIO = (46);/* Number of block outputs */
-  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlockPrms = (358);/* Sum of parameter "widths" */
+  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlocks = (104);/* Number of blocks */
+  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlockIO = (45);/* Number of block outputs */
+  FSFB_FF_HIL_quick_dirty_M->Sizes.numBlockPrms = (348);/* Sum of parameter "widths" */
   return FSFB_FF_HIL_quick_dirty_M;
 }
 
