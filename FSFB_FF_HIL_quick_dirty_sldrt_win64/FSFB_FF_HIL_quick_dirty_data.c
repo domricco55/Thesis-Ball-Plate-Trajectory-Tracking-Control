@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.107
+ * Model version              : 5.114
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue Apr 26 15:37:36 2022
+ * C source code generated on : Thu Apr 28 13:01:54 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,62 +22,15 @@
 
 /* Block parameters (default storage) */
 P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
-  /* Variable: A
-   * Referenced by:
-   *   '<S11>/Gain5'
-   *   '<S18>/Constant'
-   */
-  { 0.0, -1.8786, 0.0, 20.2622, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 4.1026, 0.0, 31.3281, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.8786, 0.0, -20.2622, 0.0,
-    0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -4.1026, 0.0,
-    31.3281, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 },
-
-  /* Variable: B
-   * Referenced by: '<S11>/Gain3'
-   */
-  { 0.0, -0.8511, 0.0, 9.1798, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.8511, 0.0, 9.1798 },
-
-  /* Variable: H
-   * Referenced by:
-   *   '<S11>/Gain4'
-   *   '<S18>/Constant3'
-   */
-  { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 1.0 },
-
   /* Variable: K1
    * Referenced by: '<S1>/Gain1'
    */
-  { -0.015389751279415529, -233.0754131630666, -170.77395793754869,
-    -243.84905214136845, -28.598828232351483 },
+  { 0.0, 0.0, 0.0, -282.67803721045618, -44.4338131191797 },
 
   /* Variable: K2
    * Referenced by: '<S2>/Gain1'
    */
-  { 0.015389751279396959, 233.07541316278287, 170.77395793743707,
-    -243.84905214127272, -28.59882823234048 },
-
-  /* Variable: Q_KF
-   * Referenced by: '<S18>/Constant1'
-   */
-  { 1.0E-9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-9, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 1.0E-9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-9,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 1.0E-9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-9, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-9 },
-
-  /* Variable: R_KF
-   * Referenced by: '<S18>/Constant2'
-   */
-  { 1.28E-7, 0.0, -4.0E-8, 1.0E-9, -0.0, -3.9E-8, 0.0, 0.0, -0.0, 0.0, -0.0, 0.0,
-    -4.0E-8, -0.0, 1.343E-6, 7.0000000000000006E-9, 0.0, -2.63E-7, 1.0E-9, 0.0,
-    7.0000000000000006E-9, 1.67E-7, -0.0, -4.100000000000001E-8, -0.0, -0.0, 0.0,
-    -0.0, 0.0, -0.0, -3.9E-8, 0.0, -2.63E-7, -4.100000000000001E-8, -0.0,
-    4.213E-6 },
+  { 0.0, 0.0, 0.0, -282.67803721045618, -44.4338131191797 },
 
   /* Variable: Tau
    * Referenced by:
@@ -94,22 +47,22 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   0.005,
 
   /* Mask Parameter: StreamInput_MaxMissedTicks
-   * Referenced by: '<S17>/Stream Input'
+   * Referenced by: '<S12>/Stream Input'
    */
   10.0,
 
   /* Mask Parameter: StreamOutput_MaxMissedTicks
-   * Referenced by: '<S16>/Stream Output'
+   * Referenced by: '<S11>/Stream Output'
    */
   10.0,
 
   /* Mask Parameter: StreamInput_YieldWhenWaiting
-   * Referenced by: '<S17>/Stream Input'
+   * Referenced by: '<S12>/Stream Input'
    */
   1.0,
 
   /* Mask Parameter: StreamOutput_YieldWhenWaiting
-   * Referenced by: '<S16>/Stream Output'
+   * Referenced by: '<S11>/Stream Output'
    */
   0.0,
 
@@ -119,37 +72,37 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 
   /* Expression: 1/1000
-   * Referenced by: '<S17>/Gain1'
+   * Referenced by: '<S12>/Gain1'
    */
   0.001,
 
   /* Expression: pi/180
-   * Referenced by: '<S20>/Gain1'
+   * Referenced by: '<S13>/Gain1'
    */
   0.017453292519943295,
 
   /* Expression: pi/180
-   * Referenced by: '<S21>/Gain1'
+   * Referenced by: '<S14>/Gain1'
    */
   0.017453292519943295,
 
   /* Expression: 1/1000
-   * Referenced by: '<S17>/Gain2'
+   * Referenced by: '<S12>/Gain2'
    */
   0.001,
 
   /* Expression: 1/1000
-   * Referenced by: '<S17>/Gain3'
+   * Referenced by: '<S12>/Gain3'
    */
   0.001,
 
   /* Expression: pi/180
-   * Referenced by: '<S22>/Gain1'
+   * Referenced by: '<S15>/Gain1'
    */
   0.017453292519943295,
 
   /* Expression: pi/180
-   * Referenced by: '<S23>/Gain1'
+   * Referenced by: '<S16>/Gain1'
    */
   0.017453292519943295,
 
@@ -203,62 +156,38 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   { 0.0, 0.0 },
 
-  /* Expression: -1*VDefs.l_carm/VDefs.lp
+  /* Computed Parameter: DiscreteTimeIntegrator_gainval_c
+   * Referenced by: '<S12>/Discrete-Time Integrator'
+   */
+  0.005,
+
+  /* Expression: 0
+   * Referenced by: '<S12>/Discrete-Time Integrator'
+   */
+  0.0,
+
+  /* Expression: VDefs.l_carm/VDefs.lp
    * Referenced by: '<S5>/Gear Ratio Assumption'
    */
-  -0.453781512605042,
+  0.453781512605042,
 
-  /* Expression: 0.5
+  /* Expression: 1.5
    * Referenced by: '<S5>/Saturation1'
    */
-  0.5,
+  1.5,
 
-  /* Expression: -.5
+  /* Expression: -1.5
    * Referenced by: '<S5>/Saturation1'
    */
-  -0.5,
+  -1.5,
 
-  /* Expression: zeros(8,1)
-   * Referenced by: '<S11>/Unit Delay1'
-   */
-  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-
-  /* Expression: 180/pi
-   * Referenced by: '<S13>/Gain'
-   */
-  57.295779513082323,
-
-  /* Expression: 180/pi
-   * Referenced by: '<S14>/Gain'
-   */
-  57.295779513082323,
-
-  /* Expression: 180/pi
-   * Referenced by: '<S15>/Gain'
-   */
-  57.295779513082323,
-
-  /* Expression: 180/pi
+  /* Computed Parameter: Gain_Gain
    * Referenced by: '<S12>/Gain'
-   */
-  57.295779513082323,
-
-  /* Expression: zeros(8,8)
-   * Referenced by: '<S18>/Unit Delay'
-   */
-  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0 },
-
-  /* Computed Parameter: Gain_Gain_an
-   * Referenced by: '<S17>/Gain'
    */
   1099511628,
 
   /* Computed Parameter: ManualSwitch_CurrentSetting
    * Referenced by: '<Root>/Manual Switch'
    */
-  0U
+  1U
 };
