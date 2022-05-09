@@ -40,7 +40,7 @@ class IMUDriver {
 		HAL_StatusTypeDef ret; //StatusDef to return any errors with IMU communication
 		I2C_HandleTypeDef* hi2c; //Inputted I2C channel to use to communicate with IMU
 		TIM_HandleTypeDef* htim; //Inputted Timer channel to handle communication timing with IMU
-		uint8_t buf[20] = {0}; //Modify size to work with class
+		uint8_t buf[20] = {0}; //DMA for the IMU writes directly to this memory buffer
 		uint8_t calibconstants[24] = {0, 0, 124, 255, 1, 0, 198, 0, 161, 0, 14, 0, 255, 255, 253, 255, 255, 255, 232, 3, 98, 1};
 
 	public:

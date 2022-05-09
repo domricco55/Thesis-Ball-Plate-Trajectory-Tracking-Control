@@ -47,9 +47,11 @@ void TouchscreenDriver::Initialization(void)
 
 	HAL_Delay(5);
 
+/*
 	//Just as a check (remove later)
 	HAL_GPIO_WritePin(PinPort[4], PinArray[4], GPIO_PIN_RESET); //Set as a verification light for assigned correctly...
 															  //Works! Woot!
+*/
 	HAL_TIM_Base_Start(htimvel); //Start velocity timer for time delta
 	prevtime = __HAL_TIM_GET_COUNTER(htimvel); //save initial time as starting time
 	HAL_ADC_Start_DMA(hadc, (uint32_t*)xposADC, ADC_BUF_LEN); //Starts assigned hadc channel to start taking ADC readings.

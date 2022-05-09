@@ -1223,6 +1223,9 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+
+	  //Try checking ErrorFlg if the system hard faults
+
   }
   /* USER CODE END Error_Handler_Debug */
 }
