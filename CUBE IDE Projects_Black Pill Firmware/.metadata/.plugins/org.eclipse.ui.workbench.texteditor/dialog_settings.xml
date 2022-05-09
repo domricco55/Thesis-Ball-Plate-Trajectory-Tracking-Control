@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="mergeSort"/>
+		<item key="selection" value="MX_USB_DEVICE_Init()"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="true"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="MX_USB_DEVICE_Init()"/>
+			<item value="usb"/>
+			<item value="cmd"/>
 			<item value="mergeSort"/>
 			<item value="tsstate"/>
 			<item value="tsflg"/>
@@ -20,9 +23,6 @@
 			<item value="commutat"/>
 			<item value="comutat"/>
 			<item value="user"/>
-			<item value="GlobalVars::m0tor"/>
-			<item value="CommunicationResponse"/>
-			<item value="GPIO_Pin"/>
 		</list>
 		<list key="replacehistory">
 			<item value="GlobalVars"/>
