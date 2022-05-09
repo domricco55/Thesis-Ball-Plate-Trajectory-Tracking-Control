@@ -63,7 +63,7 @@ using namespace std;
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-DMA_HandleTypeDef hdma_adc1;
+DMA_HandleTypeDef hdma_adc1; //IS THIS NOT BEING USED?
 
 I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_rx;

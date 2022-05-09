@@ -15,7 +15,7 @@ class IMUDriver {
 
 	private:
 
-		//Initialization of IMU Variables
+		//Initialization of IMU Address Variables - defined addresses in the BNO055 Documentation
 		static const uint8_t BNO055_ADDR = 0x28 << 1; //Left shift needed due to 8-bit communication
 		static const uint8_t EUL_ADDR = 0x1A; //Found in BNO055 Documentation
 		static const uint8_t PWR_MODE = 0x3E; //BNO055 Doc

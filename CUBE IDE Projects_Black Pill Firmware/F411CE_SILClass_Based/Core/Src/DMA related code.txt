@@ -21,6 +21,8 @@ static void MX_DMA_Init(void)
 
 }
 
+//Don't know what the HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn)-type functions are doing. What is the 
+//DMA2_Stream7_IRQn input and what is the interrupt associated with DMA? I thought DMA wouldn't need an interrupt. 
 
 
 
