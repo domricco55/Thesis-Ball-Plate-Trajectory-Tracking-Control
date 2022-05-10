@@ -105,8 +105,8 @@ void TouchscreenDriver::ProcessPositionData(void)
 	float diffy = 0;
 	float xposcurrent = 0;
 	float yposcurrent = 0;
-	float tempaccelx = 0;
-	float tempaccely = 0;
+/*	float tempaccelx = 0;
+	float tempaccely = 0;*/
 
 	//Filter incoming ADC signal for points of no-contact
 	for(i = 0; i<ADC_BUF_LEN; i++)

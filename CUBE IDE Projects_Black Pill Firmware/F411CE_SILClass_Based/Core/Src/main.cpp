@@ -538,14 +538,20 @@ static void MX_DMA_Init(void)
 	__HAL_RCC_DMA1_CLK_ENABLE();
 
 	/* DMA interrupt init */
+
 	/* DMA1_Stream0_IRQn interrupt configuration */
+	//I2C Stream
 	HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+
 	/* DMA2_Stream0_IRQn interrupt configuration */
-	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+	//ADC Stream
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 2, 2);
 	HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+
 	/* DMA2_Stream7_IRQn interrupt configuration */
-	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 0, 0);
+	//USART Stream
+	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 1, 1);
 	HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 
 }
@@ -663,9 +669,9 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelTS, float IMUx, float GyroX,
 						   float IMUy, float GyroY)
 {
-	//Incorporate the IMU offsets (want simulink to read 0 when the plate is in the position the user zerod to)
-	IMUx = IMUx + GlobalVars::IMUx_offset;
-	IMUy = IMUy + GlobalVars::IMUy_offset;
+	//Incorporate the IMU offsets (want simulink to read 0 when the plate is in the position the user zeroed to)
+	IMUx = IMUx - GlobalVars::IMUx_offset;
+	IMUy = IMUy - GlobalVars::IMUy_offset;
 
 	// For processing string
 	static char delim[] = " ";

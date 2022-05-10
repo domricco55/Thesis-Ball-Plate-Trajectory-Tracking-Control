@@ -1,14 +1,50 @@
-13:57:23 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+15:25:22 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
+arm-none-eabi-g++ "../Core/Src/TouchscreenDriver.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/TouchscreenDriver.d" -MT"Core/Src/TouchscreenDriver.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/TouchscreenDriver.o"
+arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.cpp: In function 'void CommunicationResponse(float, float, float, float, float, float, float, float)':
+../Core/Src/main.cpp:680:7: warning: unused variable 'ODrivemessage' [-Wunused-variable]
+  680 |  char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
+      |       ^~~~~~~~~~~~~
+arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: F411CE_SILClass_Based.elf
+ 
 arm-none-eabi-size   F411CE_SILClass_Based.elf 
+arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
+arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
    text	   data	    bss	    dec	    hex	filename
- 220796	   1176	  16420	 238392	  3a338	F411CE_SILClass_Based.elf
+ 220756	   1176	  16420	 238352	  3a310	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
  
-13:57:33 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+Finished building: F411CE_SILClass_Based.bin
+ 
+Finished building: F411CE_SILClass_Based.list
+ 
+15:26:20 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
 make -j8 all 
 arm-none-eabi-size   F411CE_SILClass_Based.elf 
    text	   data	    bss	    dec	    hex	filename
- 220796	   1176	  16420	 238392	  3a338	F411CE_SILClass_Based.elf
+ 220756	   1176	  16420	 238352	  3a310	F411CE_SILClass_Based.elf
 Finished building: default.size.stdout
+ 
+15:27:53 **** Incremental Build of configuration Debug for project F411CE_SILClass_Based ****
+make -j8 all 
+arm-none-eabi-g++ "../Core/Src/main.cpp" -mcpu=cortex-m4 -std=gnu++14 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.cpp: In function 'void CommunicationResponse(float, float, float, float, float, float, float, float)':
+../Core/Src/main.cpp:680:7: warning: unused variable 'ODrivemessage' [-Wunused-variable]
+  680 |  char ODrivemessage[100] = {0}; //Messages that need to be sent to the ODrive
+      |       ^~~~~~~~~~~~~
+arm-none-eabi-g++ -o "F411CE_SILClass_Based.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\domin\Documents\Sourcetree\Ball-Plate-Thesis\CUBE IDE Projects_Black Pill Firmware\F411CE_SILClass_Based\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411CE_SILClass_Based.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: F411CE_SILClass_Based.elf
+ 
+arm-none-eabi-size   F411CE_SILClass_Based.elf 
+arm-none-eabi-objdump -h -S  F411CE_SILClass_Based.elf  > "F411CE_SILClass_Based.list"
+arm-none-eabi-objcopy  -O binary  F411CE_SILClass_Based.elf  "F411CE_SILClass_Based.bin"
+   text	   data	    bss	    dec	    hex	filename
+ 220756	   1176	  16420	 238352	  3a310	F411CE_SILClass_Based.elf
+Finished building: default.size.stdout
+ 
+Finished building: F411CE_SILClass_Based.bin
+ 
+Finished building: F411CE_SILClass_Based.list
  
