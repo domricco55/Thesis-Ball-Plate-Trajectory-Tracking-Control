@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.116
+ * Model version              : 5.120
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue May 10 17:10:49 2022
+ * C source code generated on : Tue May 10 19:01:26 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -126,26 +126,26 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     rtb_yvelTS;
 
   /* ScanString: '<S12>/String to Double4' */
-  FSFB_FF_HIL_quick_dirty_B.IMUx = 0.0;
+  FSFB_FF_HIL_quick_dirty_B.IMUy = 0.0;
 
   /* ScanString: '<S12>/String to Double4' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o3[0], "%lf",
-         &FSFB_FF_HIL_quick_dirty_B.IMUx);
+         &FSFB_FF_HIL_quick_dirty_B.IMUy);
 
   /* Gain: '<S13>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1 = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_g *
-    FSFB_FF_HIL_quick_dirty_B.IMUx;
+    FSFB_FF_HIL_quick_dirty_B.IMUy;
 
   /* ScanString: '<S12>/String to Double5' */
-  FSFB_FF_HIL_quick_dirty_B.GyroX = 0.0;
+  FSFB_FF_HIL_quick_dirty_B.GyroY = 0.0;
 
   /* ScanString: '<S12>/String to Double5' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o4[0], "%lf",
-         &FSFB_FF_HIL_quick_dirty_B.GyroX);
+         &FSFB_FF_HIL_quick_dirty_B.GyroY);
 
   /* Gain: '<S14>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_k = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_n *
-    FSFB_FF_HIL_quick_dirty_B.GyroX;
+    FSFB_FF_HIL_quick_dirty_B.GyroY;
 
   /* ScanString: '<S12>/String to Double2' */
   rtb_yvelTS = 0.0;
@@ -164,26 +164,26 @@ void FSFB_FF_HIL_quick_dirty_output(void)
     rtb_yvelTS;
 
   /* ScanString: '<S12>/String to Double6' */
-  FSFB_FF_HIL_quick_dirty_B.IMUy = 0.0;
+  FSFB_FF_HIL_quick_dirty_B.IMUx = 0.0;
 
   /* ScanString: '<S12>/String to Double6' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o7[0], "%lf",
-         &FSFB_FF_HIL_quick_dirty_B.IMUy);
+         &FSFB_FF_HIL_quick_dirty_B.IMUx);
 
   /* Gain: '<S15>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_l = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_b *
-    FSFB_FF_HIL_quick_dirty_B.IMUy;
+    FSFB_FF_HIL_quick_dirty_B.IMUx;
 
   /* ScanString: '<S12>/String to Double7' */
-  FSFB_FF_HIL_quick_dirty_B.GyroY = 0.0;
+  FSFB_FF_HIL_quick_dirty_B.GyroX = 0.0;
 
   /* ScanString: '<S12>/String to Double7' */
   sscanf(&FSFB_FF_HIL_quick_dirty_B.StreamInput_o8[0], "%lf",
-         &FSFB_FF_HIL_quick_dirty_B.GyroY);
+         &FSFB_FF_HIL_quick_dirty_B.GyroX);
 
   /* Gain: '<S16>/Gain1' */
   FSFB_FF_HIL_quick_dirty_B.Gain1_n = FSFB_FF_HIL_quick_dirty_P.Gain1_Gain_k *
-    FSFB_FF_HIL_quick_dirty_B.GyroY;
+    FSFB_FF_HIL_quick_dirty_B.GyroX;
 
   /* Step: '<Root>/Step' incorporates:
    *  Step: '<Root>/Step1'
@@ -235,11 +235,11 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   smoothed_x_tmp = (1.0 - rtb_Step1) * 0.0;
   FSFB_FF_HIL_quick_dirty_B.smoothed_x[0] = FSFB_FF_HIL_quick_dirty_B.In[0] *
     rtb_Step1 + smoothed_x_tmp;
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] = FSFB_FF_HIL_quick_dirty_B.In[2] *
-    rtb_Step1 + smoothed_x_tmp;
   smoothed_x_tmp_0 = FSFB_FF_HIL_quick_dirty_P.Constant_Value * rtb_Step1 +
     smoothed_x_tmp;
-  FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] = smoothed_x_tmp_0;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[1] = smoothed_x_tmp_0;
+  FSFB_FF_HIL_quick_dirty_B.smoothed_x[2] = FSFB_FF_HIL_quick_dirty_B.In[2] *
+    rtb_Step1 + smoothed_x_tmp;
   FSFB_FF_HIL_quick_dirty_B.smoothed_x[3] = smoothed_x_tmp_0;
 
   /* Sum: '<S1>/Sum' */
@@ -349,7 +349,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.xb_int;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(1202744890U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(497716181U, time, pData, size);
     }
   }
 
@@ -359,7 +359,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.bx_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3300176838U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3612902459U, time, pData, size);
     }
   }
 
@@ -369,7 +369,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.by;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(4099329907U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(2438131438U, time, pData, size);
     }
   }
 
@@ -379,7 +379,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.by_dot;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3726388774U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(82272304U, time, pData, size);
     }
   }
 
@@ -389,7 +389,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.bx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(467272743U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(3945912516U, time, pData, size);
     }
   }
 
@@ -397,9 +397,9 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
-      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUx;
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUy;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(211356452U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(140671393U, time, pData, size);
     }
   }
 
@@ -407,9 +407,9 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
-      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroX;
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroY;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(560617791U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(955563134U, time, pData, size);
     }
   }
 
@@ -417,9 +417,9 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
-      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUy;
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.IMUx;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2789606531U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1068764269U, time, pData, size);
     }
   }
 
@@ -427,9 +427,9 @@ void FSFB_FF_HIL_quick_dirty_output(void)
   {
     {
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
-      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroY;
+      void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.GyroX;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(552291844U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1275423944U, time, pData, size);
     }
   }
 
@@ -446,7 +446,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.TimingParity;
       int32_T size = 1*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(3829108441U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(356379599U, time, pData, size);
     }
   }
 
@@ -497,7 +497,7 @@ void FSFB_FF_HIL_quick_dirty_output(void)
       double time = FSFB_FF_HIL_quick_dirty_M->Timing.t[1];
       void *pData = (void *)&FSFB_FF_HIL_quick_dirty_B.Torque_Sat[0];
       int32_T size = 2*sizeof(real_T);
-      sendToAsyncQueueTgtAppSvc(2235397648U, time, pData, size);
+      sendToAsyncQueueTgtAppSvc(1974664162U, time, pData, size);
     }
   }
 }
@@ -715,10 +715,10 @@ RT_MODEL_FSFB_FF_HIL_quick_dirty_T *FSFB_FF_HIL_quick_dirty(void)
   FSFB_FF_HIL_quick_dirty_M->Timing.stepSize1 = 0.005;
 
   /* External mode info */
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[0] = (2957840969U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[1] = (608291789U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[2] = (1731593454U);
-  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[3] = (91589513U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[0] = (3308765266U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[1] = (2382495795U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[2] = (2385673021U);
+  FSFB_FF_HIL_quick_dirty_M->Sizes.checksums[3] = (4029706948U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;

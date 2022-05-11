@@ -675,6 +675,9 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 	IMUx = -(IMUx - GlobalVars::IMUx_offset); //Sign on this axis needs to be switched
 	IMUy = IMUy - GlobalVars::IMUy_offset;
 
+	//Fix sign on gyro as well
+	GyroX = -GyroX;
+
 	// For processing string
 	static char delim[] = " ";
 	char *ptr;
@@ -693,8 +696,8 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 
 	//Create the message to send back to the Simulink model
 	sprintf(strUSB,"%.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u \n",
-			xposTS, xvelTS, IMUx, GyroX, yposTS, yvelTS,  IMUy,
-			GyroY, GlobalVars::timeconsistency);
+			xposTS, xvelTS, IMUy, GyroY, yposTS, yvelTS,  IMUx,
+			GyroX, GlobalVars::timeconsistency);
 
 	strUSB[strlen(strUSB)+1] = '\0'; //ASCII NULL to terminate string
 
@@ -1181,7 +1184,8 @@ void UserInterface(void)
 		{
 			if (UIprint)
 				{
-					sprintf(str,"Platform is now operational. To leave the operational state and go"
+					sprintf(str,"Platform is now operational. Shut off the serial port and run your Simulink model."
+							" To leave the operational state and go"
 							"back to the main menu, send 'r' over serial. \r\n\n");
 					CDC_Transmit_FS((uint8_t *) str, strlen(str)); //Transmit Message over USB
 					UIprint = 0;

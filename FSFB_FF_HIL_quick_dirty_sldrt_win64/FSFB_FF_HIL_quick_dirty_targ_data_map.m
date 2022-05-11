@@ -332,7 +332,7 @@
                     section.data(2).logicalSrcIdx = 10;
                     section.data(2).dtTransOffset = 1;
 
-                    ;% FSFB_FF_HIL_quick_dirty_B.IMUx
+                    ;% FSFB_FF_HIL_quick_dirty_B.IMUy
                     section.data(3).logicalSrcIdx = 11;
                     section.data(3).dtTransOffset = 2;
 
@@ -340,7 +340,7 @@
                     section.data(4).logicalSrcIdx = 12;
                     section.data(4).dtTransOffset = 3;
 
-                    ;% FSFB_FF_HIL_quick_dirty_B.GyroX
+                    ;% FSFB_FF_HIL_quick_dirty_B.GyroY
                     section.data(5).logicalSrcIdx = 13;
                     section.data(5).dtTransOffset = 4;
 
@@ -356,7 +356,7 @@
                     section.data(8).logicalSrcIdx = 16;
                     section.data(8).dtTransOffset = 7;
 
-                    ;% FSFB_FF_HIL_quick_dirty_B.IMUy
+                    ;% FSFB_FF_HIL_quick_dirty_B.IMUx
                     section.data(9).logicalSrcIdx = 17;
                     section.data(9).dtTransOffset = 8;
 
@@ -364,7 +364,7 @@
                     section.data(10).logicalSrcIdx = 18;
                     section.data(10).dtTransOffset = 9;
 
-                    ;% FSFB_FF_HIL_quick_dirty_B.GyroY
+                    ;% FSFB_FF_HIL_quick_dirty_B.GyroX
                     section.data(11).logicalSrcIdx = 19;
                     section.data(11).dtTransOffset = 10;
 
@@ -640,8 +640,8 @@
     ;%
 
 
-    targMap.checksum0 = 2957840969;
-    targMap.checksum1 = 608291789;
-    targMap.checksum2 = 1731593454;
-    targMap.checksum3 = 91589513;
+    targMap.checksum0 = 3308765266;
+    targMap.checksum1 = 2382495795;
+    targMap.checksum2 = 2385673021;
+    targMap.checksum3 = 4029706948;
 

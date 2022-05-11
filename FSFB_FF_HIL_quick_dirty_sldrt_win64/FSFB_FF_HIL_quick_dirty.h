@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.116
+ * Model version              : 5.120
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue May 10 17:10:49 2022
+ * C source code generated on : Tue May 10 19:01:26 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -871,15 +871,15 @@ typedef struct {
   char_T StreamInput_o9[256];          /* '<S12>/Stream Input' */
   real_T bx;                           /* '<S12>/Gain' */
   real_T bx_dot;                       /* '<S12>/Gain1' */
-  real_T IMUx;                         /* '<S12>/String to Double4' */
+  real_T IMUy;                         /* '<S12>/String to Double4' */
   real_T Gain1;                        /* '<S13>/Gain1' */
-  real_T GyroX;                        /* '<S12>/String to Double5' */
+  real_T GyroY;                        /* '<S12>/String to Double5' */
   real_T Gain1_k;                      /* '<S14>/Gain1' */
   real_T by;                           /* '<S12>/Gain2' */
   real_T by_dot;                       /* '<S12>/Gain3' */
-  real_T IMUy;                         /* '<S12>/String to Double6' */
+  real_T IMUx;                         /* '<S12>/String to Double6' */
   real_T Gain1_l;                      /* '<S15>/Gain1' */
-  real_T GyroY;                        /* '<S12>/String to Double7' */
+  real_T GyroX;                        /* '<S12>/String to Double7' */
   real_T Gain1_n;                      /* '<S16>/Gain1' */
   real_T Step;                         /* '<Root>/Step' */
   real_T integratederror;              /* '<S1>/Discrete-Time Integrator' */
@@ -1115,7 +1115,7 @@ struct P_FSFB_FF_HIL_quick_dirty_T_ {
   real_T DiscreteTimeIntegrator_IC_h;  /* Expression: 0
                                         * Referenced by: '<S12>/Discrete-Time Integrator'
                                         */
-  real_T GearRatioAssumption_Gain;     /* Expression: -VDefs.l_carm/VDefs.lp
+  real_T GearRatioAssumption_Gain;     /* Expression: VDefs.l_carm/VDefs.lp
                                         * Referenced by: '<S5>/Gear Ratio Assumption'
                                         */
   real_T Saturation1_UpperSat;         /* Expression: 1.5

@@ -7,9 +7,9 @@
  *
  * Code generation for model "FSFB_FF_HIL_quick_dirty".
  *
- * Model version              : 5.116
+ * Model version              : 5.120
  * Simulink Coder version : 9.7 (R2022a) 13-Nov-2021
- * C source code generated on : Tue May 10 17:10:49 2022
+ * C source code generated on : Tue May 10 19:01:26 2022
  *
  * Target selection: sldrt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -166,10 +166,10 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
    */
   0.0,
 
-  /* Expression: -VDefs.l_carm/VDefs.lp
+  /* Expression: VDefs.l_carm/VDefs.lp
    * Referenced by: '<S5>/Gear Ratio Assumption'
    */
-  -0.453781512605042,
+  0.453781512605042,
 
   /* Expression: 1.5
    * Referenced by: '<S5>/Saturation1'
@@ -189,5 +189,5 @@ P_FSFB_FF_HIL_quick_dirty_T FSFB_FF_HIL_quick_dirty_P = {
   /* Computed Parameter: ManualSwitch_CurrentSetting
    * Referenced by: '<Root>/Manual Switch'
    */
-  0U
+  1U
 };
