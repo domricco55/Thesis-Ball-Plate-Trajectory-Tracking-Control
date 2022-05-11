@@ -14794,9 +14794,8 @@ LOAD c:/st/stm32cubeide_1.8.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x00000000080027cc       0x1c ./Core/Src/main.o
                 0x00000000080027cc                HAL_I2C_MemRxCpltCallback
  .text._Z21CommunicationResponseffffffff
-                0x00000000080027e8      0x25c ./Core/Src/main.o
+                0x00000000080027e8      0x260 ./Core/Src/main.o
                 0x00000000080027e8                CommunicationResponse(float, float, float, float, float, float, float, float)
- *fill*         0x0000000008002a44        0x4 
  .text._Z13UserInterfacev
                 0x0000000008002a48      0xbfc ./Core/Src/main.o
                 0x0000000008002a48                UserInterface()

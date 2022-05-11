@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="CommunicationResponse"/>
+		<item key="selection" value="communication"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="true"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="communication"/>
+			<item value="offset"/>
 			<item value="CommunicationResponse"/>
 			<item value="IMUx"/>
 			<item value="GlobalVars::IMUx_offset"/>
@@ -21,8 +23,6 @@
 			<item value="DMA"/>
 			<item value="buf"/>
 			<item value="ErrorFlg"/>
-			<item value="yposADC"/>
-			<item value="buffer"/>
 		</list>
 		<list key="replacehistory">
 			<item value="GlobalVars"/>

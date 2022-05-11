@@ -669,8 +669,10 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelTS, float IMUx, float GyroX,
 						   float IMUy, float GyroY)
 {
-	//Incorporate the IMU offsets (want simulink to read 0 when the plate is in the position the user zeroed to)
-	IMUx = IMUx - GlobalVars::IMUx_offset;
+	//Incorporate the IMU offsets and alter the signs of the readings to match the kinematics used in the
+	//controller design
+	//(want simulink to read 0 when the plate is in the position the user zeroed to)
+	IMUx = -(IMUx - GlobalVars::IMUx_offset); //Sign on this axis needs to be switched
 	IMUy = IMUy - GlobalVars::IMUy_offset;
 
 	// For processing string
