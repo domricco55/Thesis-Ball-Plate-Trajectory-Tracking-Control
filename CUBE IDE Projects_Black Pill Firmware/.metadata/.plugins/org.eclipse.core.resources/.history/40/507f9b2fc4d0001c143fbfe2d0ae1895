@@ -714,13 +714,11 @@ void CommunicationResponse(float xposTS, float xvelTS, float yposTS, float yvelT
 
 		ptr = strtok(message, delim); //Initial cut, isolates first float of string
 
-		GlobalVars::m1tor = atof(ptr) + GlobalVars::m1tor_offst; //Convert string of motor torque input to float for sprintf construction
+		GlobalVars::m0tor = atof(ptr) + GlobalVars::m0tor_offst; //Convert string of motor torque input to float for sprintf construction
 
 		ptr = strtok(NULL,delim); //Iterate to next section of message
 
-		//Here, the sign of the motor 0 torque command from Simulink is inverted to produce
-		//the correct torque direction
-		GlobalVars::m0tor = -atof(ptr) + GlobalVars::m0tor_offst; //Save second space-separated part of string to double of torque value for processing
+		GlobalVars::m1tor = atof(ptr) + GlobalVars::m1tor_offst; //Save second space-separated part of string to double of torque value for processing
 
 		//-------------Now, send message to O-Drive and confirmation to PC:-------------
 
