@@ -646,8 +646,6 @@ classdef Lin_FSFB_Cntrl < handle
 
                     figure_obj_y = figure;
 
-                    title('SS PID w FF Controller y direction');
-
                     ax1 = subplot(4,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),'b',obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--r' )
                     xlabel('time [s]')
