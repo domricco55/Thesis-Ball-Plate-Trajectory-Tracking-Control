@@ -732,11 +732,11 @@ classdef Lin_FSFB_Cntrl < handle
                     beta_s_sol(obj.VDefs.t) = simplify(subs(beta_s_sol, [C1 C2], [0 0]));
 
                     %Plot the particular solution
-                    figure
-                    fplot(matlabFunction(beta_s_sol),tspan)
-                    xlabel('Time [s]')
-                    ylabel('beta [rad]')
-                    title('beta analytical particular solution')
+%                     figure
+%                     fplot(matlabFunction(beta_s_sol),tspan)
+%                     xlabel('Time [s]')
+%                     ylabel('beta [rad]')
+%                     title('beta analytical particular solution')
 
                     %Gamma
                     T_gamma_eqn = isolate(obj.VDefs.gamma_ddot == obj.Lnrzed_EOMs.Lin_EOMs(8), obj.VDefs.T_gamma);
@@ -749,11 +749,11 @@ classdef Lin_FSFB_Cntrl < handle
                     gamma_s_sol(obj.VDefs.t) = simplify(subs(gamma_s_sol, [C1 C2], [0 0]));
                     
                     %Plot the particular solution
-                    figure
-                    fplot(matlabFunction(gamma_s_sol),tspan)
-                    xlabel('Time [s]')
-                    ylabel('gamma [rad]')
-                    title('gamma analytical particular solution')
+%                     figure
+%                     fplot(matlabFunction(gamma_s_sol),tspan)
+%                     xlabel('Time [s]')
+%                     ylabel('gamma [rad]')
+%                     title('gamma analytical particular solution')
 
                     %Feed-Forward input functions
                     T_beta = subs(rhs(T_beta_eqn), [obj.VDefs.x, beta_s, diff(beta_s,2)], [x_s beta_s_sol diff(beta_s_sol,2)]);
