@@ -19,9 +19,7 @@ classdef LSED_Measure_2D < handle
     methods
         function obj = LSED_Measure_2D(samp_f, response, setpoint, tsim, ylabel_str, plot_cmd)
             %LSED_Measure Construct an instance of this class
-            %   response is a matrix of two column vectors, the first being the x location
-            %   of the ball at each point in time and the second being the y location of
-            %   the ball. Setpoint is the same but for the setpoints in x and y. 
+            %   Detailed explanation goes here
             
             %Object's y axis label (what is the trajectory we are talking about?)
             obj.ylabel_str = ylabel_str;
@@ -54,11 +52,7 @@ classdef LSED_Measure_2D < handle
 
             n = length(obj.resamp_rspnse;
 
-            sq_errs = (obj.resamp_rspnse - obj.resamp_rspnse).^2; %x and y errors squared
-
-            eucl_dist = sqrt(sq_errs(:,1) + sq_errs(:,2)); %Euclidean distance at each point in time
-
-            LSED = 1/n*sum(eucl_dist); %Normalized sum of the Euclidean distances at each point in time
+            LSED = 1/m*sum(sqrt(
             
             dtw(obj.resamp_rspnse, obj.resamp_stpt, 'absolute');
             
