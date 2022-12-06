@@ -110,7 +110,8 @@ classdef Var_Defs
         e_x      
         e_x_dot 
         e_x_ddot
-        e_ix     
+        e_ix
+        ix
         x_s     
         x_dot_s 
         x_ddot_s
@@ -118,7 +119,8 @@ classdef Var_Defs
         e_y      
         e_y_dot 
         e_y_ddot
-        e_iy  
+        e_iy
+        iy
         y_s
         y_dot_s
         y_ddot_s
@@ -295,7 +297,7 @@ classdef Var_Defs
 
             syms x_hat(t) y_hat(t)
  
-            syms z_b ix x y x_dot y_dot x_ddot y_ddot real
+            syms z_b ix iy x y x_dot y_dot x_ddot y_ddot real
 
             syms r_hat_1(t) r_hat_2(t) r_hat_3(t) 
 
@@ -419,14 +421,16 @@ classdef Var_Defs
             obj.e_x = e_x;       
             obj.e_x_dot = e_x_dot; 
             obj.e_x_ddot = e_x_ddot;
-            obj.e_ix = e_ix; 
+            obj.e_ix = e_ix;
+            obj.ix = ix;
             obj.x_s = x_s;      
             obj.x_dot_s = x_dot_s;
             obj.x_ddot_s = x_ddot_s;
             obj.e_y = e_y;       
             obj.e_y_dot = e_y_dot; 
             obj.e_y_ddot = e_y_ddot;
-            obj.e_iy = e_iy;   
+            obj.e_iy = e_iy;
+            obj.iy = iy;
             obj.y_s = y_s;      
             obj.y_dot_s = y_dot_s;
             obj.y_ddot_s = y_ddot_s;

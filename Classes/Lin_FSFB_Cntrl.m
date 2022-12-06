@@ -196,67 +196,37 @@ classdef Lin_FSFB_Cntrl < handle
                 case 'FSFB FF Controller'
 
                     % X DIMENSION DERIVATIONS
-                    %State vector augmented with integral of the error in x AND all states
-                    %replaced by error states
-                    obj.stateVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.e_beta, VDefs.e_beta_dot].'; 
-                    obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.e_beta_dot, VDefs.e_beta_ddot].';
-                    
-                    %Setpoint vector
-                    obj.x_setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s VDefs.beta_dot_s VDefs.beta_ddot_s].';
+                    %State vector augmented with integral of x 
+                    obj.stateVec_1a = [VDefs.ix, VDefs.x, VDefs.x_dot, VDefs.beta, VDefs.beta_dot].'; 
+                    obj.stateVec_1a_dot = [VDefs.x, VDefs.x_dot, VDefs.x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Derive augmented dynamics for x direction
-                    x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
-                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.e_beta_dot (VDefs.beta_ddot_s - VDefs.beta_ddot)].';
+                    x_1a_dot_eqn = obj.stateVec_1a_dot == obj.stateVec_1a_dot;
                     x_1a_dot_eqn = obj.stateVec_1a_dot == subs(rhs(x_1a_dot_eqn),...
                         [VDefs.x_ddot VDefs.beta_ddot] , [rhs(Lnrzed_EOMs.Lin_EOMs1(2)) rhs(Lnrzed_EOMs.Lin_EOMs1(4))]);
-                    x_1a_dot_eqn = subs(x_1a_dot_eqn, [VDefs.x, VDefs.beta], [VDefs.x_s - VDefs.e_x, VDefs.beta_s - VDefs.e_beta]);
                     
                     %Augmented A Matrix
                     obj.sys_mats.A1a = equationsToMatrix(rhs(x_1a_dot_eqn), obj.stateVec_1a);
                     
                     %Augmented B Matrix
                     obj.sys_mats.B1a = equationsToMatrix(rhs(x_1a_dot_eqn), VDefs.T_beta);
-                    
-                    %S matrix
-                    obj.sys_mats.S1 = equationsToMatrix(rhs(x_1a_dot_eqn), obj.x_setpointVec);
-                    
-                    %Our desired control output is the x state (want it to match as closely as possible to x_s
-                    %for all times). Given that x = x_s - e_x, C and D are:
-                    obj.sys_mats.C1a = [0 -1 0 0 0]; 
-                    obj.sys_mats.D1a = [1 0 0];
 
                     % y DIMENSION DERIVATIONS
-                    %State vector augmented with integral of the error in y AND all states
-                    %replaced by error states
-                    obj.stateVec_2a = [VDefs.e_iy, VDefs.e_y, VDefs.e_y_dot, VDefs.e_gamma, VDefs.e_gamma_dot].'; 
-                    obj.stateVec_2a_dot = [VDefs.e_y, VDefs.e_y_dot, VDefs.e_y_ddot, VDefs.e_gamma_dot, VDefs.e_gamma_ddot].';
+                    %State vector augmented with integral of y
+                    obj.stateVec_2a = [VDefs.iy, VDefs.y, VDefs.y_dot, VDefs.gamma, VDefs.gamma_dot].'; 
+                    obj.stateVec_2a_dot = [VDefs.y, VDefs.y_dot, VDefs.y_ddot, VDefs.gamma_dot, VDefs.gamma_ddot].';
                     
-                    %Setpoint vector
-                    obj.y_setpointVec = [VDefs.y_s VDefs.y_dot_s VDefs.y_ddot_s VDefs.gamma_dot_s VDefs.gamma_ddot_s].';
                     
-                    %Derive augmented dynamics for x direction, SS PID controller
-                    x_2a_dot_eqn = obj.stateVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
-                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.e_gamma_dot (VDefs.gamma_ddot_s - VDefs.gamma_ddot)].';
+                    %Derive augmented dynamics for x direction
+                    x_2a_dot_eqn = obj.stateVec_2a_dot == obj.stateVec_2a_dot;
                     x_2a_dot_eqn = obj.stateVec_2a_dot == subs(rhs(x_2a_dot_eqn),...
                         [VDefs.y_ddot VDefs.gamma_ddot] , [rhs(Lnrzed_EOMs.Lin_EOMs2(2)), rhs(Lnrzed_EOMs.Lin_EOMs2(4))]);
-                    x_2a_dot_eqn = subs(x_2a_dot_eqn, [VDefs.y VDefs.gamma], [VDefs.y_s - VDefs.e_y, VDefs.gamma_s - VDefs.e_gamma]);
-
-
                     
                     %Augmented A Matrix
                     obj.sys_mats.A2a = equationsToMatrix(rhs(x_2a_dot_eqn), obj.stateVec_2a);
                     
                     %Augmented B Matrix
-                    obj.sys_mats.B2a = equationsToMatrix(rhs(x_2a_dot_eqn), VDefs.T_gamma);
-                    
-                    %S matrix
-                    obj.sys_mats.S2 = equationsToMatrix(rhs(x_2a_dot_eqn), obj.y_setpointVec);
-                    
-                    %Our desired control output is the y state (want it to match as closely as possible to y_s
-                    %for all times). Given that y = y_s - e_y, C and D are:
-                    obj.sys_mats.C2a = [0 -1 0 0 0]; 
-                    obj.sys_mats.D2a = [1 0 0 0 0];
-                    
+                    obj.sys_mats.B2a = equationsToMatrix(rhs(x_2a_dot_eqn), VDefs.T_gamma);    
 
                     %Set the name of the simulink model to use
                     obj.sim_file_string = 'FSFB_FF_Sim';
