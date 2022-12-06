@@ -583,7 +583,7 @@ classdef Lin_FSFB_Cntrl < handle
                     figure_obj_x = figure;
                     
                     
-                    ax1 = subplot(4,1,1);
+                    ax1 = subplot(5,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,1),'b',obj.sim_response.tout,obj.sim_response.x_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('x [m]')
@@ -591,7 +591,7 @@ classdef Lin_FSFB_Cntrl < handle
                     legend('actual', 'setpoint')
 
 
-                    ax2 = subplot(4,1,2);
+                    ax2 = subplot(5,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,3)),'b',...
                          obj.sim_response.tout,rad2deg(obj.sim_response.x_s_vec(:,3)), '--r')
                     xlabel('time [s]')
@@ -599,49 +599,59 @@ classdef Lin_FSFB_Cntrl < handle
                     legend('actual', 'setpoint')
 
 
-                    ax3 = subplot(4,1,3);
+                    ax3 = subplot(5,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.u(:,1),'b',obj.sim_response.tout,obj.sim_response.u_FF(:,1), '--r')
                     xlabel('time [s]')
                     ylabel('T_{\beta} [Nm]')
                     legend('total torque', 'feed-forward torque')
 
-                    ax4 = subplot(4,1,4);
+                    ax4 = subplot(5,1,4);
+                    plot(obj.sim_response.tout,obj.sim_response.T_tilde_beta,'b')
+                    xlabel('time [s]')
+                    ylabel('$\tilde{T}_{\beta}$ [Nm]','Interpreter','latex')   
+
+                    ax5 = subplot(5,1,5);
                     plot(obj.sim_response.tout,(obj.sim_response.x_s_vec(:,1) - obj.sim_response.x(:,1)),'b')
                     xlabel('time [s]')
                     ylabel('error in x [m]')
 
 
-                    linkaxes([ax1,ax2, ax3, ax4],'x');
+                    linkaxes([ax1,ax2, ax3, ax4, ax5],'x');
                     set(gcf,'position',[0,0,1200,1200]);
 
                     figure_obj_y = figure;
 
-                    ax1 = subplot(4,1,1);
+                    ax1 = subplot(5,1,1);
                     plot(obj.sim_response.tout,obj.sim_response.x(:,5),'b',obj.sim_response.tout,obj.sim_response.y_s_vec(:,1),'--r' )
                     xlabel('time [s]')
                     ylabel('y [m]')
                     title(strcat(title_str,' y direction'))
                     legend('actual', 'setpoint')
 
-                    ax2 = subplot(4,1,2);
+                    ax2 = subplot(5,1,2);
                     plot(obj.sim_response.tout,rad2deg(obj.sim_response.x(:,7)),'b', ...
                          obj.sim_response.tout,rad2deg(obj.sim_response.y_s_vec(:,3)),'--r')
                     xlabel('time [s]')
                     ylabel('\gamma [deg]')
                     legend('actual', 'setpoint')
 
-                    ax3 = subplot(4,1,3);
+                    ax3 = subplot(5,1,3);
                     plot(obj.sim_response.tout,obj.sim_response.u(:,2),'b',obj.sim_response.tout,obj.sim_response.u_FF(:,2), '--r')
                     xlabel('time [s]')
                     ylabel('T_{\gamma} [Nm]')
                     legend('total torque', 'feed-forward torque')
+
+                    ax4 = subplot(5,1,4);
+                    plot(obj.sim_response.tout,obj.sim_response.T_tilde_gamma,'b')
+                    xlabel('time [s]')
+                    ylabel('$\tilde{T}_{\gamma}$ [Nm]','Interpreter','latex')  
                     
-                    ax4 = subplot(4,1,4);
+                    ax5 = subplot(5,1,5);
                     plot(obj.sim_response.tout,(obj.sim_response.y_s_vec(:,1) - obj.sim_response.x(:,5)),'b')
                     xlabel('time [s]')
                     ylabel('error in y [m]')
 
-                    linkaxes([ax1,ax2, ax3, ax4],'x');
+                    linkaxes([ax1,ax2, ax3, ax4, ax5],'x');
                     set(gcf,'position',[0,0,1200,1200]);
 
                     %Plot the position space of the ball
