@@ -663,6 +663,14 @@ classdef Lin_FSFB_Cntrl < handle
                     ylabel('y [m]')
                     title('Position space of the ball in the plate frame')
                     axis 'equal'
+                    
+                    %Plot the difference between T__beta, and T_hat_beta (the feed
+                    %forward torque)
+                    figure
+                    T_hat_beta = obj.sim_response.u_FF(:,1);
+                    plot(obj.sim_response.tout, obj.sim_response.u(:,1) - T_hat_beta, 'b')
+                    xlabel('time [s]')
+                    ylabel('$T_{\beta} - \hat{T}_{\beta}$ [Nm]','Interpreter','latex')
 
 
             end 
