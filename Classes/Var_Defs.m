@@ -653,7 +653,6 @@ classdef Var_Defs
             obj.Tmot = 0.6; %%[Nm] Max torque for the motors
             obj.l_carm = 0.1134; % [m] Length of the motor mechanism crank arms
             obj.Tmax = obj.Tmot*obj.lp/obj.l_carm; %[Nm] Saturation u-joint torque
-            
         end
         
     end

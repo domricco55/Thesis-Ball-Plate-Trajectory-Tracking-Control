@@ -265,8 +265,12 @@ classdef Lin_FSFB_Cntrl < handle
             %returns the setpoint derivatives with any deltas resulting from
             %differentiation removed. Allows setpoints with jump discontinuities to be
             %handed in to Run_Sim. OTHER ISSUES WITH SETPOINTS THAT ARE TOO JUMPY THOUGH
-            [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
-
+            %[d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
+            d_x_s = diff(x_s,1);
+            d_y_s = diff(y_s,1);
+            dd_x_s = diff(x_s,2);
+            dd_y_s = diff(y_s,2);
+            
             %Generate the setpoint vectors and store them in the
             %appropriate class properties.
             obj.Gen_Setpoints(x_s, y_s, d_x_s, d_y_s, dd_x_s, dd_y_s, tspan);
@@ -365,7 +369,12 @@ classdef Lin_FSFB_Cntrl < handle
             %returns the setpoint derivatives with any deltas resulting from
             %differentiation removed. Allows setpoints with jump discontinuities to be
             %handed in to Run_Sim. OTHER ISSUES WITH SETPOINTS THAT ARE TOO JUMPY THOUGH
-            [d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
+            %[d_x_s, d_y_s, dd_x_s, dd_y_s] = obj.remove_deltas(x_s, y_s);
+            d_x_s = diff(x_s,1);
+            d_y_s = diff(y_s,1);
+            dd_x_s = diff(x_s,2);
+            dd_y_s = diff(y_s,2);
+
 
             %Generate the setpoint vectors and store them in the
             %appropriate class properties.
@@ -785,6 +794,11 @@ classdef Lin_FSFB_Cntrl < handle
     methods (Static)
         function [d_x_s, d_y_s, dd_x_s, dd_y_s] = remove_deltas(x_s, y_s)
 
+            %I believe that the "children" function does not always work properly and it's
+            % causing some issues here. I think I'm just going to table this function for
+            % now and directly compute the derivatives above, without regard to possible
+            % dirac deltas. 
+
                     %Make sure there are no dirac delta's in the derivatives of the
                     %setpoint functions
 
@@ -802,7 +816,7 @@ classdef Lin_FSFB_Cntrl < handle
                     
                     d_y_s = diff(y_s,1);
                     sub_exps_d_y_s = children(d_y_s); %get each term in the derivative
-                    for n = 1:length(sub_exps_d_x_s)
+                    for n = 1:length(sub_exps_d_y_s)
                         %If there is a delta, set its term to zero
                         if hasSymType(sub_exps_d_y_s{n},'dirac')
                             sub_exps_d_y_s{n} = sym(0);
@@ -826,7 +840,7 @@ classdef Lin_FSFB_Cntrl < handle
                     
                     dd_y_s = diff(d_y_s,1);
                     sub_exps_dd_y_s = children(dd_y_s); %get each term in the derivative
-                    for n = 1:length(sub_exps_dd_x_s)
+                    for n = 1:length(sub_exps_dd_y_s)
                         %If there is a delta, set its term to zero
                         if hasSymType(sub_exps_d_y_s{n},'dirac')
                             sub_exps_d_y_s{n} = 0;
