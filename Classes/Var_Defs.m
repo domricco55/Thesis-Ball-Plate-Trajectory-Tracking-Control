@@ -74,8 +74,10 @@ classdef Var_Defs
         %Coordinate of the Ball's Center of Mass in the S2 (plate) Frame  
         x_hat          
         y_hat           
-        z_b                     
-        x          
+        z_b
+        ix
+        x
+        iy
         y     
         x_dot  
         y_dot   
@@ -111,7 +113,7 @@ classdef Var_Defs
         e_x_dot 
         e_x_ddot
         e_ix
-        ix
+        ix_s
         x_s     
         x_dot_s 
         x_ddot_s
@@ -120,7 +122,7 @@ classdef Var_Defs
         e_y_dot 
         e_y_ddot
         e_iy
-        iy
+        iy_s
         y_s
         y_dot_s
         y_ddot_s
@@ -307,8 +309,8 @@ classdef Var_Defs
             
             syms N_z f_x f_y real
 
-            syms e_x e_x_dot e_x_ddot e_ix x_s x_dot_s x_ddot_s...
-                 e_y e_y_dot e_y_ddot e_iy y_s y_dot_s y_ddot_s...
+            syms e_x e_x_dot e_x_ddot e_ix ix_s x_s x_dot_s x_ddot_s...
+                 e_y e_y_dot e_y_ddot e_iy iy_s y_s y_dot_s y_ddot_s...
                  e_beta e_beta_dot e_beta_ddot beta_s beta_dot_s beta_ddot_s...
                  e_gamma e_gamma_dot e_gamma_ddot gamma_s gamma_dot_s gamma_ddot_s...
                  real
@@ -385,8 +387,10 @@ classdef Var_Defs
             obj.x_hat = x_hat;          
             obj.y_hat = y_hat;      
             obj.z_b  = z_b;     
-                               
-            obj.x  = x;        
+              
+            obj.ix = ix;
+            obj.x  = x;
+            obj.iy = iy;
             obj.y = y;      
             obj.x_dot = x_dot;   
             obj.y_dot = y_dot;   
@@ -422,7 +426,7 @@ classdef Var_Defs
             obj.e_x_dot = e_x_dot; 
             obj.e_x_ddot = e_x_ddot;
             obj.e_ix = e_ix;
-            obj.ix = ix;
+            obj.ix_s = ix_s;
             obj.x_s = x_s;      
             obj.x_dot_s = x_dot_s;
             obj.x_ddot_s = x_ddot_s;
@@ -430,7 +434,7 @@ classdef Var_Defs
             obj.e_y_dot = e_y_dot; 
             obj.e_y_ddot = e_y_ddot;
             obj.e_iy = e_iy;
-            obj.iy = iy;
+            obj.iy_s = iy_s;
             obj.y_s = y_s;      
             obj.y_dot_s = y_dot_s;
             obj.y_ddot_s = y_ddot_s;

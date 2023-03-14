@@ -13,12 +13,16 @@ classdef Lin_FSFB_Cntrl < handle
         ctrl_type %The type of control system this object represents 
                   %(SS Integral Controller, or SS PID Controller)
                   
-        %Definitions of the state vector, roc of state vector, and setpoint
+        %Definitions of the state vector, error vector (FF), roc of state vector, and setpoint
         %vector for a particular controller associated with an instance of the class        
         stateVec_1a 
         stateVec_1a_dot
         stateVec_2a 
         stateVec_2a_dot
+        errorVec_1a 
+        errorVec_1a_dot
+        errorVec_2a 
+        errorVec_2a_dot
         x_setpointVec
         y_setpointVec
 
@@ -135,7 +139,7 @@ classdef Lin_FSFB_Cntrl < handle
                     obj.stateVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.beta_dot, VDefs.beta_ddot].';
                     
                     %Setpoint vector
-                    obj.x_setpointVec = [VDefs.x_s VDefs.x_dot_s VDefs.x_ddot_s].';
+                    obj.x_setpointVec = [VDefs.x_s VDefs.x_ddot_s].';
                     
                     %Derive augmented dynamics for x direction, SS PID controller
                     x_1a_dot_eqn = obj.stateVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
@@ -232,7 +236,45 @@ classdef Lin_FSFB_Cntrl < handle
                     obj.sim_file_string = 'FSFB_FF_Sim';
                     obj.HIL_file_string = 'FSFB_FF_HIL';
                     obj.ctrl_file_string = 'FSFB_FF_Controller';
-                                    
+
+                    %Derive the S matrix for the x axis
+
+                    %Error vector augmented with integral of x 
+                    obj.errorVec_1a = [VDefs.e_ix, VDefs.e_x, VDefs.e_x_dot, VDefs.e_beta, VDefs.e_beta_dot].'; 
+                    obj.errorVec_1a_dot = [VDefs.e_x, VDefs.e_x_dot, VDefs.e_x_ddot, VDefs.e_beta_dot, VDefs.e_beta_ddot].';
+
+                    %x setpoint vector
+                    obj.x_setpointVec = [VDefs.x_s VDefs.x_ddot_s VDefs.beta_s VDefs.beta_ddot_s].';
+
+                    %Derive augmented error dynamics for x direction
+                    e_1a_dot_eqn = obj.errorVec_1a_dot == [VDefs.e_x VDefs.e_x_dot...
+                        (VDefs.x_ddot_s - VDefs.x_ddot) VDefs.e_beta_dot (VDefs.beta_ddot_s - VDefs.beta_ddot)].';
+                    e_1a_dot_eqn = obj.errorVec_1a_dot == subs(rhs(e_1a_dot_eqn),...
+                        [VDefs.x_ddot, VDefs.beta_ddot] , [rhs(Lnrzed_EOMs.Lin_EOMs1(2)), rhs(Lnrzed_EOMs.Lin_EOMs1(4))]);
+                    e_1a_dot_eqn = subs(e_1a_dot_eqn, [VDefs.x, VDefs.beta], [VDefs.x_s - VDefs.e_x, VDefs.beta_s - VDefs.e_beta]);
+
+                    %S matrix
+                    obj.sys_mats.S1 = equationsToMatrix(rhs(e_1a_dot_eqn), obj.x_setpointVec);
+
+                    %Error vector augmented with integral of x 
+                    obj.errorVec_2a = [VDefs.e_iy, VDefs.e_y, VDefs.e_y_dot, VDefs.e_gamma, VDefs.e_gamma_dot].'; 
+                    obj.errorVec_2a_dot = [VDefs.e_y, VDefs.e_y_dot, VDefs.e_y_ddot, VDefs.e_gamma_dot, VDefs.e_gamma_ddot].';
+
+                    %Derive the S matrix for the y axis
+
+                    %y setpoint vector
+                    obj.y_setpointVec = [VDefs.y_s VDefs.y_ddot_s VDefs.gamma_s VDefs.gamma_ddot_s].';
+                          
+                    %Derive augmented error dynamics for y direction
+                    e_2a_dot_eqn = obj.errorVec_2a_dot == [VDefs.e_y VDefs.e_y_dot...
+                        (VDefs.y_ddot_s - VDefs.y_ddot) VDefs.e_gamma_dot (VDefs.gamma_ddot_s - VDefs.gamma_ddot)].';
+                    e_2a_dot_eqn = obj.errorVec_2a_dot == subs(rhs(e_2a_dot_eqn),...
+                        [VDefs.y_ddot, VDefs.gamma_ddot] , [rhs(Lnrzed_EOMs.Lin_EOMs2(2)), rhs(Lnrzed_EOMs.Lin_EOMs2(4))]);
+                    e_2a_dot_eqn = subs(e_2a_dot_eqn, [VDefs.y, VDefs.gamma], [VDefs.y_s - VDefs.e_y, VDefs.gamma_s - VDefs.e_gamma]);
+
+                    %S matrix
+                    obj.sys_mats.S2 = equationsToMatrix(rhs(e_2a_dot_eqn), obj.y_setpointVec);
+
                 otherwise
                     
                     error('Not a valid controller type')
